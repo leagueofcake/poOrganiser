@@ -6,3 +6,6 @@ class Event():
 
     def get_name(self):
         return self.name
+
+    def get_location(self):
+        return self.location

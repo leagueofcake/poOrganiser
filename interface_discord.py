@@ -1,6 +1,7 @@
 #!/usr/bin/env python3.5
 import discord, asyncio
 import discord_config
+import Event, User, EventUser
 
 client = discord.Client()
 
@@ -16,7 +17,13 @@ async def on_message(message):
     content = message.content
     if content.startswith('!hello'):
         await client.send_message(message.channel, 'Hello {}!'.format(message.author.mention))
-
+    elif content.strip() == '!register':
+        user_exists = User.get_user(message.author.id)
+        if not user_exists:
+            User.add_user(message.author.id)
+            await client.send_message(message.channel, 'Registered user {} with id {}.'.format(message.author.display_name, message.author.id))
+        else: # User already exists
+            await client.send_message(message.channel, 'You have already registered!')
     # TODO parse input
 
 client.run(discord_config.token)

@@ -40,6 +40,13 @@ class EventUser(Base):
         self.roles = ast.literal_eval(str(self.roles)) # Convert to list before appending
         self.roles.append(role)
 
+    def remove_role(self, role):
+        self.roles = ast.literal_eval(str(self.roles)) # Convert to list before appending
+        if role in self.roles:
+            self.roles.remove(role)
+        else:
+            return None
+
 # Initialise SQLAlchemy session
 Base.metadata.create_all()
 Session = sessionmaker(bind=engine)
@@ -55,9 +62,7 @@ def add_eventuser(eventid, userid, isgoing):
 def get_eventuser(eventid, userid):
     return s.query(EventUser).filter(EventUser.eventid == eventid).filter(EventUser.userid == userid).one()
 
-def add_role(eventuserid, role):
-    eu = s.query(EventUser).get(eventuserid)
-    eu.add_role(role)
-    eu.roles = str(eu.roles) # Convert to string
+def update_eventuser(obj):
+    obj.roles = str(obj.roles)
     s.commit()
-    return eu
+    return obj

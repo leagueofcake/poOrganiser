@@ -3,5 +3,6 @@ class User():
         self.name = name
         self.going = False
         self.responsibilities = []
+        
     def get_name(self):
         return self.name

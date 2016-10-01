@@ -1,3 +1,4 @@
+#!/usr/bin/env python3.5
 class Question():
     def __init__(self, text, users, choices=1, pref=False):
         self.question_text = text

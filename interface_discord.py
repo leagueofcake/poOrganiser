@@ -14,6 +14,9 @@ async def on_ready():
 @client.event
 async def on_message(message):
     content = message.content
+    if content.startswith('!hello'):
+        await client.send_message(message.channel, 'Hello {}!'.format(message.author.mention))
+
     # TODO parse input
 
 client.run(discord_config.token)

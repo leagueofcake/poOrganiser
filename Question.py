@@ -1,5 +1,18 @@
 #!/usr/bin/env python3.5
-class Question():
+from sqlalchemy import Column, Integer, Unicode, UnicodeText, String, Date
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
+from sqlalchemy.ext.declarative import declarative_base
+
+engine = create_engine('sqlite:///porg.db', echo=False)
+Base = declarative_base(bind=engine)
+
+class Question(Base):
+    __tablename__ = 'questions'
+    id = Column(Integer, primary_key=True)
+    text = Column(Unicode(100))
+
+
     def __init__(self, text, users, choices=1, pref=False):
         self.question_text = text
         self.choices = choices

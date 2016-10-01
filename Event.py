@@ -23,9 +23,6 @@ class Event(Base):
         self.time = time
         self.attendees = {}
 
-    def set_id(self, id):
-        self.id = id
-
     def get_name(self):
         return self.name
 

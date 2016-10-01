@@ -64,6 +64,7 @@ class Event(Base):
             attendee = self.attendees[key]
             attendee.debug_print()
 
+# Initialise SQLAlchemy session
 Base.metadata.create_all()
 Session = sessionmaker(bind=engine)
 s = Session()
@@ -74,8 +75,6 @@ def add_event(name, location, year=None, month=None, day=None):
     e = Event(name, location, date)
     s.add(e)
     s.commit()
-
-add_event('HACKATHON', 'K17', 2016, 10, 1)
 
 # UNIT TESTS
 def run_tests():

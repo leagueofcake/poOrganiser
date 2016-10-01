@@ -1,9 +1,12 @@
 class Question():
-    def __init__(self, text):
+    def __init__(self, text, choices=1, pref=False, users):
         self.question_text = text
+        self.choices = choices
+        self.preferential = pref
+        self.yet_to_vote = users
         self.options = {}
 
-    def get_options(self):
+    def get_options(self): #return options as text
         options_text = []
         for key in self.options:
             options_text.append(key)
@@ -11,13 +14,23 @@ class Question():
 
     def add_option(self, option):
         if option not in self.options:
-            self.options[option] = 0
+            self.options[option] = []
+
+    def remove_option(self, option):
+        if option in self.options:
+            del(self.options[option])
 
     def get_text(self):
         return self.question_text
 
     def set_text(self, text):
         self.question_text = text
+
+    def make_vote(self, user, option):
+        self.options[options].append(user)
+
+    def has_voted(self, user):
+        self.yet_to_vote.remove(user)
 
  #tests
 
@@ -26,7 +39,7 @@ def run_tests():
     test_set_text()
     test_add_option()
     test_get_options()
-    
+
 
 def test_get_text():
     q1 = Question("") # Empty case
@@ -62,6 +75,6 @@ def test_get_options():
 
     q1 = Question("test")
     assert(q1.get_options() == {})
-    
-    
+
+
 run_tests()

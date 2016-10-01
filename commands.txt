@@ -1,1 +1,26 @@
 Discord commands
+
+(insert ~planner in front of all commands)
+
+Listener commands
+
+help = brings up the help manual
+curr = shows events that have been added but haven't occured yet.
+past = shows prev 5 past events
+role = brings up your current role/status for any events you have been invited to.
+survey = brings up list of questions
+poll X = (where x is number) brings up the list of options for question X.
+vote X Y = (where x, y is number) votes Y option for question X.
+ans X = shows the responses for question X (anon or no?)
+event X = shows the name, location and time of event X
+
+Admin commands
+
+create event "<name>, <place>, <time>" = creates an event
+edit event <name> "<name>, <place>, <time>" = edits an event
+delete event <name> = deletes event
+add role <discord tag> <role> = assigns role to user
+remove role <discord tag> <role> = removes role from user
+add question "" = adds a question to the survey
+remove question "" = removes a question
+

@@ -31,6 +31,13 @@ class Question():
 
     def has_voted(self, user):
         self.yet_to_vote.remove(user)
+        if len(self.yet_to_vote) == 0: #everyone has voted
+            get_result() #get the result
+
+    def get_result(self):
+        results = sorted(self.options.keys(), key=len(self.options.__getitem__))
+        return results
+
 
  #tests
 

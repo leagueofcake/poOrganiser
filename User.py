@@ -1,6 +1,6 @@
 #!/usr/bin/env python3.5
 from sqlalchemy import Column, Integer, Unicode, UnicodeText, String, Date
-from create_session import Base
+from create_base import Base
 class User(Base):
     __tablename__ = 'users'
     id = Column(Integer, primary_key=True)

@@ -1,17 +1,16 @@
 #!/usr/bin/env python3.5
-from sqlalchemy import create_engine
 import datetime
+import porg_config
+from sqlalchemy import create_engine
 from Event import Event
 from User import User
 from EventUser import EventUser
 from sqlalchemy.orm import sessionmaker
 
 class Poorganiser():
-    def __init__(self, db_url):
-        self.db = db_url
-        engine = create_engine(db_url)
-        Session = sessionmaker(bind=engine)
-        self.s = Session()
+    def __init__(self):
+        self._engine = create_engine(porg_config.DB_URL)
+        self.s = sessionmaker(bind=self._engine)()
     # User
     def add_user(self, username):
         u = User(username)

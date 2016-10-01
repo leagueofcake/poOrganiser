@@ -1,6 +1,6 @@
 #!/usr/bin/env python3.5
 from User import User
-from create_session import Base
+from create_base import Base
 from sqlalchemy import Column, Integer, Unicode, UnicodeText, String, Date
 
 class Event(Base):

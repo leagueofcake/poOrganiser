@@ -1,32 +1,32 @@
 #!/usr/bin/env python3.5
 from sqlalchemy import Column, Integer, Unicode, UnicodeText, String, Date
-from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
-from sqlalchemy.ext.declarative import declarative_base
-
-engine = create_engine('sqlite:///porg.db', echo=False)
-Base = declarative_base(bind=engine)
+from create_base import Base
 
 class Question(Base):
     __tablename__ = 'questions'
     id = Column(Integer, primary_key=True)
+    eventid = Column(Integer)
     text = Column(Unicode(100))
     numchoices = Column(Integer)
     preferential = Column(Boolean)
     yettovote = Column(Unicode(100))
 
-    #SEPARATED, RELATED TABLE FOR NEW CLASS OPTION/CHOICE
-
-
-    def __init__(self, text, users, choices=1, pref=False):
+    def __init__(self, eventid, text, users, choices=1, pref=False):
         self.id = None
+        self.eventid = eventid
         self.question_text = text
+        self.yet_to_vote = users
         self.choices = choices
         self.preferential = pref
-        self.yet_to_vote = users
 
     def get_id(self):
         return self.id
+
+    def get_eventid(self):
+        return self.eventid
+
+    def set_eventid(self, eventid):
+        self.eventid = eventid
 
     # TODO: Move to Poorganiser
     def get_options(self): #return options as text

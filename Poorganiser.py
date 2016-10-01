@@ -1,6 +1,6 @@
 #!/usr/bin/env python3.5
 import datetime
-import porg_config
+from config import porg_config
 from sqlalchemy import create_engine
 from Event import Event
 from User import User

@@ -48,13 +48,15 @@ while True:
         if event_name in events:
             print("Event already exists")
         else:
-            if len(splits) != 4:
+            if len(splits) != 6:
                 print("Incorrect number of arguments, correct usage: event_name create location time")
             location = splits[2]
-            time = splits[3]
+            year = splits[3]
+            month = splits[4]
+            day = splits[5]
             new_event = Event(event_name, location, time)
-            events[event_name] = add_event(new_event)
-            print("New event %s created, at %s on %s" % (event_name, location, time))
+            events[event_name] = add_event(event_name, location, year, month, day)   #CHANGE ARGUMENTS FOR THIS LINE AND THE LINE ABOVE (put all into add event)
+            print("New event %s created, at %s on %s/%s/%s" % (event_name, location, day, month, year))
     elif event_name in events:
         curr_event = events[event_name]
         if cmd == "add":

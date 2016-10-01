@@ -4,7 +4,6 @@ class Event():
         self.location = location
         self.time = time
 
-
     def get_name(self):
         return self.name
 
@@ -16,15 +15,15 @@ class Event():
 
     def set_name(self, name):
         self.name = name
-        
+
     def set_location(self, location):
         self.location = location
-        
+
     def set_time(self, time):
         self.time = time
 
 # UNIT TESTS        
-def run_test():
+def run_tests():
     test_get_name()
     test_set_name()
     test_get_location()
@@ -72,4 +71,4 @@ def test_set_time():
     e1.set_time("")
     assert(e1.get_time() == "")
     
-run_test()
+run_tests()

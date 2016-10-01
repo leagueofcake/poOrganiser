@@ -1,12 +1,7 @@
 #!/usr/bin/env python3.5
 import ast
+from create_base import Base
 from sqlalchemy import Column, Integer, Unicode, UnicodeText, String, Date, Boolean
-from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
-from sqlalchemy.ext.declarative import declarative_base
-
-engine = create_engine('sqlite:///porg.db', echo=False)
-Base = declarative_base(bind=engine)
 
 class EventUser(Base):
     __tablename__ = 'eventusers'
@@ -34,7 +29,10 @@ class EventUser(Base):
         print("\tUSER ROLES ", self.roles)
 
     def set_isgoing(self, isgoing):
-        self.isgoing = isgoing
+        if isinstance(isgoing, bool):
+            self.isgoing = isgoing
+        else: # Not a boolean - return None
+            return None
 
     def add_role(self, role):
         self.roles = ast.literal_eval(str(self.roles)) # Convert to list before appending
@@ -46,23 +44,3 @@ class EventUser(Base):
             self.roles.remove(role)
         else:
             return None
-
-# Initialise SQLAlchemy session
-Base.metadata.create_all()
-Session = sessionmaker(bind=engine)
-s = Session()
-
-def add_eventuser(eventid, userid, isgoing):
-    eu = EventUser(eventid, userid, isgoing)
-    eu.roles = str(eu.roles) # Convert to string
-    s.add(eu)
-    s.commit()
-    return eu
-
-def get_eventuser(eventid, userid):
-    return s.query(EventUser).filter(EventUser.eventid == eventid).filter(EventUser.userid == userid).one()
-
-def update_eventuser(obj):
-    obj.roles = str(obj.roles)
-    s.commit()
-    return obj

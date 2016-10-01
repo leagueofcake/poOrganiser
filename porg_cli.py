@@ -31,7 +31,7 @@ while True:
     if not userInput or userInput.lower() == "exit":
         print("Goodbye.")
         break
-    elif userInput == "help":
+    elif userInput == "help" or userInput == "?":
         help()
         continue
     elif userInput == "print":
@@ -39,6 +39,9 @@ while True:
         continue
     splits = userInput.split(' ')
     event_name = splits[0]
+    if len(splits) == 1:
+        print("Not enough arguments")
+        continue
     cmd = splits[1].lower()
     if cmd == "create":
         found = False

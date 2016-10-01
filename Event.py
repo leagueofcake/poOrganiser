@@ -1,13 +1,8 @@
 #!/usr/bin/env python3.5
 from User import User
 import datetime
+from create_session import Base, s
 from sqlalchemy import Column, Integer, Unicode, UnicodeText, String, Date
-from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
-from sqlalchemy.ext.declarative import declarative_base
-
-engine = create_engine('sqlite:///porg.db', echo=False)
-Base = declarative_base(bind=engine)
 
 class Event(Base):
     __tablename__ = 'events'
@@ -64,11 +59,6 @@ class Event(Base):
         for key in self.attendees:
             attendee = self.attendees[key]
             attendee.debug_print()
-
-# Initialise SQLAlchemy session
-Base.metadata.create_all()
-Session = sessionmaker(bind=engine)
-s = Session()
 
 def add_event(name, location, year=None, month=None, day=None):
     if year and month and day:

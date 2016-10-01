@@ -1,11 +1,6 @@
 #!/usr/bin/env python3.5
 from sqlalchemy import Column, Integer, Unicode, UnicodeText, String, Date
-from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
-from sqlalchemy.ext.declarative import declarative_base
-
-engine = create_engine('sqlite:///porg.db', echo=False)
-Base = declarative_base(bind=engine)
+from create_session import Base, s
 
 class User(Base):
     __tablename__ = 'users'
@@ -24,11 +19,6 @@ class User(Base):
 
     def set_username(self, username):
         self.username = username
-
-# Initialise SQLAlchemy session
-Base.metadata.create_all()
-Session = sessionmaker(bind=engine)
-s = Session()
 
 def add_user(username):
     u = User(username)

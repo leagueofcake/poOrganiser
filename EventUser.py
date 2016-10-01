@@ -47,3 +47,6 @@ def add_eventuser(eventid, userid, isgoing):
     s.add(eu)
     s.commit()
     return eu
+
+def get_eventuser(eventid, userid):
+    return s.query(EventUser).filter(EventUser.eventid == eventid).filter(EventUser.userid == userid).one()

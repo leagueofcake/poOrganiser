@@ -67,6 +67,7 @@ class Poorganiser():
 
     def update(self, obj):
         if isinstance(obj, EventUser): # Need to convert list to string before storing in db
+
             obj.roles = str(obj.roles)
         self.s.commit()
         return obj

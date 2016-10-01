@@ -13,6 +13,14 @@ class User():
     def get_roles(self):
         return self.roles
 
+    def set_name(self, name):
+        self.name = name
+
+    def set_going(self, going):
+        self.going = going
+
+    def add_role(self, role):
+        self.roles.append(role)
 
 def run_tests():
     test_get_name()

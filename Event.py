@@ -61,7 +61,6 @@ def run_tests():
     test_get_attendee()
     test_get_attendees()
     test_add_attendee()
-    print("All tests passed!")
 
 def test_get_name():
     e1 = Event("BBQ", "Parra Park", "01/10/2016")

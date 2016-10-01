@@ -45,6 +45,11 @@ Base.metadata.create_all()
 Session = sessionmaker(bind=engine)
 s = Session()
 
+def add_user(username):
+    u = User(username)
+    s.add(u)
+    s.commit()
+    return u
 
 def run_tests():
     test_get_username()

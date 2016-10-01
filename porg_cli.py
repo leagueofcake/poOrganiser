@@ -53,7 +53,7 @@ while True:
             location = splits[2]
             time = splits[3]
             new_event = Event(event_name, location, time)
-            events[event_name] = new_event
+            events[event_name] = add_event(new_event)
             print("New event %s created, at %s on %s" % (event_name, location, time))
     elif event_name in events:
         curr_event = events[event_name]

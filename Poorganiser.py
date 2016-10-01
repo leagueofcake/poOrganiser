@@ -33,11 +33,11 @@ class Poorganiser():
             return None
 
     # Event
-    def add_event(self, name, location, year=None, month=None, day=None):
+    def add_event(self, ownerid, name, location, year=None, month=None, day=None):
         date = None
         if year and month and day:
             date = datetime.date(year, month, day)
-        e = Event(name, location, date)
+        e = Event(ownerid, name, location, date)
         self.s.add(e)
         self.s.commit()
         return e

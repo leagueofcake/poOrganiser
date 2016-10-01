@@ -119,3 +119,11 @@ def test_set_time():
     assert(e1.get_time() == "")
 
 run_tests()
+
+def debug_print():
+    print("EVENT NAME = ", self.name)
+    print("EVENT LOCATION = ", self.location)
+    print("EVENT TIME = ", self.time)
+    print("ATTENDEES: ")
+    for attendee in attendees.items:
+        attendee.debug_print()

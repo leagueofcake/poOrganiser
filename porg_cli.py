@@ -3,6 +3,8 @@ import re
 from Event import *
 from User import *
 
+events = {}
+
 def help():
     print("Usage: event_name action arguments")
     print("Examples:")
@@ -16,13 +18,14 @@ def help():
 
 def debug_print():
     first = True
-    for event in global events.items():
+    for key in events:
+        event = events[key]
         event.debug_print()
         if first:
             first = False
         else:
             print("*" * 20)
-events = {}
+
 while True:
     userInput = input()
     if not userInput or userInput.lower() == "exit":
@@ -32,8 +35,7 @@ while True:
         help()
         continue
     elif userInput == "print":
-        # TO DO
-        print("DEBUGGING OUTPUT (TO DO)")
+        debug_print()
         continue
     splits = userInput.split(' ')
     event_name = splits[0]

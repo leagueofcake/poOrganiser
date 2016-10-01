@@ -13,6 +13,10 @@ class User():
     def get_roles(self):
         return self.roles
 
+    def debug_print(self):
+        print("\tUSER NAME ", self.name)
+        print("\tUSER GOING ", self.going)
+        print("\tUSER ROLES ", self.roles)
 
 def run_tests():
     test_get_name()

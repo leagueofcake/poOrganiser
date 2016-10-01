@@ -40,6 +40,15 @@ class Event():
         else:
             return None # User already exists!
 
+    def debug_print(self):
+        print("EVENT NAME = ", self.name)
+        print("EVENT LOCATION = ", self.location)
+        print("EVENT TIME = ", self.time)
+        print("ATTENDEES: ")
+        for key in self.attendees:
+            attendee = self.attendees[key]
+            attendee.debug_print()
+
 # UNIT TESTS
 def run_tests():
     test_get_name()
@@ -119,11 +128,3 @@ def test_set_time():
     assert(e1.get_time() == "")
 
 run_tests()
-
-def debug_print():
-    print("EVENT NAME = ", self.name)
-    print("EVENT LOCATION = ", self.location)
-    print("EVENT TIME = ", self.time)
-    print("ATTENDEES: ")
-    for attendee in attendees.items:
-        attendee.debug_print()

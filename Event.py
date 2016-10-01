@@ -84,24 +84,9 @@ def add_event(name, location, year=None, month=None, day=None):
 def get_event(id):
     return s.query(Event).get(id)
 
-def update_name(id, name):
-    e = get_event(id)
-    e.set_name(name)
+def update_event(obj):
     s.commit()
-    return e
-
-def update_location(id, location):
-    e = get_event(id)
-    get_event(id).set_location(location)
-    s.commit()
-    return e
-
-def update_time(id, year, month, day):
-    date = datetime.date(year, month, day)
-    e = get_event(id)
-    e.set_time(date)
-    s.commit()
-    return e
+    return obj
 
 # UNIT TESTS
 def run_tests():
@@ -150,15 +135,11 @@ def test_add_attendee():
     e1 = Event("BBQ", "Parra Park", "01/10/2016")
     assert(e1.get_attendee('Bob') == None)
     e1.add_attendee('Bob')
-    assert(e1.get_attendee('Bob').get_name() == 'Bob')
-    assert(e1.get_attendee('Bob').get_going() == False)
-    assert(e1.get_attendee('Bob').get_roles() == [])
+    assert(e1.get_attendee('Bob').get_username() == 'Bob')
     assert(e1.get_attendees() != {})
 
     e1.add_attendee('Jane')
-    assert(e1.get_attendee('Jane').get_name() == 'Jane')
-    assert(e1.get_attendee('Jane').get_going() == False)
-    assert(e1.get_attendee('Jane').get_roles() == [])
+    assert(e1.get_attendee('Jane').get_username() == 'Jane')
 
 def test_set_location():
     e1 = Event("BBQ", "Parra Park", "01/10/2016")

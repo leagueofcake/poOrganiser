@@ -1,7 +1,6 @@
 #!/usr/bin/env python3.5
 from sqlalchemy import Column, Integer, Unicode, UnicodeText, String, Date
-from create_session import Base, s
-
+from create_session import Base
 class User(Base):
     __tablename__ = 'users'
     id = Column(Integer, primary_key=True)
@@ -19,17 +18,3 @@ class User(Base):
 
     def set_username(self, username):
         self.username = username
-
-def add_user(username):
-    u = User(username)
-    s.add(u)
-    s.commit()
-    return u
-
- # Returns None if username not found
-def get_user(username):
-    return s.query(User).filter(User.username == username).first()
-
-def update_user(obj):
-    s.commit()
-    return obj

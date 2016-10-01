@@ -1,6 +1,6 @@
 #!/usr/bin/env python3.5
 import ast
-from create_session import Base, s
+from create_session import Base
 from sqlalchemy import Column, Integer, Unicode, UnicodeText, String, Date, Boolean
 
 class EventUser(Base):
@@ -44,18 +44,3 @@ class EventUser(Base):
             self.roles.remove(role)
         else:
             return None
-
-def add_eventuser(eventid, userid, isgoing):
-    eu = EventUser(eventid, userid, isgoing)
-    eu.roles = str(eu.roles) # Convert to string
-    s.add(eu)
-    s.commit()
-    return eu
-
-def get_eventuser(eventid, userid):
-    return s.query(EventUser).filter(EventUser.eventid == eventid).filter(EventUser.userid == userid).one()
-
-def update_eventuser(obj):
-    obj.roles = str(obj.roles)
-    s.commit()
-    return obj

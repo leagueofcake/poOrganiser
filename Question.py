@@ -35,7 +35,7 @@ class Question():
             get_result() #get the result
 
     def get_result(self):
-        results = sorted(self.options.keys(), key=len(self.options.__getitem__))
+        results = sorted(self.options.keys(), key=len(self.options.__getitem__)) ##DOM DOES THIS WORK?
         return results
 
 

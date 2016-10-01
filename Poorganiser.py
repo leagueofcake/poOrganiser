@@ -5,6 +5,7 @@ from sqlalchemy import create_engine
 from Event import Event
 from User import User
 from EventUser import EventUser
+from Question import Question
 from sqlalchemy.orm import sessionmaker
 
 class Poorganiser():
@@ -21,6 +22,14 @@ class Poorganiser():
      # Returns None if username not found
     def get_user(self, username):
         return self.s.query(User).filter(User.username == username).first()
+
+    def remove_user(self, username):
+        u = self.get_user(username)
+        self.s.query(User).filter(User.username == username).delete()
+        if u != None:
+            self.s.commit()
+        else: # User not found
+            return None
 
     # Event
     def add_event(self, name, location, year=None, month=None, day=None):
@@ -43,11 +52,12 @@ class Poorganiser():
         self.s.commit()
         return eu
 
-    def get_eventuser(self, ventid, userid):
+    def get_eventuser(self, eventid, userid):
         return self.s.query(EventUser).filter(EventUser.eventid == eventid).filter(EventUser.userid == userid).one()
 
     def update(self, obj):
-        if isinstance(obj, EventUser): #handle array input 
+        if isinstance(obj, EventUser): # Need to convert list to string before storing in db
+
             obj.roles = str(obj.roles)
         self.s.commit()
         return obj
@@ -62,3 +72,14 @@ class Poorganiser():
 
     def get_eventuser(self, eventid, userid):
         return self.s.query(EventUser).filter(EventUser.eventid == eventid).filter(EventUser.userid == userid).one()
+
+    # Question
+    def get_question(self, questionid):
+        return self.s.query(Question).get(questionid)
+
+    def add_question(self, eventid, text, yettovote, choices=1, pref=False):
+        q = Question(eventid, text, yettovote, choices, pref)
+        q.yettovote = str(q.yettovote)
+        self.s.add(q)
+        self.s.commit()
+        return q

@@ -32,7 +32,8 @@ c.execute('''CREATE TABLE eventusers(
 ''')
 
 c.execute('''CREATE TABLE questions(
-    quesionid INTEGER PRIMARY KEY,
+    questionid INTEGER PRIMARY KEY,
+    eventid INTEGER NOT NULL,
     text TEXT NOT NULL,
     numchoices INTEGER NOT NULL,
     preferential BOOLEAN NOT NULL,
@@ -40,7 +41,7 @@ c.execute('''CREATE TABLE questions(
 ''')
 
 c.execute('''CREATE TABLE choices(
-    choice INTEGER PRIMARY KEY,
+    choiceid INTEGER PRIMARY KEY,
     questionid INTEGER NOT NULL,
     choicetext text NOT NULL,
     votes TEXT);

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3.5
+from config import discord_config
 import discord, asyncio
-import discord_config
 import Event, User, EventUser
 
 client = discord.Client()

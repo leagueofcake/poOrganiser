@@ -1,7 +1,19 @@
 #!/usr/bin/env python3.5
-class User():
-    def __init__(self, name):
-        self.name = name
+from sqlalchemy import Column, Integer, Unicode, UnicodeText, String, Date
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
+from sqlalchemy.ext.declarative import declarative_base
+
+engine = create_engine('sqlite:///porg.db', echo=False)
+Base = declarative_base(bind=engine)
+
+class User(Base):
+    __tablename__ = 'users'
+    id = Column(Integer, primary_key=True)
+    username = Column(Unicode(40))
+
+    def __init__(self, username):
+        self.username = username
         self.going = False
         self.roles = []
 
@@ -27,6 +39,11 @@ class User():
 
     def add_role(self, role):
         self.roles.append(role)
+
+# Initialise SQLAlchemy session
+Base.metadata.create_all()
+Session = sessionmaker(bind=engine)
+s = Session()
 
 
 def run_tests():

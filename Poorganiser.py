@@ -47,7 +47,7 @@ class Poorganiser():
         return self.s.query(EventUser).filter(EventUser.eventid == eventid).filter(EventUser.userid == userid).one()
 
     def update(self, obj):
-        if isinstance(obj, EventUser):
+        if isinstance(obj, EventUser): #handle array input 
             obj.roles = str(obj.roles)
         self.s.commit()
         return obj

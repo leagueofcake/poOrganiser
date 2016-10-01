@@ -7,7 +7,7 @@ Listener commands
 help = brings up the help manual
 curr = shows events that have been added but haven't occured yet.
 past = shows prev 5 past events
-role = brings up your current role/status for any events you have been invited to.
+status = brings up your current role/status for any events you have been invited to.
 survey = brings up list of questions
 poll X = (where x is number) brings up the list of options for question X.
 vote X Y = (where x, y is number) votes Y option for question X.
@@ -23,4 +23,3 @@ add role <discord tag> <role> = assigns role to user
 remove role <discord tag> <role> = removes role from user
 add question "" = adds a question to the survey
 remove question "" = removes a question
-

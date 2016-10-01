@@ -9,8 +9,7 @@ Base = declarative_base(bind=engine)
 
 class User(Base):
     __tablename__ = 'users'
-    id = Column(Integer, primary_key=True)
-    username = Column(Unicode(40))
+    username = Column(Unicode(40), primary_key=True)
 
     def __init__(self, username):
         self.username = username
@@ -50,6 +49,9 @@ def add_user(username):
     s.add(u)
     s.commit()
     return u
+
+def get_user(username):
+    return s.query(User).filter(User.username == username).one()
 
 def run_tests():
     test_get_username()

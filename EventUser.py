@@ -1,4 +1,3 @@
-#!/usr/bin/env python3.5
 import ast
 from create_base import Base
 from sqlalchemy import Column, Integer, Unicode, UnicodeText, String, Date, Boolean

@@ -64,5 +64,5 @@ class Poorganiser():
         return self.s.query(EventUser).filter(EventUser.eventid == eventid).filter(EventUser.userid == userid).one()
 
     # Question
-    def get_question(questionid):
+    def get_question(self, questionid):
         return self.s.query(Question).get(questionid)

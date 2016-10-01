@@ -23,6 +23,14 @@ class Poorganiser():
     def get_user(self, username):
         return self.s.query(User).filter(User.username == username).first()
 
+    def remove_user(self, username):
+        u = self.get_user(username)
+        self.s.query(User).filter(User.username == username).delete()
+        if u != None:
+            self.s.commit()
+        else: # User not found
+            return None
+
     # Event
     def add_event(self, name, location, year=None, month=None, day=None):
         date = None

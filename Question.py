@@ -11,9 +11,9 @@ class Question(Base):
     __tablename__ = 'questions'
     id = Column(Integer, primary_key=True)
     text = Column(Unicode(100))
-    choices = Column(Integer)
+    numchoices = Column(Integer)
     preferential = Column(Boolean)
-    yet_to_vote = Column(Unicode(100))
+    yettovote = Column(Unicode(100))
 
     #SEPARATED, RELATED TABLE FOR NEW CLASS OPTION/CHOICE
 

@@ -22,7 +22,7 @@ c.execute('''CREATE TABLE users(
 ''')
 
 c.execute('''CREATE TABLE eventusers(
-    id INTEGER PRIMARY KEY,
+    eventuserid INTEGER PRIMARY KEY,
     eventid INTEGER NOT NULL,
     userid INTEGER NOT NULL,
     isgoing BOOLEAN NOT NULL,

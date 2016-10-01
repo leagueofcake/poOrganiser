@@ -6,6 +6,8 @@ try:
     c.execute('DROP TABLE events')
     c.execute('DROP TABLE users')
     c.execute('DROP TABLE eventusers')
+    c.execute('DROP TABLE questions')
+    c.execute('DROP TABLE choices')
 except:
     pass
 
@@ -27,6 +29,21 @@ c.execute('''CREATE TABLE eventusers(
     userid INTEGER NOT NULL,
     isgoing BOOLEAN NOT NULL,
     roles TEXT);
+''')
+
+c.execute('''CREATE TABLE questions(
+    quesionid INTEGER PRIMARY KEY,
+    text TEXT NOT NULL,
+    numchoices INTEGER NOT NULL,
+    preferential BOOLEAN NOT NULL,
+    yettovote TEXT);
+''')
+
+c.execute('''CREATE TABLE choices(
+    choice INTEGER PRIMARY KEY,
+    questionid INTEGER NOT NULL,
+    choicetext text NOT NULL,
+    votes TEXT);
 ''')
 
 conn.commit()

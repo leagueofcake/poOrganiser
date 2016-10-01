@@ -36,7 +36,7 @@ def run_tests():
     test_set_name()
     test_set_going()
     test_add_role()
-    
+
 
 def test_get_name():
     u1 = User("") # Empty case
@@ -86,6 +86,6 @@ def test_add_role():
     u1.add_role("CivV")
     assert(u1.get_roles() == ["Showerwatcher", "CivV"])
 
-    
-    
+
+
 run_tests()

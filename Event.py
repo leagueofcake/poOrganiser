@@ -17,10 +17,14 @@ class Event(Base):
     time = Column(Date)
 
     def __init__(self, name, location, time):
+        self.id = None
         self.name = name
         self.location = location
         self.time = time
         self.attendees = {}
+
+    def set_id(self, id):
+        self.id = id
 
     def get_name(self):
         return self.name

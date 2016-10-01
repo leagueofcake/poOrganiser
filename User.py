@@ -18,6 +18,16 @@ class User():
         print("\tUSER GOING ", self.going)
         print("\tUSER ROLES ", self.roles)
 
+    def set_name(self, name):
+        self.name = name
+
+    def set_going(self, going):
+        self.going = going
+
+    def add_role(self, role):
+        self.roles.append(role)
+
+
 def run_tests():
     test_get_name()
     test_get_going()

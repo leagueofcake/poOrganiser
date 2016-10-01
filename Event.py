@@ -76,6 +76,9 @@ def add_event(name, location, year=None, month=None, day=None):
     s.add(e)
     s.commit()
 
+def get_event(id):
+    return s.query(Event).get(id)
+
 # UNIT TESTS
 def run_tests():
     test_get_name()

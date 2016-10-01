@@ -34,7 +34,10 @@ class EventUser(Base):
         print("\tUSER ROLES ", self.roles)
 
     def set_isgoing(self, isgoing):
-        self.isgoing = isgoing
+        if isinstance(isgoing, bool):
+            self.isgoing = isgoing
+        else: # Not a boolean - return None
+            return None
 
     def add_role(self, role):
         self.roles = ast.literal_eval(str(self.roles)) # Convert to list before appending

@@ -5,6 +5,7 @@ from sqlalchemy import create_engine
 from Event import Event
 from User import User
 from EventUser import EventUser
+from Question import Question
 from sqlalchemy.orm import sessionmaker
 
 class Poorganiser():
@@ -66,3 +67,10 @@ class Poorganiser():
     # Question
     def get_question(self, questionid):
         return self.s.query(Question).get(questionid)
+
+    def add_question(self, eventid, text, yettovote, choices=1, pref=False):
+        q = Question(eventid, text, yettovote, choices, pref)
+        q.yettovote = str(q.yettovote)
+        self.s.add(q)
+        self.s.commit()
+        return q

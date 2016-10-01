@@ -43,11 +43,11 @@ class Poorganiser():
         self.s.commit()
         return eu
 
-    def get_eventuser(self, ventid, userid):
+    def get_eventuser(self, eventid, userid):
         return self.s.query(EventUser).filter(EventUser.eventid == eventid).filter(EventUser.userid == userid).one()
 
     def update(self, obj):
-        if isinstance(obj, EventUser):
+        if isinstance(obj, EventUser): # Need to convert list to string before storing in db
             obj.roles = str(obj.roles)
         self.s.commit()
         return obj
@@ -62,3 +62,7 @@ class Poorganiser():
 
     def get_eventuser(self, eventid, userid):
         return self.s.query(EventUser).filter(EventUser.eventid == eventid).filter(EventUser.userid == userid).one()
+
+    # Question
+    def get_question(questionid):
+        return self.s.query(Question).get(questionid)

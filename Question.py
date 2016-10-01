@@ -11,7 +11,7 @@ class Question():
 
     def add_option(self, option):
         if option not in self.options:
-            options[option] = 0
+            self.options[option] = 0
 
     def get_text(self):
         return self.question_text

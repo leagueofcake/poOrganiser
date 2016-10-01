@@ -39,6 +39,10 @@ def add_user(username):
 def get_user(username):
     return s.query(User).filter(User.username == username).one()
 
+def update_user(obj):
+    s.commit()
+    return obj
+
 def run_tests():
     test_get_username()
     test_set_username()

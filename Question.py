@@ -40,8 +40,6 @@ class Question():
         if len(self.yet_to_vote) == 0: #everyone has voted
             self.get_result() #get the result
 
-
-
  #tests
 
 def run_tests():

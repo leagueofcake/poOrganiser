@@ -1,7 +1,6 @@
 #!/usr/bin/env python3.5
 from User import User
-import datetime
-from create_session import Base, s
+from create_session import Base
 from sqlalchemy import Column, Integer, Unicode, UnicodeText, String, Date
 
 class Event(Base):
@@ -59,19 +58,3 @@ class Event(Base):
         for key in self.attendees:
             attendee = self.attendees[key]
             attendee.debug_print()
-
-def add_event(name, location, year=None, month=None, day=None):
-    date = None
-    if year and month and day:
-        date = datetime.date(year, month, day)
-    e = Event(name, location, date)
-    s.add(e)
-    s.commit()
-    return e
-
-def get_event(id):
-    return s.query(Event).get(id)
-
-def update_event(obj):
-    s.commit()
-    return obj

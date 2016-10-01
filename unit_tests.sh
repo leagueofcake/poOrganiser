@@ -3,4 +3,4 @@
 #python3 -m unittest discover
 
 # Manually specify test files 
-python3 -m unittest tests.testEvent
+python3 -m unittest tests.testEvent tests.testUser

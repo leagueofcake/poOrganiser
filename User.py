@@ -43,29 +43,3 @@ def get_user(username):
 def update_user(obj):
     s.commit()
     return obj
-
-def run_tests():
-    test_get_username()
-    test_set_username()
-
-
-def test_get_username():
-    u1 = User("") # Empty case
-    assert(u1.get_username() == "")
-
-    u1 = User(" ") # Whitespace case
-    assert(u1.get_username() == " ")
-
-    u1 = User("Jeremy") # Whitespace case
-    assert(u1.get_username() == "Jeremy")
-
-def test_set_username():
-    u1 = User("test")
-    u1.set_username("Dennis")
-    assert(u1.get_username() == "Dennis")
-    u1.set_username(" ")
-    assert(u1.get_username() == " ")
-    u1.set_username("")
-    assert(u1.get_username() == "")
-
-run_tests()

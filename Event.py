@@ -6,7 +6,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
 
-engine = create_engine('sqlite:///porg.db', echo=True)
+engine = create_engine('sqlite:///porg.db', echo=False)
 Base = declarative_base(bind=engine)
 
 class Event(Base):

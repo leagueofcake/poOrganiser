@@ -14,6 +14,14 @@ def help():
     print("DEBUGGING COMMANDS:")
     print("\tprint: prints all events")
 
+def debug_print():
+    first = True
+    for event in global events.items():
+        event.debug_print()
+        if first:
+            first = False
+        else:
+            print("*" * 20)
 events = {}
 while True:
     userInput = input()

@@ -1,4 +1,5 @@
 #!/usr/bin/env python3.5
+import ast
 from sqlalchemy import Column, Integer, Unicode, UnicodeText, String, Date, Boolean
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
@@ -13,13 +14,14 @@ class EventUser(Base):
     eventid = Column(Integer)
     userid = Column(Integer)
     isgoing = Column(Boolean)
+    roles = Column(Unicode(100))
 
-    def __init__(self, eventid, userid, isgoing):
+    def __init__(self, eventid, userid, isgoing=False, roles=[]):
         self.eventuserid = None
         self.eventid = eventid
         self.userid = userid
         self.isgoing = isgoing
-        self.roles = []
+        self.roles = roles
 
     def get_isgoing(self):
         return self.isgoing
@@ -35,6 +37,7 @@ class EventUser(Base):
         self.isgoing = isgoing
 
     def add_role(self, role):
+        self.roles = ast.literal_eval(str(self.roles)) # Convert to list before appending
         self.roles.append(role)
 
 # Initialise SQLAlchemy session
@@ -44,9 +47,17 @@ s = Session()
 
 def add_eventuser(eventid, userid, isgoing):
     eu = EventUser(eventid, userid, isgoing)
+    eu.roles = str(eu.roles) # Convert to string
     s.add(eu)
     s.commit()
     return eu
 
 def get_eventuser(eventid, userid):
     return s.query(EventUser).filter(EventUser.eventid == eventid).filter(EventUser.userid == userid).one()
+
+def add_role(eventuserid, role):
+    eu = s.query(EventUser).get(eventuserid)
+    eu.add_role(role)
+    eu.roles = str(eu.roles) # Convert to string
+    s.commit()
+    return eu

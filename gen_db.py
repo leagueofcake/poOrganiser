@@ -26,7 +26,7 @@ c.execute('''CREATE TABLE eventusers(
     eventid INTEGER NOT NULL,
     userid INTEGER NOT NULL,
     isgoing BOOLEAN NOT NULL,
-    role TEXT);
+    roles TEXT);
 ''')
 
 conn.commit()

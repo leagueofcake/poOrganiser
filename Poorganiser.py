@@ -22,10 +22,6 @@ class Poorganiser():
     def get_user(self, username):
         return self.s.query(User).filter(User.username == username).first()
 
-    def update_user(obj):
-        self.s.commit()
-        return obj
-
     # Event
     def add_event(self, name, location, year=None, month=None, day=None):
         date = None
@@ -39,10 +35,6 @@ class Poorganiser():
     def get_event(self, id):
         return self.s.query(Event).get(id)
 
-    def update_event(self, obj):
-        self.s.commit()
-        return obj
-
     # EventUser
     def add_eventuser(self, eventid, userid, isgoing):
         eu = EventUser(eventid, userid, isgoing)
@@ -54,14 +46,15 @@ class Poorganiser():
     def get_eventuser(self, ventid, userid):
         return self.s.query(EventUser).filter(EventUser.eventid == eventid).filter(EventUser.userid == userid).one()
 
-    def update_eventuser(obj):
-        obj.roles = str(obj.roles)
+    def update(self, obj):
+        if isinstance(obj, EventUser):
+            obj.roles = str(obj.roles)
         self.s.commit()
         return obj
 
     # EventUser
-    def add_eventuser(self, eventid, userid, isgoing):
-        eu = EventUser(eventid, userid, isgoing)
+    def add_eventuser(self, eventid, userid, isgoing, roles=[]):
+        eu = EventUser(eventid, userid, isgoing, roles)
         eu.roles = str(eu.roles) # Convert to string
         self.s.add(eu)
         self.s.commit()
@@ -69,8 +62,3 @@ class Poorganiser():
 
     def get_eventuser(self, eventid, userid):
         return self.s.query(EventUser).filter(EventUser.eventid == eventid).filter(EventUser.userid == userid).one()
-
-    def update_eventuser(self, obj):
-        obj.roles = str(obj.roles)
-        self.s.commit()
-        return obj

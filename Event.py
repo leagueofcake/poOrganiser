@@ -15,9 +15,9 @@ class Event():
 
     def set_name(self, name):
         self.name = name
-        
+
     def set_location(self, location):
         self.location = location
-        
-    def set_time(self, time);
+
+    def set_time(self, time):
         self.time = time

@@ -61,6 +61,7 @@ class Event(Base):
             attendee.debug_print()
 
 def add_event(name, location, year=None, month=None, day=None):
+    date = None
     if year and month and day:
         date = datetime.date(year, month, day)
     e = Event(name, location, date)

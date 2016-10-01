@@ -84,6 +84,25 @@ def add_event(name, location, year=None, month=None, day=None):
 def get_event(id):
     return s.query(Event).get(id)
 
+def update_name(id, name):
+    e = get_event(id)
+    e.set_name(name)
+    s.commit()
+    return e
+
+def update_location(id, location):
+    e = get_event(id)
+    get_event(id).set_location(location)
+    s.commit()
+    return e
+
+def update_time(id, year, month, day):
+    date = datetime.date(year, month, day)
+    e = get_event(id)
+    e.set_time(date)
+    s.commit()
+    return e
+
 # UNIT TESTS
 def run_tests():
     test_get_name()

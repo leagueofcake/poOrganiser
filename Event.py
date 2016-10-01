@@ -1,7 +1,21 @@
 #!/usr/bin/env python3.5
 from User import User
+import datetime
+from sqlalchemy import Column, Integer, Unicode, UnicodeText, String, Date
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
+from sqlalchemy.ext.declarative import declarative_base
 
-class Event():
+engine = create_engine('sqlite:///porg.db', echo=True)
+Base = declarative_base(bind=engine)
+
+class Event(Base):
+    __tablename__ = 'events'
+    id = Column(Integer, primary_key=True)
+    name = Column(Unicode(40))
+    location = Column(Unicode(40))
+    time = Column(Date)
+
     def __init__(self, name, location, time):
         self.name = name
         self.location = location
@@ -49,6 +63,19 @@ class Event():
         for key in self.attendees:
             attendee = self.attendees[key]
             attendee.debug_print()
+
+Base.metadata.create_all()
+Session = sessionmaker(bind=engine)
+s = Session()
+
+def add_event(name, location, year=None, month=None, day=None):
+    if year and month and day:
+        date = datetime.date(year, month, day)
+    e = Event(name, location, date)
+    s.add(e)
+    s.commit()
+
+add_event('HACKATHON', 'K17', 2016, 10, 1)
 
 # UNIT TESTS
 def run_tests():

@@ -42,8 +42,17 @@ class Poorganiser():
         self.s.commit()
         return e
 
-    def get_event(self, id):
-        return self.s.query(Event).get(id)
+    def get_event(self, eventid):
+        return self.s.query(Event).get(eventid)
+
+    def remove_event(self, eventid):
+        e = self.get_event(eventid)
+        self.s.query(Event).filter(Event.id == eventid).delete()
+        if e != None:
+            self.s.commit()
+            return True # deleted
+        else:
+            return None
 
     # EventUser
     def add_eventuser(self, eventid, userid, isgoing):

@@ -1,3 +1,4 @@
+#!/usr/bin/env python3.5
 from User import User
 
 class Event():

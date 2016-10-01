@@ -36,8 +36,9 @@ def add_user(username):
     s.commit()
     return u
 
+ # Returns None if username not found
 def get_user(username):
-    return s.query(User).filter(User.username == username).one()
+    return s.query(User).filter(User.username == username).first()
 
 def update_user(obj):
     s.commit()

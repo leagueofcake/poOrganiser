@@ -75,6 +75,7 @@ def add_event(name, location, year=None, month=None, day=None):
     e = Event(name, location, date)
     s.add(e)
     s.commit()
+    return e
 
 def get_event(id):
     return s.query(Event).get(id)

@@ -5,8 +5,8 @@ class User():
         self.going = False
         self.roles = []
 
-    def get_name(self):
-        return self.name
+    def get_username(self):
+        return self.username
 
     def get_going(self):
         return self.going
@@ -15,12 +15,12 @@ class User():
         return self.roles
 
     def debug_print(self):
-        print("\tUSER NAME ", self.name)
+        print("\tUSER NAME ", self.username)
         print("\tUSER GOING ", self.going)
         print("\tUSER ROLES ", self.roles)
 
-    def set_name(self, name):
-        self.name = name
+    def set_name(self, username):
+        self.username = username
 
     def set_going(self, going):
         self.going = going
@@ -30,7 +30,7 @@ class User():
 
 
 def run_tests():
-    test_get_name()
+    test_get_username()
     test_get_going()
     test_get_roles()
     test_set_name()
@@ -38,15 +38,15 @@ def run_tests():
     test_add_role()
 
 
-def test_get_name():
+def test_get_username():
     u1 = User("") # Empty case
-    assert(u1.get_name() == "")
+    assert(u1.get_username() == "")
 
     u1 = User(" ") # Whitespace case
-    assert(u1.get_name() == " ")
+    assert(u1.get_username() == " ")
 
     u1 = User("Jeremy") # Whitespace case
-    assert(u1.get_name() == "Jeremy")
+    assert(u1.get_username() == "Jeremy")
 
 def test_get_going():
     u1 = User("")
@@ -65,11 +65,11 @@ def test_get_roles():
 def test_set_name():
     u1 = User("test")
     u1.set_name("Dennis")
-    assert(u1.get_name() == "Dennis")
+    assert(u1.get_username() == "Dennis")
     u1.set_name(" ")
-    assert(u1.get_name() == " ")
+    assert(u1.get_username() == " ")
     u1.set_name("")
-    assert(u1.get_name() == "")
+    assert(u1.get_username() == "")
 
 def test_set_going():
     u1 = User("test")

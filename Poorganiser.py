@@ -28,6 +28,7 @@ class Poorganiser():
         self.s.query(User).filter(User.username == username).delete()
         if u != None:
             self.s.commit()
+            return True # Deleted
         else: # User not found
             return None
 

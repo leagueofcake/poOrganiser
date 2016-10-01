@@ -1,5 +1,5 @@
 #!/usr/bin/env python3.5
-from sqlalchemy import Column, Integer, Unicode, UnicodeText, String, Date, ForeignKey
+from sqlalchemy import Column, Integer, Unicode, UnicodeText, String, Date, Boolean
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
@@ -12,7 +12,7 @@ class EventUser(Base):
     eventuserid = Column(Integer, primary_key=True)
     eventid = Column(Integer)
     userid = Column(Integer)
-    isgoing = Column(Unicode(40))
+    isgoing = Column(Boolean)
 
     def __init__(self, eventid, userid, isgoing):
         self.eventuserid = None

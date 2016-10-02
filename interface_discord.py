@@ -98,13 +98,13 @@ async def on_message(message):
         admin_commands = ["!create", "!edit", "!delete", "!add", "!remove"]
         cmd = splits[0]
         if cmd == "!poll":
-            pass
+            await client.send_message(message.channel, 'Not implemented yet!')
         elif cmd == "!vote":
-            pass
+            await client.send_message(message.channel, 'Not implemented yet!')
         elif cmd == "!ans":
-            pass
+            await client.send_message(message.channel, 'Not implemented yet!')
         elif cmd == "!event":
-            pass
+            await client.send_message(message.channel, 'Not implemented yet!')
 
         elif cmd == "!survey": # Get all questions associated with event
             if len(splits) <= 1:
@@ -143,7 +143,7 @@ async def on_message(message):
                         new_event = porg.add_event(userID, event_name, location, year, month, day)
                         newID = new_event.get_id()
                         porg.update(new_event)
-                        await client.send_message(message.channel, 'New event with ID {} created'.format(newID))
+                        await client.send_message(message.channel, 'New event {}, with ID {} created'.format(event_name, newID))
                         members = message.server.members
                         for member in members:
                             if porg.get_user(member.id): #only invite registered users
@@ -185,14 +185,14 @@ async def on_message(message):
                     if len(splits) != 2:
                         await client.send_message(message.channel, 'Incorrect number of arguments. Correct usage: !delete <eventID>')
                     else:
-                        if porg.remove(splits[1]):
+                        if porg.remove_event(splits[1]):
                             await client.send_message(message.channel, 'Event {} was removed'.format(splits[1]))
                         else:
                             await client.send_message(message.channel, 'Remove failed, double check your event ID')
                 elif cmd == "!add":
                     # Question, choices, roles
                     cmd_type = '<question|choice|role>'
-                    if len(splits) >= 2
+                    if len(splits) >= 2:
                         if splits[1] in ['question', 'choice', 'role']:
                             cmd_type = splits[1]
                             msg = 'Incorrect number of arguments. Correct usage: !add {} '.format(cmd_type)

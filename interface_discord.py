@@ -13,6 +13,15 @@ def idToUsername(members, userID):
             return member.name
     return None
 
+def shortEventInfo(event):
+    eventID = event.get_id()
+    event_name = event.get_name()
+    event_location = event.get_location()
+
+
+def fullEventInfo(event):
+    return None
+
 @client.event
 async def on_ready():
     print('Logged in as')
@@ -55,7 +64,11 @@ async def on_message(message):
         helpOutput += "!remove question <event ID> <question ID> = Removes the associated question from the event.\n"        
         await client.send_message(message.channel, helpOutput)
     elif content.strip() == "!curr":
-        pass
+        events = p.get_curr_events()
+        out = ''
+        for event in events:
+            out += fullEventInfo(event) + '\n'
+        await client.send_message(message.channel, 'Current events:\n{}'.format(out))
     elif content.strip() == "!past":
         pass
     elif content.strip() == "!questions":
@@ -69,6 +82,9 @@ async def on_message(message):
             status_message += 'Registered user {} with id {}.\n'.format(message.author.display_name, message.author.id)
             status_message += 'Test: ID to username = {}\n'.format(idToUsername(message.server.members, message.author.id))
             status_message += "Your events:\n"
+            user_events = porg.get_events_by_user(message.author.id)
+            for event in user_events:
+                pass
 
         await client.send_message(message.channel, status_message)
 
@@ -84,6 +100,23 @@ async def on_message(message):
             pass
         elif cmd == "!event":
             pass
+
+        elif cmd == "!questions": # Get all questions associated with event
+            if len(splits) <= 1:
+                await client.send_message(message.channel, 'Incorrect number of arguments. Correct usage: !questions <eventid>')
+            elif not splits[1].isdigit(): # Not a number!
+                await client.send_message(message.channel, 'Incorrect event id type. Please specify a number.')
+            else:
+                out = ''
+                eventid = int(splits[1])
+                questions = porg.get_questions(eventid)
+                for question in questions:
+                    out += question.get_text() + '\n'
+                    choices = porg.get_questionchoices(question.get_questionid())
+                    for choice in choices:
+                        out += '\t{}\n'.format(choice.get_choicetext())
+                await client.send_message(message.channel, 'Questions:\n{}'.format(out))
+
         elif cmd in admin_commands:
             userID = message.author.id
             if True: #TODO IF IS ADMIN
@@ -108,7 +141,7 @@ async def on_message(message):
                         porg.update(new_event)
                         await client.send_message(message.channel, 'New event with ID {} created'.format(newID))
                         members = message.server.members
-                        for member in members:
+                        for member in members: #TODO check if registered
                             eu = porg.add_eventuser(newID, member.id(), "Invited")
                             porg.update(eu)
                         await client.send_message(message.channel, 'All members of channel invited. See !mystatus to check')
@@ -121,7 +154,6 @@ async def on_message(message):
                         if not edit_event:
                             await client.send_message(message.channel, 'Event not found')
                         elif edit_event.get_ownerid() != int(userID):
-                            print("DEBUG: COMPARING DB VALUE |{}| to USERID VALUE |{}|".format(type(edit_event.get_ownerid()), type(userID)))
                             await client.send_message(message.channel, 'You do not have permission to modify this event')
                         else:
                             edit_field = splits[2].lower()

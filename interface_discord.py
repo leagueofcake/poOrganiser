@@ -18,7 +18,7 @@ def shortEventInfo(event):
     event_name = event.get_name()
     event_location = event.get_location()
     event_time = event.get_time()
-    return ("{}\t{}\t{}\t{}".format(eventID, event_name, event_location, event_time))
+    return ("[{}]\t{}\t{}\t{}".format(eventID, event_name, event_location, event_time))
 
 
 def fullEventInfo(event):
@@ -78,12 +78,12 @@ async def on_message(message):
         helpOutput += "!register = Registers the user in the database.\n"
         helpOutput += "!curr = View a list of all current events.\n"
         helpOutput += "!past = View a list of all past events.\n"
-        helpOutput += "!paster = View a list of all past event\n"
+        helpOutput += "!allevents = View a list of all event\n"
         helpOutput += "!mystatus = Brings up your current role for all events.\n"
         helpOutput += "!survey <event ID> = Brings up a list of questions associated with event <ID>\n"
         helpOutput += "!event <event ID> = View details for the associated event.\n"
         helpOutput += "!question <question ID> <event ID> = View question text and options for the event<ID>\n"
-        helpOutput += "!vote <question ID> <option ID> = Votes the selected option for the selected question.\n"
+        helpOutput += "!vote <option ID> = Votes the selected option for the selected question.\n"
         helpOutput += "!results <question ID> <event ID> = View results for the associated question in the event.\n"
         helpOutput += "\n"
         helpOutput += "（ ° ʖ °)つ━☆・\*。\n"
@@ -104,12 +104,18 @@ async def on_message(message):
     elif content.strip() == "!curr":
         events = porg.get_curr_events()
         out = ''
+        out += "ID\tNAME\tLOCATION\tDATE
         for event in events:
             out += shortEventInfo(event) + '\n'
-        await client.send_message(message.channel, 'Current events:\n{}'.format(out))
+        await client.send_message(message.channel, 'All Events:\n{}'.format(out))
     elif content.strip() == "!past":
         await client.send_message(message.channel, 'Not implemented yet!')
-    elif content.strip() == "!pastall":
+    elif content.strip() == "!allevents":
+        events = porg.get_events()
+        out = ""
+        for event in events:
+            if event:
+                out += shortEventInfo(event) + '\n'
         await client.send_message(message.channel, 'Not implemented yet!')
     elif content.strip() == "!mystatus":
         user = porg.get_user(message.author.id)
@@ -257,7 +263,6 @@ async def on_message(message):
                                 await client.send_message(message.channel, 'Invalid field type')
                 elif cmd == "!delete":
                     #TODO add confirmation for deletion
-                #    await client.send_message(message.channel, 'Not implemented yet!')
                     if len(splits) != 2:
                         await client.send_message(message.channel, 'Incorrect number of arguments. Correct usage: !delete <eventID>')
                     else:
@@ -296,7 +301,7 @@ async def on_message(message):
                         elif len(splits) < 4:
                             await client.send_message(message.channel, 'Correct usage: !add {} <command text>'.format(cmd_type))
                 elif cmd == "!remove":
-                    await client.send_message(message.channel, 'Not implemented yet!')
+                    await client.send_message(message.channel, 'emented yet!')
             else:
                 await client.send_message(message.channel, 'You do not have permission to do that')
 

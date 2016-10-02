@@ -13,6 +13,12 @@ def idToUsername(members, userID):
             return member.name
     return None
 
+def userToID(username):
+    members = client.get_all_members()
+    for member in members:
+        if (member.name) == username:
+            return int(member.id)
+
 def shortEventInfo(event):
     eventID = event.get_id()
     event_name = event.get_name()

@@ -14,7 +14,7 @@ def idToUsername(members, userID):
     return None
 
 def shortEventInfo(event):
-    return None
+
 
 def fullEventInfo(event):
     return None
@@ -118,7 +118,7 @@ async def on_message(message):
                         porg.update(new_event)
                         await client.send_message(message.channel, 'New event with ID {} created'.format(newID))
                         members = message.server.members
-                        for member in members:
+                        for member in members: #TODO check if registered
                             eu = porg.add_eventuser(newID, member.id(), "Invited")
                             porg.update(eu)
                         await client.send_message(message.channel, 'All members of channel invited. See !mystatus to check')

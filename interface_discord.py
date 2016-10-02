@@ -44,7 +44,11 @@ async def on_message(message):
         helpOuput += "line2\n"
         await client.send_message(message.channel, helpOutput)
     elif content.strip() == "!curr":
-        pass
+        events = p.get_curr_events()
+        out = ''
+        for event in events:
+            out += fullEventInfo(event) + '\n'
+        await client.send_message(message.channel, 'Current events:\n{}'.format(out))
     elif content.strip() == "!past":
         pass
     elif content.strip() == "!survey":

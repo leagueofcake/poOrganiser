@@ -158,7 +158,11 @@ async def on_message(message):
                 else:
                     await client.send_message(message.channel, 'Successfully voted for choice (id: {})!'.format(choiceid))
         elif cmd == "!ans":
-            await client.send_message(message.channel, 'Not implemented yet!')
+            result = porg.get_result(questionid)
+            if result:
+                await client.send_message(message.channel, 'Result: {}: {}'.format(result.get_id(), result.get_choicetext())
+            else:
+                await client.send_message(message.channel, 'No result found')
         elif cmd == "!event":
             if len(splits) != 2:
                 await client.send_message(message.channel, 'Incorrect number of arguments. Correct usage: !event <eventid>')

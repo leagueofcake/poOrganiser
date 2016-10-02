@@ -141,3 +141,15 @@ class Poorganiser():
         if successful:
             self.s.commit()
         return successful
+
+    def get_result(self, questionid):
+        choices = self.get_questionchoice(questionid)
+        ans = None
+        count = 0
+
+        for choice in choices:
+            if len(choice.get_votes()) > count:
+                ans = choice
+                count = len(choice.get_votes())
+
+        return ans

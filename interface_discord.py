@@ -98,13 +98,13 @@ async def on_message(message):
         admin_commands = ["!create", "!edit", "!delete", "!add", "!remove"]
         cmd = splits[0]
         if cmd == "!poll":
-            pass
+            await client.send_message(message.channel, 'Not implemented yet!')
         elif cmd == "!vote":
-            pass
+            await client.send_message(message.channel, 'Not implemented yet!')
         elif cmd == "!ans":
-            pass
+            await client.send_message(message.channel, 'Not implemented yet!')
         elif cmd == "!event":
-            pass
+            await client.send_message(message.channel, 'Not implemented yet!')
 
         elif cmd == "!survey": # Get all questions associated with event
             if len(splits) <= 1:
@@ -143,7 +143,7 @@ async def on_message(message):
                         new_event = porg.add_event(userID, event_name, location, year, month, day)
                         newID = new_event.get_id()
                         porg.update(new_event)
-                        await client.send_message(message.channel, 'New event with ID {} created'.format(newID))
+                        await client.send_message(message.channel, 'New event {}, with ID {} created'.format(event_name, newID))
                         members = message.server.members
                         for member in members:
                             if porg.get_user(member.id): #only invite registered users

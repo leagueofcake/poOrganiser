@@ -64,7 +64,7 @@ async def on_message(message):
         helpOutput += "!past = View a list of all past events.\n"
         helpOutput += "!paster = View a list of all past event\n"
         helpOutput += "!mystatus = Brings up your current role for all events.\n"
-        helpOutput += "!questions <event ID> = Brings up a list of questions associated with event <ID>\n"
+        helpOutput += "!survey <event ID> = Brings up a list of questions associated with event <ID>\n"
         helpOutput += "!event <event ID> = View details for the associated event.\n"
         helpOutput += "!question <question ID> <event ID> = View question text and options for the event<ID>\n"
         helpOutput += "!vote <question ID> <option ID> = Votes the selected option for the selected question.\n"

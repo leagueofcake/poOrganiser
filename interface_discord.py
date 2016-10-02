@@ -83,10 +83,12 @@ async def on_message(message):
         events = porg.get_curr_events()
         out = ''
         for event in events:
-            out += fullEventInfo(event) + '\n'
+            out += shortEventInfo(event) + '\n'
         await client.send_message(message.channel, 'Current events:\n{}'.format(out))
     elif content.strip() == "!past":
-        pass
+        await client.send_message(message.channel, 'Not implemented yet!')
+    elif content.strip() == "!pastall":
+        await client.send_message(message.channel, 'Not implemented yet!')
     elif content.strip() == "!mystatus":
         user = porg.get_user(message.author.id)
         status_message = ""
@@ -94,13 +96,13 @@ async def on_message(message):
             status_message += 'Not registered! Use !register'
         else:
             status_message += 'Registered user {} with id {}.\n'.format(message.author.display_name, message.author.id)
-            status_message += 'Test: ID to username = {}\n'.format(idToUsername(message.server.members, message.author.id))
+            #status_message += 'Test: ID to username = {}\n'.format(idToUsername(message.server.members, message.author.id))
             status_message += "Your events:\n"
             user_events = porg.get_events_by_user(message.author.id)
             for event in user_events:
                 event_details = shortEventInfo(event)
                 eu = porg.get_eventuser(event.get_id(), message.author.id)
-                event_details += "\t{}".format('/'.join(eu.get_roles))
+                event_details += "\t{}\t{}".format(eu.get_isgoing(), '/'.join(eu.get_roles()))
                 status_message += event_details + "\n"
 
         await client.send_message(message.channel, status_message)
@@ -157,9 +159,10 @@ async def on_message(message):
                         porg.update(new_event)
                         await client.send_message(message.channel, 'New event with ID {} created'.format(newID))
                         members = message.server.members
-                        for member in members: #TODO check if registered
-                            eu = porg.add_eventuser(newID, member.id(), "Invited")
-                            porg.update(eu)
+                        for member in members:
+                            if porg.get_user(member.id): #only invite registered users
+                                eu = porg.add_eventuser(newID, member.id, "Invited")
+                                porg.update(eu)
                         await client.send_message(message.channel, 'All members of channel invited. See !mystatus to check')
                 elif cmd == "!edit":
                     if len(splits) < 4:
@@ -185,7 +188,7 @@ async def on_message(message):
                                 if not len(splits) == 6:
                                     await client.send_message(message.channel, 'Invalid date format. Use <year> <month> <day>')
                                 else:
-                                    date = datetime.date(splits[3], splits[4], splits[5])
+                                    date = datetime.date(int(splits[3]), int(splits[4]), int(splits[5]))
                                     edit_event.set_time(date)
                                     porg.update(edit_event)
                                     await client.send_message(message.channel, 'Event {}\'s date updated to {}'.format(eventID, date))
@@ -196,15 +199,27 @@ async def on_message(message):
                     if len(splits) != 2:
                         await client.send_message(message.channel, 'Incorrect number of arguments. Correct usage: !delete <eventID>')
                     else:
-                        if porg.remove(splits[1]):
+                        if porg.remove_event(splits[1]):
                             await client.send_message(message.channel, 'Event {} was removed'.format(splits[1]))
                         else:
                             await client.send_message(message.channel, 'Remove failed, double check your event ID')
                 elif cmd == "!add":
-                    if len(splits) <= 3:
-                        await client.send_message(message.channel, 'Incorrect number of arguments. Correct usage: !<add|remove> choice <choice text>')
+                    # Question, choices, roles
+                    cmd_type = '<question|choice|role>'
+                    if len(splits) >= 2:
+                        if splits[1] in ['question', 'choice', 'role']:
+                            cmd_type = splits[1]
+                            msg = 'Incorrect number of arguments. Correct usage: !add {} '.format(cmd_type)
+                            if cmd_type ==  'question':
+                                msg += '<event id> <question text>'
+                            elif cmd_type == 'choice':
+                                msg += '<question id> <choice text>'
+                            elif cmd_type == 'role':
+                                msg += '<user id> <role text>'
+                        if len(splits) <= 3:
+                            await client.send_message(message.channel, 'Incorrect number of arguments. Correct usage: !add {} <command text>'.format(cmd_type))
                 elif cmd == "!remove":
-                    pass
+                    await client.send_message(message.channel, 'Not implemented yet!')
             else:
                 await client.send_message(message.channel, 'You do not have permission to do that')
 

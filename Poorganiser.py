@@ -64,6 +64,14 @@ class Poorganiser():
     def get_events(self):
         return self.s.query(Event).all()
 
+    def get_events_by_user(self, userid):
+        res = []
+        eventids = self.s.query(EventUser).with_entities(EventUser.eventid).filter(EventUser.userid == userid).all()
+        for eventid in eventids:
+            print(eventid[0])
+            res.append(self.get_event(eventid[0]))
+        return res
+
     # EventUser
     def add_eventuser(self, eventid, userid, isgoing):
         eu = EventUser(eventid, userid, isgoing)

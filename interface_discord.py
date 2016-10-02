@@ -44,7 +44,7 @@ async def on_message(message):
         helpOuput += "line2\n"
         await client.send_message(message.channel, helpOutput)
     elif content.strip() == "!curr":
-        events = p.get_curr_events()
+        events = porg.get_curr_events()
         out = ''
         for event in events:
             out += fullEventInfo(event) + '\n'
@@ -62,7 +62,7 @@ async def on_message(message):
             status_message += "Your events:\n"
             user_events = porg.get_events_by_user(message.author.id)
             for event in user_events:
-
+                pass
 
         await client.send_message(message.channel, status_message)
 
@@ -86,7 +86,7 @@ async def on_message(message):
             else:
                 out = ''
                 eventid = int(splits[1])
-                questions = p.get_questions(eventid)
+                questions = porg.get_questions(eventid)
                 for question in questions:
                     out += question.get_text() + '\n'
                 await client.send_message(message.channel, 'Questions:\n{}'.format(out))

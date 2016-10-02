@@ -127,7 +127,7 @@ async def on_message(message):
                     eu = porg.get_eventuser(splits[1], message.author.id)
                     eu.set_isgoing(cmd[1:])
                     porg.update(eu)
-                    await client.send_message(message.channel, "You are now marked as going to event {}".format(splits[1]))
+                    await client.send_message(message.channel, "You are now marked as {} to event {}".format(cmd[1:], splits[1]))
                 else:
                     await client.send_message(message.channel, 'Event not found')
         elif cmd == "!vote":

@@ -195,8 +195,15 @@ async def on_message(message):
                     if len(splits) >= 2:
                         if splits[1] in ['question', 'choice', 'role']:
                             cmd_type = splits[1]
+                            msg = 'Incorrect number of arguments. Correct usage: !add {} '.format(cmd_type)
+                            if cmd_type ==  'question':
+                                msg += '<event id> <question text>'
+                            elif cmd_type == 'choice':
+                                msg += '<question id> <choice text>'
+                            elif cmd_type == 'role':
+                                msg += '<user id> <role text>'
                         if len(splits) <= 3:
-                            await client.send_message(message.channel, 'Incorrect number of arguments. Correct usage: !<add|remove> choice <choice text>')
+                            await client.send_message(message.channel, 'Incorrect number of arguments. Correct usage: !add {} <command text>'.format(cmd_type))
                 elif cmd == "!remove":
                     await client.send_message(message.channel, 'Not implemented yet!')
             else:

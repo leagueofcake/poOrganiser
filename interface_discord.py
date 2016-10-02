@@ -13,6 +13,12 @@ def idToUsername(members, userID):
             return member.name
     return None
 
+def shortEventInfo(event):
+    return None
+
+def fullEventInfo(event):
+    return None
+
 @client.event
 async def on_ready():
     print('Logged in as')
@@ -52,6 +58,9 @@ async def on_message(message):
             status_message += 'Registered user {} with id {}.\n'.format(message.author.display_name, message.author.id)
             status_message += 'Test: ID to username = {}\n'.format(idToUsername(message.server.members, message.author.id))
             status_message += "Your events:\n"
+            user_events = porg.get_events_by_user(message.author.id)
+            for event in user_events:
+
 
         await client.send_message(message.channel, status_message)
 
@@ -104,7 +113,6 @@ async def on_message(message):
                         if not edit_event:
                             await client.send_message(message.channel, 'Event not found')
                         elif edit_event.get_ownerid() != int(userID):
-                            print("DEBUG: COMPARING DB VALUE |{}| to USERID VALUE |{}|".format(type(edit_event.get_ownerid()), type(userID)))
                             await client.send_message(message.channel, 'You do not have permission to modify this event')
                         else:
                             edit_field = splits[2].lower()

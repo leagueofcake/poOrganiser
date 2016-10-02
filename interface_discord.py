@@ -138,7 +138,7 @@ async def on_message(message):
                 if event:
                     event_details = shortEventInfo(event)
                     eu = porg.get_eventuser(event.get_id(), message.author.id)
-                    event_details += "\t{}\t{}".format(eu.get_isgoing(), eu.get_roles())#'/'.join(eu.get_roles()))
+                    event_details += "\t{}\t{}".format(eu.get_isgoing(), eu.get_roles())
                     status_message += event_details + "\n"
 
         await client.send_message(message.channel, status_message)

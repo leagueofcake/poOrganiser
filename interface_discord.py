@@ -136,7 +136,19 @@ async def on_message(message):
             await client.send_message(message.channel, 'Not implemented yet!')
         elif cmd == "!event":
             await client.send_message(message.channel, 'Not implemented yet!')
-
+        elif cmd == "!question":
+            if len(splits) <= 1:
+                await client.send_message(message.channel, 'Incorrect number of arguments. Correct usage: !question <question id>')
+            elif not splits[1].isdigit(): # Not a number!
+                await client.send_message(message.channel, 'Incorrect question id type. Please specify a number.')
+            else:
+                out = ''
+                eventid = int(splits[1])
+                question = porg.get_question(eventid)
+                choices = porg.get_questionchoices(question.get_questionid())
+                for choice in choices:
+                    out += '\t{}\n'.format(choice.get_choicetext())
+                await client.send_message(message.channel, 'Question: {}\nChoices:\n{}'.format(question.get_text(), out))
         elif cmd == "!survey": # Get all questions associated with event
             if len(splits) <= 1:
                 await client.send_message(message.channel, 'Incorrect number of arguments. Correct usage: !survey <eventid>')

@@ -44,7 +44,7 @@ async def on_message(message):
         else: # User already exists
             await client.send_message(message.channel, 'You have already registered!')
     elif content.startswith('!help'):
-        helpOutput += "NOTE: When typing commands, ignore the <>. E.g. !event 69, NOT !event <69>"
+        helpOutput = "NOTE: When typing commands, ignore the <>. E.g. !event 69, NOT !event <69>"
         helpOutput += "User commands:\n"
         helpOutput += "!register = Registers the user in the database.\n"
         helpOutput += "!curr = View a list of all current events.\n"
@@ -69,7 +69,7 @@ async def on_message(message):
         events = porg.get_curr_events()
         out = ''
         for event in events:
-            out += fullEventInfo(event) + '\n'
+            out += shortEventInfo(event) + '\n'
         await client.send_message(message.channel, 'Current events:\n{}'.format(out))
     elif content.strip() == "!past":
         pass
@@ -144,7 +144,7 @@ async def on_message(message):
                         await client.send_message(message.channel, 'New event with ID {} created'.format(newID))
                         members = message.server.members
                         for member in members: #TODO check if registered
-                            eu = porg.add_eventuser(newID, member.id(), "Invited")
+                            eu = porg.add_eventuser(newID, member.id, "Invited")
                             porg.update(eu)
                         await client.send_message(message.channel, 'All members of channel invited. See !mystatus to check')
                 elif cmd == "!edit":
@@ -171,7 +171,7 @@ async def on_message(message):
                                 if not len(splits) == 6:
                                     await client.send_message(message.channel, 'Invalid date format. Use <year> <month> <day>')
                                 else:
-                                    date = datetime.date(splits[3], splits[4], splits[5])
+                                    date = datetime.date(int(splits[3]), int(splits[4]), int(splits[5]))
                                     edit_event.set_time(date)
                                     porg.update(edit_event)
                                     await client.send_message(message.channel, 'Event {}\'s date updated to {}'.format(eventID, date))

@@ -17,7 +17,8 @@ def shortEventInfo(event):
     eventID = event.get_id()
     event_name = event.get_name()
     event_location = event.get_location()
-
+    event_time = event.get_time()
+    return ("{}\t{}\t{}\t{}".format(eventID, event_name, event_location, event_time))
 
 def fullEventInfo(event):
     return None
@@ -67,7 +68,10 @@ async def on_message(message):
             status_message += "Your events:\n"
             user_events = porg.get_events_by_user(message.author.id)
             for event in user_events:
-                pass
+                event_details = shortEventInfo(event)
+                eu = porg.get_eventuser(event.get_id(), message.author.id)
+                event_details += "\t{}".format('/'.join(eu.get_roles)
+                status_message += event_details + "\n"
 
         await client.send_message(message.channel, status_message)
 
@@ -84,7 +88,7 @@ async def on_message(message):
         elif cmd == "!event":
             pass
 
-        elif cmd == "!questions": # Get all questions associated with event
+        elif cmd == "!survey": # Get all questions associated with event
             if len(splits) <= 1:
                 await client.send_message(message.channel, 'Incorrect number of arguments. Correct usage: !questions <eventid>')
             elif not splits[1].isdigit(): # Not a number!

@@ -70,33 +70,41 @@ async def on_message(message):
                     if len(splits) < 4:
                         await client.send_message(message.channel, 'Incorrect number of arguments. Correct usage: !edit <eventID> <field> <new_value>')
                     else:
-                        edit_event = porg.get_event(splits[1])
+                        eventID = splits[1]
+                        edit_event = porg.get_event(eventID)
                         if not edit_event:
                             await client.send_message(message.channel, 'Event not found')
+                        elif edit_event.get_ownerid() != userID:
+                            await client.send_message(message.channel, 'You do not have permission to modify this event')
                         else:
                             edit_field = splits[2].lower()
                             if edit_field == "name":
                                 edit_event.set_name(splits[3])
                                 porg.update()
+                                await client.send_message(message.channel, 'Event {}\'s name updated to {}'.format(eventID, splits[3]))
                             elif edit_field == "location":
                                 edit_event.set_location(splits[3])
-                                prog.update()
+                                porg.update()
+                                await client.send_message(message.channel, 'Event {}\'s location updated to {}'.format(eventID, splits[3]))
                             elif edit_field == "date":
                                 if not len(splits) == 6:
                                     await client.send_message(message.channel, 'Invalid date format. Use <year> <month> <day>')
                                 else:
                                     date = datetime.date(splits[3], splits[4], splits[5])
                                     edit_event.set_time(date)
+                                    porg.update()
+                                    await client.send_message(message.channel, 'Event {}\'s date updated to {}'.format(eventID, date))
                             else:
                                 await client.send_message(message.channel, 'Invalid field type')
-
-                    edit event <name> "<name>, <place>, <time>" = edits an event
-
-                    edit_event = porg.get_event()
                 elif cmd == "!delete":
-                    pass
+                    #TODO add confirmation for deletion
+                    if len(splits) != 2:
+                        await client.send_message(message.channel, 'Incorrect number of arguments. Correct usage: !delete <eventID>')
+                    else:
+                        porg.remove(splits[1])
+                        porg.update
                 elif cmd == "!add":
-                    pass
+                    
                 elif cmd == "!remove":
                     pass
             else:

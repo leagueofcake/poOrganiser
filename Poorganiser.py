@@ -89,6 +89,9 @@ class Poorganiser():
     def get_question(self, questionid):
         return self.s.query(Question).get(questionid)
 
+    def get_questions(self, eventid):
+        return self.s.query(Question).filter(Question.eventid == eventid).all()
+
     def add_question(self, eventid, text, yettovote, choices=1, pref=False):
         q = Question(eventid, text, yettovote, choices, pref)
         q.yettovote = str(q.yettovote)

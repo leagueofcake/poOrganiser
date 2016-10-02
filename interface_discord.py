@@ -182,7 +182,7 @@ async def on_message(message):
                 eventid = int(splits[1])
                 questions = porg.get_questions(eventid)
                 for question in questions:
-                    out += question.get_text() + '\n'
+                    out += '{} {}\n'.format(question.get_questionid()question.get_text())
                     choices = porg.get_questionchoices(question.get_questionid())
                     for choice in choices:
                         out += '\t{} {}\n'.format(choice.get_id(), choice.get_choicetext())

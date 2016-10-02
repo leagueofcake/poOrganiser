@@ -12,6 +12,14 @@ class Poorganiser():
     def __init__(self):
         self._engine = create_engine(porg_config.DB_URL)
         self.s = sessionmaker(bind=self._engine)()
+
+    def update(self, obj):
+        if isinstance(obj, EventUser): # Need to convert list to string before storing in db
+
+            obj.roles = str(obj.roles)
+        self.s.commit()
+        return obj
+
     # User
     def add_user(self, username):
         u = User(username)
@@ -71,24 +79,6 @@ class Poorganiser():
             self.s.commit()
             return True # Deleted
         return None
-
-    def update(self, obj):
-        if isinstance(obj, EventUser): # Need to convert list to string before storing in db
-
-            obj.roles = str(obj.roles)
-        self.s.commit()
-        return obj
-
-    # EventUser
-    def add_eventuser(self, eventid, userid, isgoing, roles=[]):
-        eu = EventUser(eventid, userid, isgoing, roles)
-        eu.roles = str(eu.roles) # Convert to string
-        self.s.add(eu)
-        self.s.commit()
-        return eu
-
-    def get_eventuser(self, eventid, userid):
-        return self.s.query(EventUser).filter(EventUser.eventid == eventid).filter(EventUser.userid == userid).one()
 
     # Question
     def get_question(self, questionid):

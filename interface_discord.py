@@ -318,6 +318,7 @@ async def on_message(message):
                                     if len(splits) >= 4:
                                         eventid = splits[2]
                                         userid = userToID(splits[3])
+                                        #userid = splits[3]
                                         roletext = splits[4]
                                         eu = porg.get_eventuser(eventid, userid)
                                         eu.add_role(roletext)

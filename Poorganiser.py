@@ -135,7 +135,7 @@ class Poorganiser():
         return self.s.query(QuestionChoice).filter(QuestionChoice.questionid == questionid).all()
 
     def vote(self, userid, choiceid): # Add vote for user
-        qc = get_questionchoice(choiceid)
+        qc = self.get_questionchoice(choiceid)
         successful = qc.add_vote(userids)
         if successful:
             self.s.commit()

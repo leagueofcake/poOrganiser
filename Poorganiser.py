@@ -61,9 +61,7 @@ class Poorganiser():
         return None
 
     def get_events(self):
-        events = self.s.query(Event).all()
-        for event in events:
-            print(event)
+        return self.s.query(Event).all()
 
     # EventUser
     def add_eventuser(self, eventid, userid, isgoing):

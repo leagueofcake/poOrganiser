@@ -49,7 +49,7 @@ async def on_message(message):
             await client.send_message(message.channel, 'User not registered')
         else:
             porg.remove_user(message.author.id)
-            await client.send_message(mesage.channel, 'User removed. Goodbye!')
+            await client.send_message(message.channel, 'User removed. Goodbye!')
     elif content.startswith('!help'):
         helpOutput = ""
         helpOutput += "         ヽ༼ຈل͜ຈ༽ﾉ Welcome to the Discord 'Poor Organizer' poOrganiser bot! ヽ༼ຈل͜ຈ༽ﾉ\n\n"
@@ -74,7 +74,7 @@ async def on_message(message):
         helpOutput += " ⊂　　 ノ 　　　・゜+.\n"
         helpOutput += "　しーＪ　　　°。+ ´¨)\n"
         helpOutput += "　　　　　　　　　.· ´¸.·\*´¨) ¸.·\*¨)\n"
-        helpOutput += "　　　　　　　　　　(¸.·´ (¸.·' ☆ Admin commands...\n"       
+        helpOutput += "　　　　　　　　　　(¸.·´ (¸.·' ☆ Admin commands...\n"
         helpOutput += "!create event '<name>, <place>, <time>' = Creates an event with the given details.\n"
         helpOutput += "!edit event <ID> '<name>, <place>, <time>' = Edits an event with the given details.\n"
         helpOutput += "!delete event <ID> = Deletes the event.\n"
@@ -105,6 +105,7 @@ async def on_message(message):
             #status_message += 'Test: ID to username = {}\n'.format(idToUsername(message.server.members, message.author.id))
             status_message += "Your events:\n"
             user_events = porg.get_events_by_user(message.author.id)
+            status_message += "ID\tNAME\tLOCATION\tDATE\tGOING\tRESPONSIBILITIES\n"
             for event in user_events:
                 event_details = shortEventInfo(event)
                 eu = porg.get_eventuser(event.get_id(), message.author.id)
@@ -117,8 +118,17 @@ async def on_message(message):
         splits = shlex.split(content)
         admin_commands = ["!create", "!edit", "!delete", "!add", "!remove"]
         cmd = splits[0]
-        if cmd == "!poll":
-            await client.send_message(message.channel, 'Not implemented yet!')
+        if cmd == "!going" or cmd == "!notgoing":
+            if len(splits) != 2:
+                await client.send_message(message.channel, 'Incorrect number of arguments. Correct usage: !going <eventid>')
+            else:
+                if porg.get_event(splits[1]):
+                    eu = porg.get_eventuser(splits[1], message.author.id)
+                    eu.set_isgoing(cmd[1:])
+                    porg.update(eu)
+                    await client.send_message(message.channel, "You are now marked as going to event {}".format(splits[1]))
+                else:
+                    await client.send_message(message.channel, 'Event not found')
         elif cmd == "!vote":
             await client.send_message(message.channel, 'Not implemented yet!')
         elif cmd == "!ans":
@@ -201,14 +211,15 @@ async def on_message(message):
                             else:
                                 await client.send_message(message.channel, 'Invalid field type')
                 elif cmd == "!delete":
-                    #TODO add confirmation for deletion
-                    if len(splits) != 2:
-                        await client.send_message(message.channel, 'Incorrect number of arguments. Correct usage: !delete <eventID>')
-                    else:
-                        if porg.remove_event(splits[1]):
-                            await client.send_message(message.channel, 'Event {} was removed'.format(splits[1]))
-                        else:
-                            await client.send_message(message.channel, 'Remove failed, double check your event ID')
+                    #TODO add confirmation for deletion, also remove eventusers with this event id
+                    await client.send_message(message.channel, 'Not implemented yet!')
+                    # if len(splits) != 2:
+                    #     await client.send_message(message.channel, 'Incorrect number of arguments. Correct usage: !delete <eventID>')
+                    # else:
+                    #     if porg.remove_event(splits[1]):
+                    #         await client.send_message(message.channel, 'Event {} was removed'.format(splits[1]))
+                    #     else:
+                    #         await client.send_message(message.channel, 'Remove failed, double check your event ID')
                 elif cmd == "!add":
                     # Question, choices, roles
                     cmd_type = '<question|choice|role>'
@@ -222,7 +233,7 @@ async def on_message(message):
                                 msg += '<question id> <choice text>'
                             elif cmd_type == 'role':
                                 msg += '<user id> <role text>'
-                            await client.send_message(message.channel, 'Incorrect number of arguments. Correct usage: !add {} {}}'.format(cmd_type, msg))
+                            await client.send_message(message.channel, 'Incorrect number of arguments. Correct usage: !add {} {}'.format(cmd_type, msg))
                         elif len(splits) <= 3:
                             await client.send_message(message.channel, 'Incorrect number of arguments. Correct usage: !add {} <command text>'.format(cmd_type))
                 elif cmd == "!remove":

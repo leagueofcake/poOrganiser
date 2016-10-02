@@ -5,11 +5,12 @@ Discord commands
 Listener commands
 
 help = brings up the help manual
+!register - Registers the user in the database. If they have already registerd, print an error message
 curr = shows events that have been added but haven't occured yet.
 past = shows prev 5 past events
 paster = show all past events
 mystatus = brings up your current role/status for any events you have been invited to.
-survey X = (where x is number) brings up the list of questions associated with event X
+questions X = (where x is number) brings up the list of questions associated with event X
 question X = view question text and options for question X
 vote X Y = (where x, y is number) votes Y option for question X.
 results X = shows the responses for question X (anon or no?)

@@ -33,15 +33,32 @@ async def on_message(message):
         else: # User already exists
             await client.send_message(message.channel, 'You have already registered!')
     elif content.startswith('!help'):
-        helpOutput = ""
-        helpOutput += "line1\n"
-        helpOuput += "line2\n"
+        helpOutput += "NOTE: When typing commands, ignore the <>. E.g. !event 69, NOT !event <69>"
+        helpOutput += "User commands:\n"
+        helpOutput += "!register = Registers the user in the database.\n"
+        helpOutput += "!curr = View a list of all current events.\n"
+        helpOutput += "!past = View a list of all past events.\n"
+        helpOutput += "!paster = View a list of all past event\n"
+        helpOutput += "!mystatus = Brings up your current role for any events you have been invited to.\n"
+        helpOutput += "!questions <event ID> = Brings up a list of questions associated with event <ID>\n"
+        helpOutput += "!event <event ID> = View details for the associated event.\n"
+        helpOutput += "!question <question ID> <event ID>= View question text and options for the event<ID>\n"
+        helpOutput += "!vote <question ID> <option ID> = Votes the selected option for the selected question.\n"
+        helpOutput += "!results <question ID> <event ID> = View results for the associated question in the associated event.\n"
+        helpOutput += "!\n"
+        helpOutput += "!create event '<name>, <place>, <time>' = Creates an event with the given details.\n"
+        helpOutput += "!edit event <ID> '<name>, <place>, <time>' = Edits an event with the given details.\n"
+        helpOutput += "!delete event <ID> = Deletes the event.\n"
+        helpOutput += "!add role <user ID> <role> = Assigns the user with given role.\n"
+        helpOutput += "!remove role <user ID> <role> = Removes the given role from the user.\n"
+        helpOutput += "!add question <event ID> '<Insert question here>' = Adds a question to the list of questions.\n"
+        helpOutput += "!remove question <event ID> <question ID> = Removes the associated question from the event.\n"        
         await client.send_message(message.channel, helpOutput)
     elif content.strip() == "!curr":
         pass
     elif content.strip() == "!past":
         pass
-    elif content.strip() == "!survey":
+    elif content.strip() == "!questions":
         pass
     elif content.strip() == "!mystatus":
         user = porg.get_user(message.author.id)

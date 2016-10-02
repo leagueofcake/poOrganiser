@@ -9,9 +9,9 @@ porg = Poorganiser()
 
 def idToUsername(members, userID):
     for member in members:
-        if int(member.id) == userID:
+        if int(member.id) == int(userID):
             return member.name
-    return name
+    return None
 
 @client.event
 async def on_ready():
@@ -47,6 +47,7 @@ async def on_message(message):
             status_message += 'Not registered! Use !register'
         else:
             status_message += 'Registered user {} with id {}.\n'.format(message.author.display_name, message.author.id)
+            status_message += 'Test: ID to username = {}\n'.format(idToUsername(message.server.members, message.author.id))
             status_message += "Your events:\n"
 
         await client.send_message(message.channel, status_message)
@@ -86,7 +87,7 @@ async def on_message(message):
                         newID = new_event.get_id()
                         porg.update(new_event)
                         await client.send_message(message.channel, 'New event with ID {} created'.format(newID))
-                        members = message.channel.get_all_members()
+                        members = message.server.members
                         for member in members:
                             eu = porg.add_eventuser(newID, member.id(), "Invited")
                             porg.update(eu)

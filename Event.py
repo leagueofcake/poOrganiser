@@ -43,7 +43,7 @@ class Event(Base):
         self.time = time
 
     def add_attendee(self, name):
-        user = User(name)
+        user = EventUser(name)
         if user not in self.attendees:
             self.attendees[name] = user # Add to dict
         else:
@@ -57,3 +57,11 @@ class Event(Base):
         for key in self.attendees:
             attendee = self.attendees[key]
             attendee.debug_print()
+
+    def print_info(self): #return string for discord output
+        outputStr = "Event: " + self.name + "\n"
+        outputStr += "Location: " + self.location + "\n"
+        outputStr += "Date: " + self.time + "\n"
+        for k in self.attendees:
+            attendee = self.attendees[k]
+            outputStr += attendee.print_info() + "\n"

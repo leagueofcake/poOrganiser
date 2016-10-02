@@ -2,7 +2,7 @@
 from config import discord_config
 import discord, asyncio
 from Poorganiser import Poorganiser
-import shlex
+import shlex, datetime
 
 client = discord.Client()
 porg = Poorganiser()
@@ -47,6 +47,7 @@ async def on_message(message):
         elif cmd == "!event":
             pass
         elif cmd in admin_commands:
+            userID = message.author.id
             if True: #TODO IF IS ADMIN
                 if cmd == "!create":
                     if len(splits) <= 2 or len(splits) > 7:
@@ -66,7 +67,32 @@ async def on_message(message):
                             year, month, day = None #if error occured somewhere above, set date back to none
                         porg.add_event(event_name, location, year, month, day)
                 elif cmd == "!edit":
-                    pass
+                    if len(splits) < 4:
+                        await client.send_message(message.channel, 'Incorrect number of arguments. Correct usage: !edit <eventID> <field> <new_value>')
+                    else:
+                        edit_event = porg.get_event(splits[1])
+                        if not edit_event:
+                            await client.send_message(message.channel, 'Event not found')
+                        else:
+                            edit_field = splits[2].lower()
+                            if edit_field == "name":
+                                edit_event.set_name(splits[3])
+                                porg.update()
+                            elif edit_field == "location":
+                                edit_event.set_location(splits[3])
+                                prog.update()
+                            elif edit_field == "date":
+                                if not len(splits) == 6:
+                                    await client.send_message(message.channel, 'Invalid date format. Use <year> <month> <day>')
+                                else:
+                                    date = datetime.date(splits[3], splits[4], splits[5])
+                                    edit_event.set_time(date)
+                            else:
+                                await client.send_message(message.channel, 'Invalid field type')
+
+                    edit event <name> "<name>, <place>, <time>" = edits an event
+
+                    edit_event = porg.get_event()
                 elif cmd == "!delete":
                     pass
                 elif cmd == "!add":

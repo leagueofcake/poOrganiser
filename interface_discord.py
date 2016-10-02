@@ -296,23 +296,26 @@ async def on_message(message):
                                 await client.send_message(message.channel, 'Incorrect number of arguments. Correct usage: !add {} {}'.format(cmd_type, msg))
                             else:
                                 if cmd_type == 'question':
-                                    eventid = splits[2]
-                                    text = splits[3]
-                                    yettovote = porg.get_eventusers(int(eventid))
-                                    q = porg.add_question(eventid, text, yettovote)
-                                    await client.send_message(message.channel, 'Added question with id {}'.format(q.get_questionid()))
+                                    if len(splits) >= 3:
+                                        eventid = splits[2]
+                                        text = splits[3]
+                                        yettovote = porg.get_eventusers(int(eventid))
+                                        q = porg.add_question(eventid, text, yettovote)
+                                        await client.send_message(message.channel, 'Added question with id {}'.format(q.get_questionid()))
                                 elif cmd_type == 'choice':
-                                    questionid = splits[2]
-                                    choicetext = splits[3]
-                                    c = porg.add_questionchoice(questionid, choicetext)
-                                    await client.send_message(message.channel, 'Added choice `{}` with id {}'.format(c.get_choicetext(), c.get_id()))
+                                    if len(splits) >= 3:
+                                        questionid = splits[2]
+                                        choicetext = splits[3]
+                                        c = porg.add_questionchoice(questionid, choicetext)
+                                        await client.send_message(message.channel, 'Added choice `{}` with id {}'.format(c.get_choicetext(), c.get_id()))
                                 elif cmd_type == 'role':
-                                    eventid = splits[2]
-                                    userid = splits[3]
-                                    roletext = splits[4]
-                                    eu = porg.get_eventuser(eventid, userid)
-                                    eu.add_role(roletext)
-                                    await client.send_message(message.channel, 'Added role `{}` to user {} for event {}'.format(roletext, userid, eventid))
+                                    if len(splits) >= 4:
+                                        eventid = splits[2]
+                                        userid = splits[3]
+                                        roletext = splits[4]
+                                        eu = porg.get_eventuser(eventid, userid)
+                                        eu.add_role(roletext)
+                                        await client.send_message(message.channel, 'Added role `{}` to user {} for event {}'.format(roletext, userid, eventid))
                         elif len(splits) < 4:
                             await client.send_message(message.channel, 'Correct usage: !add {} <command text>'.format(cmd_type))
                 elif cmd == "!remove":

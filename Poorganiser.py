@@ -136,6 +136,7 @@ class Poorganiser():
 
     def vote(self, userid, choiceid): # Add vote for user
         qc = get_questionchoice(choiceid)
-        qc.add_vote(userids)
-        self.s.commit()
-        return qc
+        successful = qc.add_vote(userids)
+        if successful:
+            self.s.commit()
+        return successful

@@ -33,7 +33,10 @@ class QuestionChoice(Base):
 
     def add_vote(self, user):
         self.votes = ast.literal_eval(str(self.votes)) # Convert to list before appending
+        if user in self.votes:
+            return None
         self.votes.append(user)
+        return True
 
     def remove_vote(self, user):
         self.votes = ast.literal_eval(str(self.votes)) # Convert to list before appending

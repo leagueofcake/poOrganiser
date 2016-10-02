@@ -104,7 +104,7 @@ async def on_message(message):
     elif content.strip() == "!curr":
         events = porg.get_curr_events()
         out = ''
-        out += "ID\tNAME\tLOCATION\tDATE"
+        out += "ID\tNAME\tLOCATION\tDATE\n"
         for event in events:
             out += shortEventInfo(event) + '\n'
         await client.send_message(message.channel, 'All Events:\n{}'.format(out))
@@ -112,7 +112,7 @@ async def on_message(message):
         await client.send_message(message.channel, 'Not implemented yet!')
     elif content.strip() == "!allevents":
         events = porg.get_events()
-        out = "ID\tNAME\tLOCATION\tDATE"
+        out = "ID\tNAME\tLOCATION\tDATE\n"
         for event in events:
             if event:
                 out += shortEventInfo(event) + '\n'

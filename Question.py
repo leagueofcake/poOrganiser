@@ -29,7 +29,7 @@ class Question(Base):
         self.eventid = eventid
 
     def get_text(self):
-        return self.question_text
+        return self.text
 
     def set_text(self, text):
         self.question_text = text

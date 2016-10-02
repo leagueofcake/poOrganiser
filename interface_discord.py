@@ -139,7 +139,7 @@ async def on_message(message):
 
         elif cmd == "!survey": # Get all questions associated with event
             if len(splits) <= 1:
-                await client.send_message(message.channel, 'Incorrect number of arguments. Correct usage: !questions <eventid>')
+                await client.send_message(message.channel, 'Incorrect number of arguments. Correct usage: !survey <eventid>')
             elif not splits[1].isdigit(): # Not a number!
                 await client.send_message(message.channel, 'Incorrect event id type. Please specify a number.')
             else:

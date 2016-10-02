@@ -101,10 +101,13 @@ async def on_message(message):
                     if len(splits) != 2:
                         await client.send_message(message.channel, 'Incorrect number of arguments. Correct usage: !delete <eventID>')
                     else:
-                        porg.remove(splits[1])
-                        porg.update
+                        if porg.remove(splits[1]):
+                            porg.update
+                            await client.send_message(message.channel, 'Event {} was removed'.format(splits[1]))
+                        else:
+                            await client.send_message(message.channel, 'Remove failed, double check your event ID')
                 elif cmd == "!add":
-                    
+
                 elif cmd == "!remove":
                     pass
             else:

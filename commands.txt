@@ -1,18 +1,20 @@
 Discord commands
 
-(insert ~planner in front of all commands)
+!command <> <> <> etc......
 
 Listener commands
 
 help = brings up the help manual
 curr = shows events that have been added but haven't occured yet.
 past = shows prev 5 past events
-status = brings up your current role/status for any events you have been invited to.
-survey = brings up list of questions
-poll X = (where x is number) brings up the list of options for question X.
+paster = show all past events
+mystatus = brings up your current role/status for any events you have been invited to.
+survey X = (where x is number) brings up the list of questions associated with event X
+question X = view question text and options for question X
 vote X Y = (where x, y is number) votes Y option for question X.
-ans X = shows the responses for question X (anon or no?)
+results X = shows the responses for question X (anon or no?)
 event X = shows the name, location and time of event X
+
 
 Admin commands
 

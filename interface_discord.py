@@ -67,7 +67,7 @@ async def on_message(message):
             status_message += "Your events:\n"
             user_events = porg.get_events_by_user(message.author.id)
             for event in user_events:
-
+                pass
 
         await client.send_message(message.channel, status_message)
 
@@ -83,6 +83,23 @@ async def on_message(message):
             pass
         elif cmd == "!event":
             pass
+
+        elif cmd == "!questions": # Get all questions associated with event
+            if len(splits) <= 1:
+                await client.send_message(message.channel, 'Incorrect number of arguments. Correct usage: !questions <eventid>')
+            elif not splits[1].isdigit(): # Not a number!
+                await client.send_message(message.channel, 'Incorrect event id type. Please specify a number.')
+            else:
+                out = ''
+                eventid = int(splits[1])
+                questions = porg.get_questions(eventid)
+                for question in questions:
+                    out += question.get_text() + '\n'
+                    choices = porg.get_questionchoices(question.get_questionid())
+                    for choice in choices:
+                        out += '\t{}\n'.format(choice.get_choicetext())
+                await client.send_message(message.channel, 'Questions:\n{}'.format(out))
+
         elif cmd in admin_commands:
             userID = message.author.id
             if True: #TODO IF IS ADMIN

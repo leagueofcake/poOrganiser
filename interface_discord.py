@@ -147,7 +147,7 @@ async def on_message(message):
                 else:
                     await client.send_message(message.channel, 'Event not found')
         elif cmd == "!vote":
-            if len(splits) <= 3:
+            if len(splits) < 2:
                 await client.send_message(message.channel, 'Usage: !vote <choieid>')
             else:
                 userid = message.author.id

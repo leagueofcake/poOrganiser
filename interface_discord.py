@@ -31,13 +31,13 @@ def fullEventInfo(event):
     event_time = event.get_time()
     fullInfo += "**Date:** {}\n".format(event_time)
     fullInfo += "**People:**\n"
-    fullInfo += "*Name\tGoing\tResponsibilities*\n"
+    fullInfo += "*Name\t\tGoing\tResponsibilities*\n"
     eus = porg.get_eventusers(eventID)
     for eu in eus:
-        eu_name = idToUsername(message.channel.members, eu.get_userid())
+        eu_name = idToUsername(client.get_all_members(), eu.get_userid())
         eu_going = eu.get_isgoing()
         eu_roles = eu.get_roles()
-        fullInfo += "{}\t{}\t{}\n".format(eu_name, eu_going, ' '.join(eu_roles))
+        fullInfo += "{}\t\t{}\t{}\n".format(eu_name, eu_going, ' '.join(eu_roles))
     return fullInfo
 
 @client.event

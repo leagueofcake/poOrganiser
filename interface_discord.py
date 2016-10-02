@@ -145,7 +145,7 @@ async def on_message(message):
                         porg.update(new_event)
                         await client.send_message(message.channel, 'New event with ID {} created'.format(newID))
                         members = message.server.members
-                        for member in members: 
+                        for member in members:
                             if porg.get_user(member.id): #only invite registered users
                                 eu = porg.add_eventuser(newID, member.id, "Invited")
                                 porg.update(eu)
@@ -185,14 +185,14 @@ async def on_message(message):
                     if len(splits) != 2:
                         await client.send_message(message.channel, 'Incorrect number of arguments. Correct usage: !delete <eventID>')
                     else:
-                        if porg.remove(splits[1]):
+                        if porg.remove_event(splits[1]):
                             await client.send_message(message.channel, 'Event {} was removed'.format(splits[1]))
                         else:
                             await client.send_message(message.channel, 'Remove failed, double check your event ID')
                 elif cmd == "!add":
                     # Question, choices, roles
                     cmd_type = '<question|choice|role>'
-                    if len(splits) >= 2
+                    if len(splits) >= 2:
                         if splits[1] in ['question', 'choice', 'role']:
                             cmd_type = splits[1]
                         if len(splits) <= 3:

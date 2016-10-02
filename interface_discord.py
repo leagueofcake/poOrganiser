@@ -147,7 +147,16 @@ async def on_message(message):
                 else:
                     await client.send_message(message.channel, 'Event not found')
         elif cmd == "!vote":
-            await client.send_message(message.channel, 'Not implemented yet!')
+            if len(splits) <= 3:
+                await client.send_message(message.channel, 'Usage: !vote <choieid>')
+            else:
+                userid = message.author.id
+                choiceid = splits[1]
+                res = vote(userid, choiceid)
+                if res == None:
+                    await client.send_message(message.channel, 'You\'ve already voted for this choice!')
+                else:
+                    await client.send_message(message.channel, 'Successfully voted for choice (id: {})!'.format(choiceid))
         elif cmd == "!ans":
             await client.send_message(message.channel, 'Not implemented yet!')
         elif cmd == "!event":

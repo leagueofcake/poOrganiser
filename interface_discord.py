@@ -59,30 +59,29 @@ async def on_message(message):
         helpOutput += "　しーＪ　　　°。+ ´¨)\n"
         helpOutput += "　　　　　　　　　.· ´¸.·*´¨) ¸.·*¨)\n"
         helpOutput += "　　　　　　　　　　(¸.·´ (¸.·' ☆ User commands...\n"
-        helpOutput += "User commands:\n\n"
-        helpOutput += "                                 !register = Registers the user in the database.\n"
-        helpOutput += "                                     !curr = View a list of all current events.\n"
-        helpOutput += "                                     !past = View a list of all past events.\n"
-        helpOutput += "                                   !paster = View a list of all past event\n"
-        helpOutput += "                                 !mystatus = Brings up your current role for all events.\n"
-        helpOutput += "                     !questions <event ID> = Brings up a list of questions associated with event <ID>\n"
-        helpOutput += "                         !event <event ID> = View details for the associated event.\n"
-        helpOutput += "        !question <question ID> <event ID> = View question text and options for the event<ID>\n"
-        helpOutput += "           !vote <question ID> <option ID> = Votes the selected option for the selected question.\n"
-        helpOutput += "         !results <question ID> <event ID> = View results for the associated question in the event.\n"
+        helpOutput += "!register = Registers the user in the database.\n"
+        helpOutput += "!curr = View a list of all current events.\n"
+        helpOutput += "!past = View a list of all past events.\n"
+        helpOutput += "!paster = View a list of all past event\n"
+        helpOutput += "!mystatus = Brings up your current role for all events.\n"
+        helpOutput += "!questions <event ID> = Brings up a list of questions associated with event <ID>\n"
+        helpOutput += "!event <event ID> = View details for the associated event.\n"
+        helpOutput += "!question <question ID> <event ID> = View question text and options for the event<ID>\n"
+        helpOutput += "!vote <question ID> <option ID> = Votes the selected option for the selected question.\n"
+        helpOutput += "!results <question ID> <event ID> = View results for the associated question in the event.\n"
         helpOutput += "\n"
         helpOutput += "（ ° ʖ °)つ━☆・*。\n"
         helpOutput += " ⊂　　 ノ 　　　・゜+.\n"
         helpOutput += "　しーＪ　　　°。+ ´¨)\n"
         helpOutput += "　　　　　　　　　.· ´¸.·*´¨) ¸.·*¨)\n"
         helpOutput += "　　　　　　　　　　(¸.·´ (¸.·' ☆ Admin commands...\n"
-        helpOutput += "   !create event '<name>, <place>, <time>' = Creates an event with the given details.\n"
+        helpOutput += "!create event '<name>, <place>, <time>' = Creates an event with the given details.\n"
         helpOutput += "!edit event <ID> '<name>, <place>, <time>' = Edits an event with the given details.\n"
-        helpOutput += "                        !delete event <ID> = Deletes the event.\n"
-        helpOutput += "                !add role <user ID> <role> = Assigns the user with given role.\n"
-        helpOutput += "             !remove role <user ID> <role> = Removes the given role from the user.\n"
-        helpOutput += "  !add question <event ID> '<Insert here>' = Adds a question to the list of questions.\n"
-        helpOutput += " !remove question <event ID> <question ID> = Removes the associated question from the event.\n\n"
+        helpOutput += "!delete event <ID> = Deletes the event.\n"
+        helpOutput += "!add role <user ID> <role> = Assigns the user with given role.\n"
+        helpOutput += "!remove role <user ID> <role> = Removes the given role from the user.\n"
+        helpOutput += "!add question <event ID> '<Insert here>' = Adds a question to the list of questions.\n"
+        helpOutput += "!remove question <event ID> <question ID> = Removes the associated question from the event.\n\n"
         helpOutput += "NOTE: When typing commands, ignore the <>. E.g. !event 69, NOT !event <69>\n\n"
 
         await client.send_message(message.channel, helpOutput)
@@ -217,13 +216,14 @@ async def on_message(message):
                         if splits[1] in ['question', 'choice', 'role']:
                             cmd_type = splits[1]
                             msg = 'Incorrect number of arguments. Correct usage: !add {} '.format(cmd_type)
-                            if cmd_type ==  'question':
+                            if cmd_type == 'question':
                                 msg += '<event id> <question text>'
                             elif cmd_type == 'choice':
                                 msg += '<question id> <choice text>'
                             elif cmd_type == 'role':
                                 msg += '<user id> <role text>'
-                        if len(splits) <= 3:
+                            await client.send_message(message.channel, 'Incorrect number of arguments. Correct usage: !add {} {}}'.format(cmd_type, msg))
+                        elif len(splits) <= 3:
                             await client.send_message(message.channel, 'Incorrect number of arguments. Correct usage: !add {} <command text>'.format(cmd_type))
                 elif cmd == "!remove":
                     await client.send_message(message.channel, 'Not implemented yet!')

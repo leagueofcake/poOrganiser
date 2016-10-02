@@ -22,7 +22,23 @@ def shortEventInfo(event):
 
 
 def fullEventInfo(event):
-    return None
+    fullInfo = ""
+    eventID = event.get_id()
+    event_name = event.get_name()
+    fullInfo += "**Event** {}: {}\n".format(eventID, event_name)
+    event_location = event.get_location()
+    fullInfo += "**Location:** {}\n".format(event_location)
+    event_time = event.get_time()
+    fullInfo += "**Date:** {}\n".format(event_time)
+    fullInfo += "**People:**\n"
+    fullInfo += "*Name\tGoing\tResponsibilities*\n"
+    eus = porg.get_eventusers(eventID)
+    for eu in eus:
+        eu_name = idToUsername(eu.get_userid)
+        eu_going = eu.get_isgoing()
+        eu_roles = eu.get_roles()
+        fullInfo += "{}\t{}\t{}\n".format(eu_name, eu_going, ' '.join(eu_roles))
+    return fullInfo
 
 @client.event
 async def on_ready():
@@ -135,7 +151,14 @@ async def on_message(message):
         elif cmd == "!ans":
             await client.send_message(message.channel, 'Not implemented yet!')
         elif cmd == "!event":
-            await client.send_message(message.channel, 'Not implemented yet!')
+            if len(splits) != 2:
+                await client.send_message(message.channel, 'Incorrect number of arguments. Correct usage: !event <eventid>')
+            else:
+                event = porg.get_event(splits[1])
+                if not event:
+                    await client.send_message(message.channel, 'Event not found')
+                else:
+                    await client.send_message(message.channel, fullEventInfo(event))
         elif cmd == "!question":
             if len(splits) <= 1:
                 await client.send_message(message.channel, 'Incorrect number of arguments. Correct usage: !question <question id>')

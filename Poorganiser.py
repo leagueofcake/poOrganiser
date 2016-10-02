@@ -133,3 +133,9 @@ class Poorganiser():
 
     def get_questionchoices(self, questionid):
         return self.s.query(QuestionChoice).filter(QuestionChoice.questionid == questionid).all()
+
+    def vote(self, userid, choiceid): # Add vote for user
+        qc = get_questionchoice(choiceid)
+        qc.add_vote(userids)
+        self.s.commit()
+        return qc

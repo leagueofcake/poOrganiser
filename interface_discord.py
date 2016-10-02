@@ -43,10 +43,17 @@ async def on_message(message):
             await client.send_message(message.channel, 'Registered user {} with id {}.'.format(message.author.display_name, message.author.id))
         else: # User already exists
             await client.send_message(message.channel, 'You have already registered!')
+    elif content.strip() == '!unregister':
+        user_exists = porg.get_user(message.author.id)
+        if not user_exists:
+            await client.send_message(message.channel, 'User not registered')
+        else:
+            porg.remove_user(message.author.id)
+            await client.send_message(mesage.channel, 'User removed. Goodbye!')
     elif content.startswith('!help'):
         helpOutput = ""
         helpOutput += "         ヽ༼ຈل͜ຈ༽ﾉ Welcome to the Discord 'Poor Organizer' poOrganiser bot! ヽ༼ຈل͜ຈ༽ﾉ\n\n"
-        helpOutput += "                            (´･ω･`) Yeeeeeeeboizzz (´･ω･`)\n\n"   
+        helpOutput += "                            (´･ω･`) Yeeeeeeeboizzz (´･ω･`)\n\n"
         helpOutput += "（ ° ʖ °)つ━☆・*。\n"
         helpOutput += " ⊂　　 ノ 　　　・゜+.\n"
         helpOutput += "　しーＪ　　　°。+ ´¨)\n"
@@ -68,7 +75,7 @@ async def on_message(message):
         helpOutput += " ⊂　　 ノ 　　　・゜+.\n"
         helpOutput += "　しーＪ　　　°。+ ´¨)\n"
         helpOutput += "　　　　　　　　　.· ´¸.·*´¨) ¸.·*¨)\n"
-        helpOutput += "　　　　　　　　　　(¸.·´ (¸.·' ☆ Admin commands...\n"       
+        helpOutput += "　　　　　　　　　　(¸.·´ (¸.·' ☆ Admin commands...\n"
         helpOutput += "   !create event '<name>, <place>, <time>' = Creates an event with the given details.\n"
         helpOutput += "!edit event <ID> '<name>, <place>, <time>' = Edits an event with the given details.\n"
         helpOutput += "                        !delete event <ID> = Deletes the event.\n"

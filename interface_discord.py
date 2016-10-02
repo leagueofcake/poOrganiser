@@ -89,6 +89,9 @@ async def on_message(message):
                 questions = porg.get_questions(eventid)
                 for question in questions:
                     out += question.get_text() + '\n'
+                    choices = porg.get_questionchoices(question.get_questionid())
+                    for choice in choices:
+                        out += '\t{}\n'.format(choice.get_choicetext())
                 await client.send_message(message.channel, 'Questions:\n{}'.format(out))
 
         elif cmd in admin_commands:

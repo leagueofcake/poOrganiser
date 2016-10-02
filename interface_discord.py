@@ -33,7 +33,10 @@ async def on_message(message):
         else: # User already exists
             await client.send_message(message.channel, 'You have already registered!')
     elif content.startswith('!help'):
-        await client.send_message(message.channel, 'TEMP: HELP: I\'M SO HELPFUL LOL')
+        helpOutput = ""
+        helpOutput += "line1\n"
+        helpOuput += "line2\n"
+        await client.send_message(message.channel, helpOutput)
     elif content.strip() == "!curr":
         pass
     elif content.strip() == "!past":

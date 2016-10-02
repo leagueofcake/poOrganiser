@@ -28,47 +28,11 @@ class Question(Base):
     def set_eventid(self, eventid):
         self.eventid = eventid
 
-#     # TODO: Move to Poorganiser
-#     def get_options(self): #return options as text
-#         options_text = []
-#         for key in self.options:
-#             options_text.append(key)
-#         return self.options
-#
-#     # TODO: Move to Poorganiser
-#     def add_option(self, option):
-#         if option not in self.options:
-#             self.options[option] = []
-#
-#     # TODO: Move to Poorganiser
-#     def remove_option(self, option):
-#         if option in self.options:
-#             del(self.options[option])
-#
     def get_text(self):
         return self.question_text
 
     def set_text(self, text):
         self.question_text = text
-
-#     # TODO: Move to Poorganiser
-#     def make_vote(self, user, option):
-#         self.options[option].append(user)
-# #print(self.options) #debug
-#
-#     # TODO: Move to Poorganiser
-#     def get_result(self):
-#         for key in sorted(self.options, key=lambda k: len(self.options[k]), reverse = True): #sorted(self.options, key = len, reverse=False): #DEBUG PRINTING
-#             print (key, self.options[key], len(self.options[key]))
-#         ## FIX UP RETURN
-#
-#     # TODO: Move to Poorganiser
-#     def has_voted(self, user):
-#         self.yet_to_vote.remove(user)
-#         if len(self.yet_to_vote) == 0: #everyone has voted
-#             self.get_result() #get the result
-
- #tests
 
 # def run_tests():
 #     test_get_text()

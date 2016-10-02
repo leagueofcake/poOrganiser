@@ -51,8 +51,7 @@ class Poorganiser():
         if e != None:
             self.s.commit()
             return True # deleted
-        else:
-            return None
+        return None
 
     # EventUser
     def add_eventuser(self, eventid, userid, isgoing):
@@ -63,8 +62,15 @@ class Poorganiser():
         return eu
 
     def get_eventuser(self, eventid, userid):
-        return self.s.query(EventUser).filter(EventUser.eventid == eventid).filter(EventUser.userid == userid).one()
         return self.s.query(EventUser).filter(EventUser.eventid == eventid).filter(EventUser.userid == userid).first()
+
+    def remove_eventuser(self, eventid, userid):
+        eu = self.get_eventuser(eventid, userid)
+        self.s.query(EventUser).filter(EventUser.eventid == eventid).filter(EventUser.userid == userid).delete()
+        if eu != None:
+            self.s.commit()
+            return True # Deleted
+        return None
 
     def update(self, obj):
         if isinstance(obj, EventUser): # Need to convert list to string before storing in db

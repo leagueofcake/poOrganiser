@@ -259,6 +259,8 @@ async def on_message(message):
                                 elif cmd_type == 'choice':
                                     questionid = splits[2]
                                     choicetext = splits[3]
+                                    c = porg.add_questionchoice(questionid, choicetext)
+                                    await client.send_message(message.channel, 'Added choice `{}` with id {}'.format(c.get_choicetext(), c.get_id()))
                         elif len(splits) < 4:
                             await client.send_message(message.channel, 'Correct usage: !add {} <command text>'.format(cmd_type))
                 elif cmd == "!remove":

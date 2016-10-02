@@ -6,6 +6,7 @@ from Event import Event
 from User import User
 from EventUser import EventUser
 from Question import Question
+from QuestionChoice import QuestionChoice
 from sqlalchemy.orm import sessionmaker
 
 class Poorganiser():
@@ -106,3 +107,14 @@ class Poorganiser():
             self.s.commit()
             return True
         return None
+
+    # QuestionChoice
+    def add_questionchoice(self, questionid, choicetext, votes=[]):
+        qc = QuestionChoice(questionid, choicetext, votes)
+        qc.votes = str(qc.votes)
+        self.s.add(qc)
+        self.s.commit()
+        return qc
+
+    def get_questionchoice(self, choiceid):
+        return self.s.query(QuestionChoice).filter(QuestionChoice.choiceid == choiceid).first()

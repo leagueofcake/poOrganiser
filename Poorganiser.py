@@ -74,6 +74,9 @@ class Poorganiser():
     def get_eventuser(self, eventid, userid):
         return self.s.query(EventUser).filter(EventUser.eventid == eventid).filter(EventUser.userid == userid).first()
 
+    def get_eventusers(self, eventid):
+        return self.s.query(EventUser).filter(EventUser.eventid == eventid).all()
+
     def remove_eventuser(self, eventid, userid):
         eu = self.get_eventuser(eventid, userid)
         self.s.query(EventUser).filter(EventUser.eventid == eventid).filter(EventUser.userid == userid).delete()

@@ -107,10 +107,11 @@ async def on_message(message):
             user_events = porg.get_events_by_user(message.author.id)
             status_message += "ID\tNAME\tLOCATION\tDATE\tGOING\tRESPONSIBILITIES\n"
             for event in user_events:
-                event_details = shortEventInfo(event)
-                eu = porg.get_eventuser(event.get_id(), message.author.id)
-                event_details += "\t{}\t{}".format(eu.get_isgoing(), '/'.join(eu.get_roles()))
-                status_message += event_details + "\n"
+                if event:
+                    event_details = shortEventInfo(event)
+                    eu = porg.get_eventuser(event.get_id(), message.author.id)
+                    event_details += "\t{}\t{}".format(eu.get_isgoing(), '/'.join(eu.get_roles()))
+                    status_message += event_details + "\n"
 
         await client.send_message(message.channel, status_message)
 
@@ -126,7 +127,7 @@ async def on_message(message):
                     eu = porg.get_eventuser(splits[1], message.author.id)
                     eu.set_isgoing(cmd[1:])
                     porg.update(eu)
-                    await client.send_message(message.channel, "You are now marked as going to event {}".format(splits[1]))
+                    await client.send_message(message.channel, "You are now marked as {} to event {}".format(cmd[1:], splits[1]))
                 else:
                     await client.send_message(message.channel, 'Event not found')
         elif cmd == "!vote":
@@ -211,15 +212,15 @@ async def on_message(message):
                             else:
                                 await client.send_message(message.channel, 'Invalid field type')
                 elif cmd == "!delete":
-                    #TODO add confirmation for deletion, also remove eventusers with this event id
-                    await client.send_message(message.channel, 'Not implemented yet!')
-                    # if len(splits) != 2:
-                    #     await client.send_message(message.channel, 'Incorrect number of arguments. Correct usage: !delete <eventID>')
-                    # else:
-                    #     if porg.remove_event(splits[1]):
-                    #         await client.send_message(message.channel, 'Event {} was removed'.format(splits[1]))
-                    #     else:
-                    #         await client.send_message(message.channel, 'Remove failed, double check your event ID')
+                    #TODO add confirmation for deletion
+                #    await client.send_message(message.channel, 'Not implemented yet!')
+                    if len(splits) != 2:
+                        await client.send_message(message.channel, 'Incorrect number of arguments. Correct usage: !delete <eventID>')
+                    else:
+                        if porg.remove_event(splits[1]):
+                            await client.send_message(message.channel, 'Event {} was removed'.format(splits[1]))
+                        else:
+                            await client.send_message(message.channel, 'Remove failed, double check your event ID')
                 elif cmd == "!add":
                     # Question, choices, roles
                     cmd_type = '<question|choice|role>'

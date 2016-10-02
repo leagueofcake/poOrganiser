@@ -64,6 +64,10 @@ class Poorganiser():
     def get_events(self):
         return self.s.query(Event).all()
 
+    def get_curr_events(self):
+        today = datetime.date.today()
+        return self.s.query(Event).filter(Event.time > today).all()
+
     def get_events_by_user(self, userid):
         res = []
         eventids = self.s.query(EventUser).with_entities(EventUser.eventid).filter(EventUser.userid == userid).all()

@@ -64,6 +64,7 @@ class Poorganiser():
 
     def get_eventuser(self, eventid, userid):
         return self.s.query(EventUser).filter(EventUser.eventid == eventid).filter(EventUser.userid == userid).one()
+        return self.s.query(EventUser).filter(EventUser.eventid == eventid).filter(EventUser.userid == userid).first()
 
     def update(self, obj):
         if isinstance(obj, EventUser): # Need to convert list to string before storing in db

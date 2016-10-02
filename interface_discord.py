@@ -34,7 +34,7 @@ def fullEventInfo(event):
     fullInfo += "*Name\tGoing\tResponsibilities*\n"
     eus = porg.get_eventusers(eventID)
     for eu in eus:
-        eu_name = idToUsername(eu.get_id)
+        eu_name = idToUsername(eu.get_userid)
         eu_going = eu.get_isgoing()
         eu_roles = eu.get_roles()
         fullInfo += "{}\t{}\t{}\n".format(eu_name, eu_going, ' '.join(eu_roles))

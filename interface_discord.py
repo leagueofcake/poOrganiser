@@ -152,7 +152,7 @@ async def on_message(message):
             else:
                 userid = message.author.id
                 choiceid = splits[1]
-                res = vote(userid, choiceid)
+                res = porg.vote(userid, choiceid)
                 if res == None:
                     await client.send_message(message.channel, 'You\'ve already voted for this choice!')
                 else:

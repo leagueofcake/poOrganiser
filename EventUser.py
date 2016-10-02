@@ -23,6 +23,9 @@ class EventUser(Base):
     def get_roles(self):
         return self.roles
 
+    def get_userid(self):
+        return self.userid
+
     def debug_print(self):
         print("\tUSER GOING ", self.isgoing)
         print("\tUSER ROLES ", self.roles)

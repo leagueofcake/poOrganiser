@@ -90,3 +90,11 @@ class Poorganiser():
         self.s.add(q)
         self.s.commit()
         return q
+
+    def remove_question(self, questionid):
+        q = self.get_question(questionid)
+        self.s.query(Question).filter(Question.questionid == questionid).delete()
+        if q != None:
+            self.s.commit()
+            return True
+        return None

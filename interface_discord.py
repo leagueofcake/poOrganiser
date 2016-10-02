@@ -22,7 +22,16 @@ def shortEventInfo(event):
 
 
 def fullEventInfo(event):
-    return None
+    fullInfo = ""
+    eventID = event.get_id()
+    event_name = event.get_name()
+    fullInfo += "Event {}: {}\n".format(eventID, event_name)
+    event_location = event.get_location()
+    fullInfo += "Location: {}\n".format(event_location)
+    event_time = event.get_time()
+    fullInfo += "Date: {}\n".format(event_time)
+    eus = porg.get_eventusers(eventID)
+    return None #TEMP
 
 @client.event
 async def on_ready():

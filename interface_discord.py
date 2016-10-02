@@ -104,19 +104,19 @@ async def on_message(message):
     elif content.strip() == "!curr":
         events = porg.get_curr_events()
         out = ''
-        out += "ID\tNAME\tLOCATION\tDATE"
+        out += "ID\tNAME\tLOCATION\tDATE\n"
         for event in events:
             out += shortEventInfo(event) + '\n'
-        await client.send_message(message.channel, 'All Events:\n{}'.format(out))
+        await client.send_message(message.channel, out)
     elif content.strip() == "!past":
         await client.send_message(message.channel, 'Not implemented yet!')
     elif content.strip() == "!allevents":
         events = porg.get_events()
-        out = ""
+        out = "ID\tNAME\tLOCATION\tDATE\n"
         for event in events:
             if event:
                 out += shortEventInfo(event) + '\n'
-        await client.send_message(message.channel, 'Not implemented yet!')
+        await client.send_message(message.channel, 'All Events:\n{}'.format(out))
     elif content.strip() == "!mystatus":
         user = porg.get_user(message.author.id)
         status_message = ""
@@ -164,11 +164,15 @@ async def on_message(message):
                 else:
                     await client.send_message(message.channel, 'Successfully voted for choice (id: {})!'.format(choiceid))
         elif cmd == "!ans":
-            result = porg.get_result(questionid)
-            if result:
-                await client.send_message(message.channel, 'Result: {}: {}'.format(result.get_id(), result.get_choicetext())
+            if len(splits) != 2:
+                await client.send_message(message.channel, 'Incorrect number of arguments. Correct usage: !ans <questionID>')
             else:
-                await client.send_message(message.channel, 'No result found')
+                questionid = splits[1]
+                result = porg.get_result(questionid)
+                if result:
+                    await client.send_message(message.channel, 'Result: {}: {}'.format(result.get_id(), result.get_choicetext()))
+                else:
+                    await client.send_message(message.channel, 'No result found')
         elif cmd == "!event":
             if len(splits) != 2:
                 await client.send_message(message.channel, 'Incorrect number of arguments. Correct usage: !event <eventid>')
@@ -189,7 +193,7 @@ async def on_message(message):
                 question = porg.get_question(eventid)
                 choices = porg.get_questionchoices(question.get_questionid())
                 for choice in choices:
-                    out += '\t{}\n'.format(choice.get_choicetext())
+                    out += '\t[{}]\t{}\n'.format(choice.get_id(), choice.get_choicetext())
                 await client.send_message(message.channel, 'Question: {}\nChoices:\n{}'.format(question.get_text(), out))
         elif cmd == "!survey": # Get all questions associated with event
             if len(splits) <= 1:

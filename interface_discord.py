@@ -63,7 +63,7 @@ async def on_message(message):
         helpOutput += "!remove question <event ID> <question ID> = Removes the associated question from the event.\n"
         await client.send_message(message.channel, helpOutput)
     elif content.strip() == "!curr":
-        events = p.get_curr_events()
+        events = porg.get_curr_events()
         out = ''
         for event in events:
             out += fullEventInfo(event) + '\n'
@@ -113,9 +113,6 @@ async def on_message(message):
                     for choice in choices:
                         out += '\t{}\n'.format(choice.get_choicetext())
                 await client.send_message(message.channel, 'Questions:\n{}'.format(out))
-        elif cmd == '!choice':
-            if len(splits) <= 3:
-                await client.send_message(message.channel, 'Incorrect number of arguments. Correct usage: !choice <add|remove> <choice text>')
         elif cmd in admin_commands:
             userID = message.author.id
             if True: #TODO IF IS ADMIN
@@ -184,7 +181,8 @@ async def on_message(message):
                         else:
                             await client.send_message(message.channel, 'Remove failed, double check your event ID')
                 elif cmd == "!add":
-                    pass
+                    if len(splits) <= 3:
+                        await client.send_message(message.channel, 'Incorrect number of arguments. Correct usage: !<add|remove> choice <choice text>')
                 elif cmd == "!remove":
                     pass
             else:

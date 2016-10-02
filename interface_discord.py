@@ -14,7 +14,7 @@ def idToUsername(members, userID):
     return None
 
 def shortEventInfo(event):
-
+    pass
 
 def fullEventInfo(event):
     return None
@@ -93,7 +93,9 @@ async def on_message(message):
                     for choice in choices:
                         out += '\t{}\n'.format(choice.get_choicetext())
                 await client.send_message(message.channel, 'Questions:\n{}'.format(out))
-
+        elif cmd == '!choice':
+            if len(splits) <= 3:
+                await client.send_message(message.channel, 'Incorrect number of arguments. Correct usage: !choice <add|remove> <choice text>')
         elif cmd in admin_commands:
             userID = message.author.id
             if True: #TODO IF IS ADMIN

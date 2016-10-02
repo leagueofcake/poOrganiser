@@ -118,3 +118,6 @@ class Poorganiser():
 
     def get_questionchoice(self, choiceid):
         return self.s.query(QuestionChoice).filter(QuestionChoice.choiceid == choiceid).first()
+
+    def get_questionchoices(self, questionid):
+        return self.s.query(QuestionChoice).filter(QuestionChoice.questionid == questionid).all()

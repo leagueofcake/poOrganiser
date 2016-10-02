@@ -80,13 +80,13 @@ async def on_message(message):
             status_message += 'Not registered! Use !register'
         else:
             status_message += 'Registered user {} with id {}.\n'.format(message.author.display_name, message.author.id)
-            status_message += 'Test: ID to username = {}\n'.format(idToUsername(message.server.members, message.author.id))
+            #status_message += 'Test: ID to username = {}\n'.format(idToUsername(message.server.members, message.author.id))
             status_message += "Your events:\n"
             user_events = porg.get_events_by_user(message.author.id)
             for event in user_events:
                 event_details = shortEventInfo(event)
                 eu = porg.get_eventuser(event.get_id(), message.author.id)
-                event_details += "\t{}".format('/'.join(eu.get_roles))
+                event_details += "\t{}\t{}".format(eu.get_isgoing(), '/'.join(eu.get_roles()))
                 status_message += event_details + "\n"
 
         await client.send_message(message.channel, status_message)
@@ -143,6 +143,7 @@ async def on_message(message):
                         porg.update(new_event)
                         await client.send_message(message.channel, 'New event with ID {} created'.format(newID))
                         members = message.server.members
+                        #print("DEBUG: ", len(members))
                         for member in members: #TODO check if registered
                             eu = porg.add_eventuser(newID, member.id, "Invited")
                             porg.update(eu)

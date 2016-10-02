@@ -17,6 +17,9 @@ class EventUser(Base):
         self.isgoing = isgoing
         self.roles = roles
 
+    def get_eventuserid(self):
+        return self.eventuserid
+
     def get_isgoing(self):
         return self.isgoing
 

@@ -241,7 +241,8 @@ async def on_message(message):
                                 eventid = splits[2]
                                 text = splits[3]
                                 yettovote = porg.get_eventusers(int(eventid))
-                                porg.add_question(eventid, text, yettovote)
+                                q = porg.add_question(eventid, text, yettovote)
+                                await client.send_message(message.channel, 'Added question with id {}'.format(q.get_questionid))
                             elif cmd_type == 'choice':
                                 questionid = splits[2]
                                 choicetext = splits[3]

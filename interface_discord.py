@@ -296,7 +296,7 @@ async def on_message(message):
                             elif cmd_type == 'choice':
                                 msg += '<question id> <choice text>'
                             elif cmd_type == 'role':
-                                msg += '<event id> <user id> <role text>'
+                                msg += '<event id> <username> <role text>'
 
                             if len(splits) < 4:
                                 await client.send_message(message.channel, 'Incorrect number of arguments. Correct usage: !add {} {}'.format(cmd_type, msg))
@@ -317,7 +317,7 @@ async def on_message(message):
                                 elif cmd_type == 'role':
                                     if len(splits) >= 4:
                                         eventid = splits[2]
-                                        userid = splits[3]
+                                        userid = userToID(splits[3])
                                         roletext = splits[4]
                                         eu = porg.get_eventuser(eventid, userid)
                                         eu.add_role(roletext)

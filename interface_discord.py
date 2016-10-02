@@ -86,7 +86,7 @@ async def on_message(message):
             for event in user_events:
                 event_details = shortEventInfo(event)
                 eu = porg.get_eventuser(event.get_id(), message.author.id)
-                event_details += "\t{}".format('/'.join(eu.get_roles)
+                event_details += "\t{}".format('/'.join(eu.get_roles))
                 status_message += event_details + "\n"
 
         await client.send_message(message.channel, status_message)
@@ -136,9 +136,9 @@ async def on_message(message):
                         year, month, day = None, None, None
                         try:
                             location = splits[3]
-                            year = splits[4]
-                            month = splits[5]
-                            day = splits[6]
+                            year = int(splits[4])
+                            month = int(splits[5])
+                            day = int(splits[6])
                         except IndexError:
                             year, month, day = None, None, None #if error occured somewhere above, set date back to none
                         new_event = porg.add_event(userID, event_name, location, year, month, day)

@@ -15,7 +15,6 @@ class Poorganiser():
 
     def update(self, obj):
         if isinstance(obj, EventUser): # Need to convert list to string before storing in db
-
             obj.roles = str(obj.roles)
         self.s.commit()
         return obj
@@ -60,6 +59,11 @@ class Poorganiser():
             self.s.commit()
             return True # deleted
         return None
+
+    def get_events(self):
+        events = self.s.query(Event).all()
+        for event in events:
+            print(event)
 
     # EventUser
     def add_eventuser(self, eventid, userid, isgoing):

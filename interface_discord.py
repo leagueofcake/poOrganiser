@@ -322,6 +322,8 @@ async def on_message(message):
                                         roletext = splits[4]
                                         eu = porg.get_eventuser(eventid, userid)
                                         eu.add_role(roletext)
+                                        eu.roles = str(eu.roles)
+                                        porg.update(eu)
                                         await client.send_message(message.channel, 'Added role `{}` to user {} for event {}'.format(roletext, userid, eventid))
                         elif len(splits) < 4:
                             await client.send_message(message.channel, 'Correct usage: !add {} <command text>'.format(cmd_type))

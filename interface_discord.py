@@ -222,9 +222,18 @@ async def on_message(message):
                                 msg += '<question id> <choice text>'
                             elif cmd_type == 'role':
                                 msg += '<user id> <role text>'
-                            await client.send_message(message.channel, 'Incorrect number of arguments. Correct usage: !add {} {}}'.format(cmd_type, msg))
-                        elif len(splits) <= 3:
+                            await client.send_message(message.channel, 'Incorrect number of arguments. Correct usage: !add {} {}'.format(cmd_type, msg))
+                        if len(splits) < 4:
                             await client.send_message(message.channel, 'Incorrect number of arguments. Correct usage: !add {} <command text>'.format(cmd_type))
+                        else:
+                            if cmd_type == 'question':
+                                eventid = splits[2]
+                                text = splits[3]
+                                yettovote = porg.get_eventusers(int(eventid))
+                                porg.add_question(eventid, text, yettovote)
+                            elif cmd_type == 'choice':
+                                questionid = splits[2]
+                                choicetext = splits[3]
                 elif cmd == "!remove":
                     await client.send_message(message.channel, 'Not implemented yet!')
             else:

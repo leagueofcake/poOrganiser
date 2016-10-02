@@ -188,8 +188,13 @@ async def on_message(message):
                         else:
                             await client.send_message(message.channel, 'Remove failed, double check your event ID')
                 elif cmd == "!add":
-                    if len(splits) <= 3:
-                        await client.send_message(message.channel, 'Incorrect number of arguments. Correct usage: !<add|remove> choice <choice text>')
+                    # Question, choices, roles
+                    cmd_type = '<question|choice|role>'
+                    if len(splits) >= 2
+                        if splits[1] in ['question', 'choice', 'role']:
+                            cmd_type = splits[1]
+                        if len(splits) <= 3:
+                            await client.send_message(message.channel, 'Incorrect number of arguments. Correct usage: !<add|remove> choice <choice text>')
                 elif cmd == "!remove":
                     pass
             else:

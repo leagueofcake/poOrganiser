@@ -13,6 +13,7 @@ except:
 
 c.execute('''CREATE TABLE events(
     id INTEGER PRIMARY KEY,
+    ownerid INTEGER NOT NULL,
     name TEXT NOT NULL,
     location TEXT,
     time DATE);

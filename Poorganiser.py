@@ -12,6 +12,14 @@ class Poorganiser():
     def __init__(self):
         self._engine = create_engine(porg_config.DB_URL)
         self.s = sessionmaker(bind=self._engine)()
+
+    def update(self, obj):
+        if isinstance(obj, EventUser): # Need to convert list to string before storing in db
+
+            obj.roles = str(obj.roles)
+        self.s.commit()
+        return obj
+
     # User
     def add_user(self, username):
         u = User(username)
@@ -33,11 +41,11 @@ class Poorganiser():
             return None
 
     # Event
-    def add_event(self, name, location, year=None, month=None, day=None):
+    def add_event(self, ownerid, name, location, year=None, month=None, day=None):
         date = None
         if year and month and day:
             date = datetime.date(year, month, day)
-        e = Event(name, location, date)
+        e = Event(ownerid, name, location, date)
         self.s.add(e)
         self.s.commit()
         return e
@@ -51,8 +59,7 @@ class Poorganiser():
         if e != None:
             self.s.commit()
             return True # deleted
-        else:
-            return None
+        return None
 
     # EventUser
     def add_eventuser(self, eventid, userid, isgoing):
@@ -63,25 +70,15 @@ class Poorganiser():
         return eu
 
     def get_eventuser(self, eventid, userid):
-        return self.s.query(EventUser).filter(EventUser.eventid == eventid).filter(EventUser.userid == userid).one()
+        return self.s.query(EventUser).filter(EventUser.eventid == eventid).filter(EventUser.userid == userid).first()
 
-    def update(self, obj):
-        if isinstance(obj, EventUser): # Need to convert list to string before storing in db
-
-            obj.roles = str(obj.roles)
-        self.s.commit()
-        return obj
-
-    # EventUser
-    def add_eventuser(self, eventid, userid, isgoing, roles=[]):
-        eu = EventUser(eventid, userid, isgoing, roles)
-        eu.roles = str(eu.roles) # Convert to string
-        self.s.add(eu)
-        self.s.commit()
-        return eu
-
-    def get_eventuser(self, eventid, userid):
-        return self.s.query(EventUser).filter(EventUser.eventid == eventid).filter(EventUser.userid == userid).one()
+    def remove_eventuser(self, eventid, userid):
+        eu = self.get_eventuser(eventid, userid)
+        self.s.query(EventUser).filter(EventUser.eventid == eventid).filter(EventUser.userid == userid).delete()
+        if eu != None:
+            self.s.commit()
+            return True # Deleted
+        return None
 
     # Question
     def get_question(self, questionid):

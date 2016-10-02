@@ -80,7 +80,7 @@ async def on_message(message):
         helpOutput += "!past = View a list of all past events.\n"
         helpOutput += "!paster = View a list of all past event\n"
         helpOutput += "!mystatus = Brings up your current role for all events.\n"
-        helpOutput += "!questions <event ID> = Brings up a list of questions associated with event <ID>\n"
+        helpOutput += "!survey <event ID> = Brings up a list of questions associated with event <ID>\n"
         helpOutput += "!event <event ID> = View details for the associated event.\n"
         helpOutput += "!question <question ID> <event ID> = View question text and options for the event<ID>\n"
         helpOutput += "!vote <question ID> <option ID> = Votes the selected option for the selected question.\n"
@@ -159,10 +159,22 @@ async def on_message(message):
                     await client.send_message(message.channel, 'Event not found')
                 else:
                     await client.send_message(message.channel, fullEventInfo(event))
-
+        elif cmd == "!question":
+            if len(splits) <= 1:
+                await client.send_message(message.channel, 'Incorrect number of arguments. Correct usage: !question <question id>')
+            elif not splits[1].isdigit(): # Not a number!
+                await client.send_message(message.channel, 'Incorrect question id type. Please specify a number.')
+            else:
+                out = ''
+                eventid = int(splits[1])
+                question = porg.get_question(eventid)
+                choices = porg.get_questionchoices(question.get_questionid())
+                for choice in choices:
+                    out += '\t{}\n'.format(choice.get_choicetext())
+                await client.send_message(message.channel, 'Question: {}\nChoices:\n{}'.format(question.get_text(), out))
         elif cmd == "!survey": # Get all questions associated with event
             if len(splits) <= 1:
-                await client.send_message(message.channel, 'Incorrect number of arguments. Correct usage: !questions <eventid>')
+                await client.send_message(message.channel, 'Incorrect number of arguments. Correct usage: !survey <eventid>')
             elif not splits[1].isdigit(): # Not a number!
                 await client.send_message(message.channel, 'Incorrect event id type. Please specify a number.')
             else:

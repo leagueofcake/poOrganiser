@@ -46,7 +46,7 @@ async def on_message(message):
     elif content.startswith('!help'):
         helpOutput = ""
         helpOutput += "         ヽ༼ຈل͜ຈ༽ﾉ Welcome to the Discord 'Poor Organizer' poOrganiser bot! ヽ༼ຈل͜ຈ༽ﾉ\n\n"
-        helpOutput += "                            (´･ω･`) Yeeeeeeeboizzz (´･ω･`)\n\n"   
+        helpOutput += "                            (>´･ω･`)> Yeeeeeeeboizzz <(´･ω･`<)\n\n"   
         helpOutput += "（ ° ʖ °)つ━☆・*。\n"
         helpOutput += " ⊂　　 ノ 　　　・゜+.\n"
         helpOutput += "　しーＪ　　　°。+ ´¨)\n"

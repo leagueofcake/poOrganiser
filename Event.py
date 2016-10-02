@@ -32,14 +32,6 @@ class Event(Base):
     def get_time(self):
         return self.time
 
-    def get_attendee(self, name):
-        if name in self.attendees: # Check if in attendee dict
-            return self.attendees[name]
-        return None # User not found
-
-    def get_attendees(self):
-        return self.attendees
-
     def set_ownerid(self, ownerid):
         self.ownerid = ownerid
 

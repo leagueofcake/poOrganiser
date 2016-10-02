@@ -4,7 +4,7 @@ from create_base import Base
 
 class Question(Base):
     __tablename__ = 'questions'
-    id = Column(Integer, primary_key=True)
+    questionid = Column(Integer, primary_key=True)
     eventid = Column(Integer)
     text = Column(Unicode(100))
     numchoices = Column(Integer)
@@ -12,15 +12,15 @@ class Question(Base):
     yettovote = Column(Unicode(100))
 
     def __init__(self, eventid, text, yettovote, numchoices=1, pref=False):
-        self.id = None
+        self.questionid = None
         self.eventid = eventid
         self.text = text
         self.yettovote = yettovote
         self.numchoices = numchoices
         self.preferential = pref
 
-    def get_id(self):
-        return self.id
+    def get_questionid(self):
+        return self.questionid
 
     def get_eventid(self):
         return self.eventid

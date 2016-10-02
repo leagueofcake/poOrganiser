@@ -25,7 +25,7 @@ def fullEventInfo(event):
     fullInfo = ""
     eventID = event.get_id()
     event_name = event.get_name()
-    fullInfo += "**Event** {}: {}\n".format(eventID, event_name)
+    fullInfo += "**Event [{}]:** {}\n".format(eventID, event_name)
     event_location = event.get_location()
     fullInfo += "**Location:** {}\n".format(event_location)
     event_time = event.get_time()
@@ -191,7 +191,7 @@ async def on_message(message):
                 eventid = int(splits[1])
                 questions = porg.get_questions(eventid)
                 for question in questions:
-                    out += '{} {}\n'.format(question.get_questionid()question.get_text())
+                    out += '{} {}\n'.format(question.get_questionid(), question.get_text())
                     choices = porg.get_questionchoices(question.get_questionid())
                     for choice in choices:
                         out += '\t{} {}\n'.format(choice.get_id(), choice.get_choicetext())

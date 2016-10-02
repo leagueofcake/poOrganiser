@@ -7,10 +7,10 @@ class EventUser(Base):
     eventuserid = Column(Integer, primary_key=True)
     eventid = Column(Integer)
     userid = Column(Integer)
-    isgoing = Column(Boolean)
+    isgoing = Column(Unicode(20))
     roles = Column(Unicode(100))
 
-    def __init__(self, eventid, userid, isgoing=False, roles=[]):
+    def __init__(self, eventid, userid, isgoing='Invited', roles=[]):
         self.eventuserid = None
         self.eventid = eventid
         self.userid = userid
@@ -28,10 +28,7 @@ class EventUser(Base):
         print("\tUSER ROLES ", self.roles)
 
     def set_isgoing(self, isgoing):
-        if isinstance(isgoing, bool):
-            self.isgoing = isgoing
-        else: # Not a boolean - return None
-            return None
+        self.isgoing = isgoing
 
     def add_role(self, role):
         self.roles = ast.literal_eval(str(self.roles)) # Convert to list before appending

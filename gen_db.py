@@ -28,7 +28,7 @@ c.execute('''CREATE TABLE eventusers(
     eventuserid INTEGER PRIMARY KEY,
     eventid INTEGER NOT NULL,
     userid INTEGER NOT NULL,
-    isgoing BOOLEAN NOT NULL,
+    isgoing TEXT NOT NULL,
     roles TEXT);
 ''')
 

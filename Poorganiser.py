@@ -6,6 +6,7 @@ from Event import Event
 from User import User
 from EventUser import EventUser
 from Question import Question
+from QuestionChoice import QuestionChoice
 from sqlalchemy.orm import sessionmaker
 
 class Poorganiser():
@@ -74,6 +75,9 @@ class Poorganiser():
     def get_eventuser(self, eventid, userid):
         return self.s.query(EventUser).filter(EventUser.eventid == eventid).filter(EventUser.userid == userid).first()
 
+    def get_eventusers(self, eventid):
+        return self.s.query(EventUser).filter(EventUser.eventid == eventid).all()
+
     def remove_eventuser(self, eventid, userid):
         eu = self.get_eventuser(eventid, userid)
         self.s.query(EventUser).filter(EventUser.eventid == eventid).filter(EventUser.userid == userid).delete()
@@ -85,6 +89,9 @@ class Poorganiser():
     # Question
     def get_question(self, questionid):
         return self.s.query(Question).get(questionid)
+
+    def get_questions(self, eventid):
+        return self.s.query(Question).filter(Question.eventid == eventid).all()
 
     def add_question(self, eventid, text, yettovote, choices=1, pref=False):
         q = Question(eventid, text, yettovote, choices, pref)
@@ -100,3 +107,17 @@ class Poorganiser():
             self.s.commit()
             return True
         return None
+
+    # QuestionChoice
+    def add_questionchoice(self, questionid, choicetext, votes=[]):
+        qc = QuestionChoice(questionid, choicetext, votes)
+        qc.votes = str(qc.votes)
+        self.s.add(qc)
+        self.s.commit()
+        return qc
+
+    def get_questionchoice(self, choiceid):
+        return self.s.query(QuestionChoice).filter(QuestionChoice.choiceid == choiceid).first()
+
+    def get_questionchoices(self, questionid):
+        return self.s.query(QuestionChoice).filter(QuestionChoice.questionid == questionid).all()

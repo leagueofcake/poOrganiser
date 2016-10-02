@@ -143,7 +143,7 @@ class Poorganiser():
         return successful
 
     def get_result(self, questionid):
-        choices = self.get_questionchoice(questionid)
+        choices = self.get_questionchoices(questionid)
         ans = None
         count = 0
 

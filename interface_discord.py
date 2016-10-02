@@ -7,6 +7,12 @@ import shlex, datetime
 client = discord.Client()
 porg = Poorganiser()
 
+def idToUsername(members, userID):
+    for member in members:
+        if int(member.id) == userID:
+            return member.name
+    return name
+
 @client.event
 async def on_ready():
     print('Logged in as')
@@ -35,13 +41,15 @@ async def on_message(message):
     elif content.strip() == "!survey":
         pass
     elif content.strip() == "!mystatus":
-        pass
-        #TODO NEXT
         user = porg.get_user(message.author.id)
+        status_message = ""
         if not user:
-            await client.send_message(message.channel, 'Not registered! Use !register')
+            status_message += 'Not registered! Use !register'
         else:
-            status_message = 'Registered user {} with id {}.'.format(message.author.display_name, message.author.id)
+            status_message += 'Registered user {} with id {}.\n'.format(message.author.display_name, message.author.id)
+            status_message += "Your events:\n"
+
+        await client.send_message(message.channel, status_message)
 
     else: #multi argument commands
         splits = shlex.split(content)

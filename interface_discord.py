@@ -14,7 +14,7 @@ def idToUsername(members, userID):
     return None
 
 def shortEventInfo(event):
-    return None
+    
 
 def fullEventInfo(event):
     return None

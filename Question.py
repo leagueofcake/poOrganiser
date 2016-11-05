@@ -32,7 +32,7 @@ class Question(Base):
         return self.text
 
     def set_text(self, text):
-        self.question_text = text
+        self.text = text
 
 # def run_tests():
 #     test_get_text()

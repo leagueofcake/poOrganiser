@@ -2,17 +2,20 @@
 import unittest
 from EventUser import EventUser
 
+
 class TestEvent(unittest.TestCase):
-    # TODO: Update for isGoing strings
-    # def test_get_isgoing(self):
-    #     eu1 = EventUser(4, 2)
-    #     self.assertFalse(eu1.get_isgoing())
-    #
-    #     eu1 = EventUser(1, 2, False, [])
-    #     self.assertFalse(eu1.get_isgoing())
-    #
-    #     eu1 = EventUser(9, 9, True, [])
-    #     self.assertTrue(eu1.get_isgoing())
+    def test_get_isgoing(self):
+        eu1 = EventUser(4, 2)
+        self.assertEqual(eu1.get_isgoing(), "Invited")
+
+        eu1 = EventUser(1, 2, "Invited", [])
+        self.assertEqual(eu1.get_isgoing(), "Invited")
+
+        eu1 = EventUser(1, 2, "Going", [])
+        self.assertEqual(eu1.get_isgoing(), "Going")
+
+        eu1 = EventUser(1, 2, "Not Going", [])
+        self.assertEqual(eu1.get_isgoing(), "Not Going")
 
     def test_get_roles(self):
         eu1 = EventUser(5, 10)
@@ -27,23 +30,13 @@ class TestEvent(unittest.TestCase):
         eu1 = EventUser(1266, 987, True, ['bring food', 'drive'])
         self.assertEqual(eu1.get_roles(), ['bring food', 'drive'])
 
-    # TODO: Update for isGoing strings        
-    # def test_set_isgoing(self):
-    #     eu1 = EventUser(1, 1)
-    #     self.assertFalse(eu1.get_isgoing())
-    #     eu1.set_isgoing(True)
-    #     self.assertTrue(eu1.get_isgoing())
-    #     eu1 = EventUser(43, 103, False)
-    #     self.assertFalse(eu1.get_isgoing())
-    #     eu1 = EventUser(43, 103, True, [])
-    #     self.assertTrue(eu1.get_isgoing())
-    #
-    #     # Test invalid inputs - should be None
-    #     self.assertIsNone(eu1.set_isgoing('blah blah blah'))
-    #     self.assertIsNone(eu1.set_isgoing('True'))
-    #     self.assertIsNone(eu1.set_isgoing('False'))
-    #     self.assertIsNone(eu1.set_isgoing(1234))
-    #     self.assertIsNone(eu1.set_isgoing(['a', 'b', 3]))
+    def test_set_isgoing(self):
+        eu1 = EventUser(1, 1)
+        self.assertEqual(eu1.get_isgoing(), "Invited")
+        eu1.set_isgoing("Going")
+        self.assertEqual(eu1.get_isgoing(), "Going")
+        eu1 = EventUser(43, 103, "Not Going")
+        self.assertEqual(eu1.get_isgoing(), "Not Going")
 
     def test_add_role(self):
         eu1 = EventUser(5, 10, True, [])

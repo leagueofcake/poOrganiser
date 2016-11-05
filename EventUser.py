@@ -2,6 +2,7 @@ import ast
 from create_base import Base
 from sqlalchemy import Column, Integer, Unicode, UnicodeText, String, Date, Boolean
 
+
 class EventUser(Base):
     __tablename__ = 'eventusers'
     eventuserid = Column(Integer, primary_key=True)

@@ -1,7 +1,8 @@
 import unittest
 from User import User
 
-class TestEvent(unittest.TestCase):
+
+class TestUser(unittest.TestCase):
     def test_get_username(self):
         u1 = User("") # Empty case
         self.assertEqual(u1.get_username(),"")

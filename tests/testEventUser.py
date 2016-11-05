@@ -3,7 +3,7 @@ import unittest
 from EventUser import EventUser
 
 
-class TestEvent(unittest.TestCase):
+class TestEventUser(unittest.TestCase):
     def test_get_isgoing(self):
         eu1 = EventUser(4, 2)
         self.assertEqual(eu1.get_isgoing(), "Invited")

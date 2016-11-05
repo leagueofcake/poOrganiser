@@ -1,6 +1,7 @@
 import unittest
 from QuestionChoice import QuestionChoice
 
+
 class TestQuestionChoice(unittest.TestCase):
     def test_get_id(self):
         qc1 = QuestionChoice(1, "Choice 1")

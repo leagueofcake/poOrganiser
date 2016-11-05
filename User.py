@@ -1,6 +1,9 @@
 from sqlalchemy import Column, Integer, Unicode, UnicodeText, String, Date
 from create_base import Base
+
+
 class User(Base):
+    """Usernames are assumed to be unique (e.g. Discord user id)."""
     __tablename__ = 'users'
     id = Column(Integer, primary_key=True)
     username = Column(Unicode(40))

@@ -1,4 +1,3 @@
-from User import User
 from create_base import Base
 from sqlalchemy import Column, Integer, Unicode, UnicodeText, String, Date
 
@@ -49,8 +48,7 @@ class Event(Base):
         print("EVENT LOCATION = ", self.location)
         print("EVENT TIME = ", self.time)
 
-
-    def print_info(self): #return string for discord output
+    def print_info(self):  # Return string for discord output
         outputStr = "Event: " + self.name + "\n"
         outputStr += "Location: " + self.location + "\n"
         outputStr += "Date: " + self.time + "\n"

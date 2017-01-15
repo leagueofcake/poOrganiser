@@ -1,5 +1,6 @@
 from sqlalchemy import Column, Integer, Unicode, PickleType
 from create_base import Base
+from Event import Event
 
 
 class User(Base):
@@ -31,14 +32,38 @@ class User(Base):
     def set_username(self, username):
         self.username = username
 
-    def add_event_organised(self, event_id):
-        self.events_organised_ids.append(event_id)
+    def add_event_organised(self, obj):
+        """obj may be an int denoting an Event id or an Event object. Raises TypeError if obj is not either type."""
+        if isinstance(obj, int):
+            self.events_organised_ids.append(obj)
+        elif isinstance(obj, Event):
+            self.events_organised_ids.append(obj.id)
+        else:
+            raise TypeError("Invalid object type for add_event_organised: expected int or Event")
 
-    def add_event_attending(self, event_id):
-        self.events_attending_ids.append(event_id)
+    def add_event_attending(self, obj):
+        """obj may be an int denoting an Event id or an Event object. Raises TypeError if obj is not either type."""
+        if isinstance(obj, int):
+            self.events_attending_ids.append(obj)
+        elif isinstance(obj, Event):
+            self.events_organised_ids.append(obj.id)
+        else:
+            raise TypeError("Invalid object type for add_event_attending: expected int or Event")
 
-    def remove_event_organised(self, event_id):
-        self.events_organised_ids.remove(event_id)
+    def remove_event_organised(self, obj):
+        """obj may be an int denoting an Event id or an Event object. Raises TypeError if obj is not either type."""
+        if isinstance(obj, int):
+            self.events_organised_ids.remove(obj)
+        elif isinstance(obj, Event):
+            self.events_organised_ids.remove(obj.id)
+        else:
+            raise TypeError("Invalid object type for remove_event_organised: expected int or Event")
 
-    def remove_event_attending(self, event_id):
-        self.events_attending_ids.remove(event_id)
+    def remove_event_attending(self, obj):
+        """obj may be an int denoting an Event id or an Event object. Raises TypeError if obj is not either type."""
+        if isinstance(obj, int):
+            self.events_attending_ids.remove(obj)
+        elif isinstance(obj, Event):
+            self.events_organised_ids.remove(obj.id)
+        else:
+            raise TypeError("Invalid object type for remove_event_attending: expected int or Event")

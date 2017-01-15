@@ -1,6 +1,5 @@
 import unittest
-from User import User
-from Event import Event
+from Poorganiser import User, Event
 
 
 class TestUser(unittest.TestCase):

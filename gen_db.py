@@ -5,7 +5,7 @@ c = conn.cursor()
 try:
     c.execute('DROP TABLE events')
     c.execute('DROP TABLE users')
-    c.execute('DROP TABLE eventusers')
+    c.execute('DROP TABLE attendance')
     c.execute('DROP TABLE questions')
     c.execute('DROP TABLE choices')
 except:
@@ -16,7 +16,8 @@ c.execute('''CREATE TABLE events(
     owner_id INTEGER NOT NULL,
     name TEXT NOT NULL,
     location TEXT,
-    time DATE);
+    time DATE,
+    attendee_ids BLOB);
 ''')
 
 c.execute('''CREATE TABLE users(
@@ -26,12 +27,12 @@ c.execute('''CREATE TABLE users(
     events_attending_ids BLOB);
 ''')
 
-c.execute('''CREATE TABLE eventusers(
-    event_user_id INTEGER PRIMARY KEY,
-    event_id INTEGER NOT NULL,
+c.execute('''CREATE TABLE attendance(
+    id INTEGER PRIMARY KEY,
     user_id INTEGER NOT NULL,
-    is_going TEXT NOT NULL,
-    roles TEXT);
+    event_id INTEGER NOT NULL,
+    going_status TEXT NOT NULL,
+    roles BLOB);
 ''')
 
 c.execute('''CREATE TABLE questions(

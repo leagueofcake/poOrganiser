@@ -132,3 +132,43 @@ class Event(Base):
 
         if attendee_id not in self.attendee_ids:
             self.events_attending_ids.append(attendee_id)
+
+
+class Attendance(Base):
+    __tablename__ = 'attendance'
+    id = Column(Integer, primary_key=True)
+    user_id = Column(Integer)
+    event_id = Column(Integer)
+    going_status = Column(Unicode(40))
+    roles = Column(PickleType)
+
+    def __init__(self, user_id, event_id):
+        self.id = None
+        self.user_id = user_id
+        self.event_id = event_id
+        self.going_status = ''
+        self.roles = []
+
+    def get_id(self):
+        return self.id
+
+    def get_user_id(self):
+        return self.user_id
+
+    def get_event_id(self):
+        return self.event_id
+
+    def get_going_status(self):
+        return self.going_status
+
+    def get_roles(self):
+        return self.roles
+
+    def set_going_status(self, status):
+        self.going_status = status
+
+    def add_role(self, role):
+        self.roles.append(role)
+
+    def remove_role(self, role):
+        self.roles.remove(role)

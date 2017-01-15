@@ -90,7 +90,7 @@ class Event(Base):
     name = Column(Unicode(40))
     location = Column(Unicode(40))
     time = Column(Date)
-    attendee_ids = Column(PickleType)
+    attendance_ids = Column(PickleType)
 
     def __init__(self, owner_id, name, location, time):
         self.id = None

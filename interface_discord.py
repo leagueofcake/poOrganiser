@@ -1,6 +1,6 @@
 #!/usr/bin/env python3.5
 """
-NB: Interface is currently broken - recreating database interface module
+NB: Interface is currently broken - redesigning application structure
 """
 from config import discord_config
 import discord, asyncio

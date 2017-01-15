@@ -1,5 +1,8 @@
 #!/usr/bin/env python3.5
 import re
+"""
+NB: Interface is currently broken - redesigning application structure
+"""
 from Event import *
 from User import *
 

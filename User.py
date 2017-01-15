@@ -46,7 +46,7 @@ class User(Base):
         if isinstance(obj, int):
             self.events_attending_ids.append(obj)
         elif isinstance(obj, Event):
-            self.events_organised_ids.append(obj.id)
+            self.events_attending_ids.append(obj.id)
         else:
             raise TypeError("Invalid object type for add_event_attending: expected int or Event")
 
@@ -64,6 +64,6 @@ class User(Base):
         if isinstance(obj, int):
             self.events_attending_ids.remove(obj)
         elif isinstance(obj, Event):
-            self.events_organised_ids.remove(obj.id)
+            self.events_attending_ids.remove(obj.id)
         else:
             raise TypeError("Invalid object type for remove_event_attending: expected int or Event")

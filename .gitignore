@@ -2,3 +2,4 @@ __pycache__/*
 *.pyc
 porg.db
 /config/discord_config.py
+/.idea/

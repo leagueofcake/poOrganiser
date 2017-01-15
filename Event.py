@@ -4,14 +4,14 @@ from sqlalchemy import Column, Integer, Unicode, UnicodeText, String, Date
 class Event(Base):
     __tablename__ = 'events'
     id = Column(Integer, primary_key=True)
-    ownerid = Column(Integer)
+    owner_id = Column(Integer)
     name = Column(Unicode(40))
     location = Column(Unicode(40))
     time = Column(Date)
 
-    def __init__(self, ownerid, name, location, time):
+    def __init__(self, owner_id, name, location, time):
         self.id = None
-        self.ownerid = ownerid
+        self.owner_id = owner_id
         self.name = name
         self.location = location
         self.time = time
@@ -19,8 +19,8 @@ class Event(Base):
     def get_id(self):
         return self.id
 
-    def get_ownerid(self):
-        return self.ownerid
+    def get_owner_id(self):
+        return self.owner_id
 
     def get_name(self):
         return self.name
@@ -31,8 +31,8 @@ class Event(Base):
     def get_time(self):
         return self.time
 
-    def set_ownerid(self, ownerid):
-        self.ownerid = ownerid
+    def set_owner_id(self, owner_id):
+        self.owner_id = owner_id
 
     def set_name(self, name):
         self.name = name

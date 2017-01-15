@@ -5,29 +5,29 @@ from create_base import Base
 
 class Question(Base):
     __tablename__ = 'questions'
-    questionid = Column(Integer, primary_key=True)
-    eventid = Column(Integer)
+    question_id = Column(Integer, primary_key=True)
+    event_id = Column(Integer)
     text = Column(Unicode(100))
-    numchoices = Column(Integer)
+    num_choices = Column(Integer)
     preferential = Column(Boolean)
-    yettovote = Column(Unicode(100))
+    yet_to_vote = Column(Unicode(100))
 
-    def __init__(self, eventid, text, yettovote, numchoices=1, pref=False):
-        self.questionid = None
-        self.eventid = eventid
+    def __init__(self, event_id, text, yet_to_vote, num_choices=1, pref=False):
+        self.question_id = None
+        self.event_id = event_id
         self.text = text
-        self.yettovote = yettovote
-        self.numchoices = numchoices
+        self.yet_to_vote = yet_to_vote
+        self.num_choices = num_choices
         self.preferential = pref
 
-    def get_questionid(self):
-        return self.questionid
+    def get_question_id(self):
+        return self.question_id
 
-    def get_eventid(self):
-        return self.eventid
+    def get_event_id(self):
+        return self.event_id
 
-    def set_eventid(self, eventid):
-        self.eventid = eventid
+    def set_event_id(self, event_id):
+        self.event_id = event_id
 
     def get_text(self):
         return self.text

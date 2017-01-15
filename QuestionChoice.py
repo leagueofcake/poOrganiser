@@ -5,31 +5,31 @@ from create_base import Base
 
 class QuestionChoice(Base):
     __tablename__ = 'choices'
-    choiceid = Column(Integer, primary_key=True)
-    questionid = Column(Integer)
-    choicetext = Column(Unicode(100))
+    choice_id = Column(Integer, primary_key=True)
+    question_id = Column(Integer)
+    choice_text = Column(Unicode(100))
     votes = Column(Unicode(100))
 
-    def __init__(self, questionid, choicetext, votes=[]):
-        self.choiceid = None
-        self.questionid = questionid
-        self.choicetext = choicetext
+    def __init__(self, question_id, choice_text, votes=[]):
+        self.choice_id = None
+        self.question_id = question_id
+        self.choice_text = choice_text
         self.votes = votes
 
     def get_id(self):
-        return self.choiceid
+        return self.choice_id
 
-    def get_questionid(self):
-        return self.questionid
+    def get_question_id(self):
+        return self.question_id
 
-    def get_choicetext(self):
-        return self.choicetext
+    def get_choice_text(self):
+        return self.choice_text
 
     def get_votes(self):
         return self.votes
 
-    def set_choicetext(self, choicetext):
-        self.choicetext = choicetext
+    def set_choice_text(self, choice_text):
+        self.choice_text = choice_text
 
     def add_vote(self, user):
         self.votes = ast.literal_eval(str(self.votes)) # Convert to list before appending

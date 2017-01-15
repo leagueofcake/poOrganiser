@@ -13,7 +13,7 @@ except:
 
 c.execute('''CREATE TABLE events(
     id INTEGER PRIMARY KEY,
-    ownerid INTEGER NOT NULL,
+    owner_id INTEGER NOT NULL,
     name TEXT NOT NULL,
     location TEXT,
     time DATE);
@@ -25,26 +25,26 @@ c.execute('''CREATE TABLE users(
 ''')
 
 c.execute('''CREATE TABLE eventusers(
-    eventuserid INTEGER PRIMARY KEY,
-    eventid INTEGER NOT NULL,
-    userid INTEGER NOT NULL,
-    isgoing TEXT NOT NULL,
+    event_user_id INTEGER PRIMARY KEY,
+    event_id INTEGER NOT NULL,
+    user_id INTEGER NOT NULL,
+    is_going TEXT NOT NULL,
     roles TEXT);
 ''')
 
 c.execute('''CREATE TABLE questions(
-    questionid INTEGER PRIMARY KEY,
-    eventid INTEGER NOT NULL,
+    question_id INTEGER PRIMARY KEY,
+    event_id INTEGER NOT NULL,
     text TEXT NOT NULL,
-    numchoices INTEGER NOT NULL,
+    num_choices INTEGER NOT NULL,
     preferential BOOLEAN NOT NULL,
-    yettovote TEXT);
+    yet_to_vote TEXT);
 ''')
 
 c.execute('''CREATE TABLE choices(
-    choiceid INTEGER PRIMARY KEY,
-    questionid INTEGER NOT NULL,
-    choicetext text NOT NULL,
+    choice_id INTEGER PRIMARY KEY,
+    question_id INTEGER NOT NULL,
+    choice_text text NOT NULL,
     votes TEXT);
 ''')
 

@@ -16,6 +16,14 @@ class User(Base):
         self.events_organised_ids = []
         self.events_attending_ids = []
 
+    def __str__(self):
+        return '{\n' + \
+               '    id: {},\n'.format(self.id) + \
+               '    username: {},\n'.format(self.username) + \
+               '    events_organised_ids: {},\n'.format(self.events_organised_ids) + \
+               '    events_attending_ids: {},\n'.format(self.events_attending_ids) + \
+               '}'
+
     def get_id(self):
         return self.id
 
@@ -92,6 +100,16 @@ class Event(Base):
         self.time = time
         self.attendance_ids = []
 
+    def __str__(self):
+        return '{\n' + \
+               '    id: {},\n'.format(self.id) + \
+               '    owner_id: {},\n'.format(self.owner_id) + \
+               '    name: {},\n'.format(self.name) + \
+               '    location: {},\n'.format(self.location) + \
+               '    time: {}\n'.format(self.time) + \
+               '    attendance_ids: {}\n'.format(self.attendance_ids) + \
+               '}'
+
     def get_id(self):
         return self.id
 
@@ -160,6 +178,15 @@ class Attendance(Base):
         self.event_id = event_id
         self.going_status = ''
         self.roles = []
+
+    def __str__(self):
+        return '{\n' + \
+               '    id: {},\n'.format(self.id) + \
+               '    user_id: {},\n'.format(self.user_id) + \
+               '    event_id: {},\n'.format(self.event_id) + \
+               '    going_status: {},\n'.format(self.going_status) + \
+               '    roles: {}\n'.format(self.roles) + \
+               '}'
 
     def get_id(self):
         return self.id

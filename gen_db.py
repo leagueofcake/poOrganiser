@@ -21,7 +21,9 @@ c.execute('''CREATE TABLE events(
 
 c.execute('''CREATE TABLE users(
     id INTEGER PRIMARY KEY,
-    username TEXT NOT NULL);
+    username TEXT NOT NULL,
+    events_organised_ids BLOB,
+    events_attending_ids BLOB);
 ''')
 
 c.execute('''CREATE TABLE eventusers(

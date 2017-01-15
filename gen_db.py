@@ -17,7 +17,7 @@ c.execute('''CREATE TABLE events(
     name TEXT NOT NULL,
     location TEXT,
     time DATE,
-    attendee_ids BLOB);
+    attendance_ids BLOB);
 ''')
 
 c.execute('''CREATE TABLE users(

@@ -90,7 +90,7 @@ class Event(Base):
         self.name = name
         self.location = location
         self.time = time
-        self.attendee_ids = []
+        self.attendance_ids = []
 
     def get_id(self):
         return self.id
@@ -107,8 +107,8 @@ class Event(Base):
     def get_time(self):
         return self.time
 
-    def get_attendee_ids(self):
-        return self.attendee_ids
+    def get_attendance_ids(self):
+        return self.attendance_ids
 
     def set_owner_id(self, owner_id):
         self.owner_id = owner_id
@@ -122,16 +122,28 @@ class Event(Base):
     def set_time(self, time):
         self.time = time
 
-    def add_attendee(self, obj):
-        attendee_id = obj
+    def add_attendance(self, obj):
+        """obj may be an int denoting an Attendance id or an Attendance object. Attendance id is not added if it
+        already exists. Raises TypeError if obj is not either type."""
+        attendance_id = obj
 
-        if isinstance(obj, Attendee.Attendee):
-            attendee_id = obj.id
+        if isinstance(obj, Attendance):
+            attendance_id = obj.id
         elif not isinstance(obj, int):
-            raise TypeError("Invalid object type for add_event_attending: expected int or Event")
+            raise TypeError("Invalid object type for add_attendance: expected int or Attendance")
 
-        if attendee_id not in self.attendee_ids:
-            self.events_attending_ids.append(attendee_id)
+        if attendance_id not in self.attendance_ids:
+            self.attendance_ids.append(attendance_id)
+
+    def remove_attendance(self, obj):
+        """obj may be an int denoting an Attendance id or an Attendance object. Raises TypeError if obj is not
+        either type."""
+        if isinstance(obj, int):
+            self.attendance_ids.remove(obj)
+        elif isinstance(obj, Attendance):
+            self.attendance_ids.remove(obj.id)
+        else:
+            raise TypeError("Invalid object type for remove_attendance: expected int or Attendance")
 
 
 class Attendance(Base):

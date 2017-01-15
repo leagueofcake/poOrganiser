@@ -1,11 +1,14 @@
 #!/usr/bin/env python3.5
+"""
+NB: Interface is currently broken - recreating database interface module
+"""
 from config import discord_config
 import discord, asyncio
-from Poorganiser import Poorganiser
+from DbInterface import DbInterface
 import shlex, datetime
 
 client = discord.Client()
-porg = Poorganiser()
+porg = DbInterface()
 
 def idToUsername(members, userID):
     for member in members:

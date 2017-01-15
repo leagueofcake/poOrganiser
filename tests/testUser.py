@@ -57,6 +57,13 @@ class TestUser(unittest.TestCase):
         u.add_event_organised(2)
         self.assertEqual(u.get_events_organised_ids(), [1, 4, 2])
 
+        # Adding duplicates
+        u.add_event_organised(2)
+        self.assertEqual(u.get_events_organised_ids(), [1, 4, 2])
+
+        u.add_event_organised(4)
+        self.assertEqual(u.get_events_organised_ids(), [1, 4, 2])
+
         # Adding events with Event objects
         e = Event(1, "event", "location", "time")
         e.id = 34
@@ -91,6 +98,13 @@ class TestUser(unittest.TestCase):
         u.add_event_attending(2)
         self.assertEqual(u.get_events_attending_ids(), [1, 4, 2])
 
+        # Adding duplicates
+        u.add_event_attending(2)
+        self.assertEqual(u.get_events_attending_ids(), [1, 4, 2])
+
+        u.add_event_attending(4)
+        self.assertEqual(u.get_events_attending_ids(), [1, 4, 2])
+
         # Adding events with Event objects
         e = Event(1, "event", "location", "time")  # Add event using Event object
         e.id = 34
@@ -119,10 +133,12 @@ class TestUser(unittest.TestCase):
         # Removing events with event ids (integers)
         u = User("test")
         u.add_event_organised(1)
+        u.add_event_organised(1)
         u.add_event_organised(4)
         u.remove_event_organised(1)
         self.assertEqual(u.get_events_organised_ids(), [4])
         u.add_event_organised(2)
+        u.add_event_organised(99)
         u.add_event_organised(99)
         u.add_event_organised(1234)
         u.remove_event_organised(99)
@@ -191,12 +207,15 @@ class TestUser(unittest.TestCase):
             u.remove_event_organised(u)
 
     def test_remove_event_attending(self):
+        # Removing events with event ids (integers)
         u = User("test")
+        u.add_event_attending(1)
         u.add_event_attending(1)
         u.add_event_attending(4)
         u.remove_event_attending(1)
         self.assertEqual(u.get_events_attending_ids(), [4])
         u.add_event_attending(2)
+        u.add_event_attending(99)
         u.add_event_attending(99)
         u.add_event_attending(1234)
         u.remove_event_attending(99)

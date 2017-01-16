@@ -62,6 +62,14 @@ class PorgWrapper:
         self.db_interface.update(owner)
         self.db_interface.delete(e)
 
+    def get_attendances(self, event_id):
+        res = []
+        e = self.db_interface.get_by_id(event_id, Event)
+        for attendance_id in e.get_attendance_ids():
+            a = self.db_interface.get_by_id(attendance_id, Attendance)
+            res.append(a)
+        return res
+
     def create_attendance(self, user_id, event_id, going_status='invited', roles=list()):
         a = Attendance(user_id, event_id, going_status, roles)
         self.db_interface.add(a)

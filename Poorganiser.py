@@ -65,22 +65,34 @@ class User(Base):
             self.events_attending_ids.append(event_id)
 
     def remove_event_organised(self, obj):
-        """obj may be an int denoting an Event id or an Event object. Raises TypeError if obj is not either type."""
-        if isinstance(obj, int):
-            self.events_organised_ids.remove(obj)
-        elif isinstance(obj, Event):
-            self.events_organised_ids.remove(obj.id)
-        else:
+        """obj may be an int denoting an Event id or an Event object. Raises TypeError if obj is not either type.
+        Returns None if the event id is not found in self.events_organised_ids."""
+        event_id = obj
+
+        if isinstance(obj, Event):
+            event_id = obj.id
+        elif not isinstance(obj, int):
             raise TypeError("Invalid object type for remove_event_organised: expected int or Event")
 
-    def remove_event_attending(self, obj):
-        """obj may be an int denoting an Event id or an Event object. Raises TypeError if obj is not either type."""
-        if isinstance(obj, int):
-            self.events_attending_ids.remove(obj)
-        elif isinstance(obj, Event):
-            self.events_attending_ids.remove(obj.id)
+        if event_id in self.events_organised_ids:
+            self.events_organised_ids.remove(event_id)
         else:
+            return None
+
+    def remove_event_attending(self, obj):
+        """obj may be an int denoting an Event id or an Event object. Raises TypeError if obj is not either type.
+        Returns None if the event id is not found in self.events_attending_ids."""
+        event_id = obj
+
+        if isinstance(obj, Event):
+            event_id = obj.id
+        elif not isinstance(obj, int):
             raise TypeError("Invalid object type for remove_event_attending: expected int or Event")
+
+        if event_id in self.events_attending_ids:
+            self.events_attending_ids.remove(event_id)
+        else:
+            return None
 
 
 class Event(Base):

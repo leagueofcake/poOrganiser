@@ -177,20 +177,11 @@ class TestUser(unittest.TestCase):
         self.assertEqual(u.get_events_organised_ids(), [])
 
         # Test removing events that don't exist
-        with self.assertRaises(ValueError):
-            u.remove_event_organised(e)
-
-        with self.assertRaises(ValueError):
-            u.remove_event_organised(e3)
-
-        with self.assertRaises(ValueError):
-            u.remove_event_organised(2)
-
-        with self.assertRaises(ValueError):
-            u.remove_event_organised(1234)
-
-        with self.assertRaises(ValueError):
-            u.remove_event_organised(2)
+        self.assertIsNone(u.remove_event_organised(e))
+        self.assertIsNone(u.remove_event_organised(e3))
+        self.assertIsNone(u.remove_event_organised(2))
+        self.assertIsNone(u.remove_event_organised(1234))
+        self.assertIsNone(u.remove_event_organised(2))
 
         # Test removing events with invalid type
         with self.assertRaises(TypeError):
@@ -254,20 +245,11 @@ class TestUser(unittest.TestCase):
         self.assertEqual(u.get_events_attending_ids(), [])
 
         # Test removing events that don't exist
-        with self.assertRaises(ValueError):
-            u.remove_event_attending(e)
-
-        with self.assertRaises(ValueError):
-            u.remove_event_attending(e3)
-
-        with self.assertRaises(ValueError):
-            u.remove_event_attending(2)
-
-        with self.assertRaises(ValueError):
-            u.remove_event_attending(1234)
-
-        with self.assertRaises(ValueError):
-            u.remove_event_attending(2)
+        self.assertIsNone(u.remove_event_organised(e))
+        self.assertIsNone(u.remove_event_organised(e3))
+        self.assertIsNone(u.remove_event_organised(2))
+        self.assertIsNone(u.remove_event_organised(1234))
+        self.assertIsNone(u.remove_event_organised(2))
 
         # Test removing events with invalid type
         with self.assertRaises(TypeError):

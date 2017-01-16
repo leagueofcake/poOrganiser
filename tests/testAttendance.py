@@ -4,6 +4,47 @@ from Poorganiser import Attendance
 
 
 class TestAttendance(unittest.TestCase):
+    def test_constructor_assertions(self):
+        # Incorrect user_id type
+        with self.assertRaises(AssertionError):
+            Attendance(list(), 2)
+
+        with self.assertRaises(AssertionError):
+            Attendance(4.3, 2, going_status='not_going')
+
+        with self.assertRaises(AssertionError):
+            Attendance('blah', 2, going_status='going', roles=['bring_food'])
+
+        # Incorrect event_id type
+        with self.assertRaises(AssertionError):
+            Attendance(4, list())
+
+        with self.assertRaises(AssertionError):
+            Attendance(4, 4.3)
+
+        with self.assertRaises(AssertionError):
+            Attendance(4, 'blah')
+
+        # Incorrect going_status type
+        with self.assertRaises(AssertionError):
+            Attendance(4, 2, going_status=34)
+
+        with self.assertRaises(AssertionError):
+            Attendance(4, 2, going_status=12.34)
+
+        with self.assertRaises(AssertionError):
+            Attendance(4, 2, going_status=['going', 'not going'], roles=['food buyer'])
+
+        # Incorrect roles type
+        with self.assertRaises(AssertionError):
+            Attendance(4, 2, roles=34)
+
+        with self.assertRaises(AssertionError):
+            Attendance(4, 2, roles="food buyer")
+
+        with self.assertRaises(AssertionError):
+            Attendance(4, 2, roles=("food buyer",))
+
     def test_get_user_id(self):
         at = Attendance(4, 2)
         self.assertEqual(at.get_user_id(), 4)
@@ -57,6 +98,16 @@ class TestAttendance(unittest.TestCase):
         at = Attendance(43, 103, "not_going")
         self.assertEqual(at.get_going_status(), "not_going")
 
+        # Test setting going_status with invalid types
+        with self.assertRaises(AssertionError):
+            at.set_going_status(1234)
+
+        with self.assertRaises(AssertionError):
+            at.set_going_status(["going"])
+
+        with self.assertRaises(AssertionError):
+            at.set_going_status(at)
+
     def test_add_role(self):
         at = Attendance(5, 10, "going", [])
         at.add_role('bring food')
@@ -67,6 +118,16 @@ class TestAttendance(unittest.TestCase):
         at.add_role('do something')
         at.add_role('blah')
         self.assertEqual(at.get_roles(), ['Book venue', 'do something', 'blah'])
+
+        # Test setting role with invalid types
+        with self.assertRaises(AssertionError):
+            at.add_role(1234)
+
+        with self.assertRaises(AssertionError):
+            at.add_role(["food buyer"])
+
+        with self.assertRaises(AssertionError):
+            at.add_role(at)
 
     def test_remove_role(self):
         at = Attendance(5, 10, "going", [])

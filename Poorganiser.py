@@ -198,10 +198,10 @@ class Attendance(Base):
     roles = Column(PickleType)
 
     def __init__(self, user_id, event_id, going_status="invited", roles=list()):
-        assert(isinstance(user_id, int))
-        assert(isinstance(event_id, int))
-        assert(isinstance(going_status, str))
-        assert(isinstance(roles, list))
+        assert isinstance(user_id, int)
+        assert isinstance(event_id, int)
+        assert isinstance(going_status, str)
+        assert isinstance(roles, list)
 
         self.id = None
         self.user_id = user_id
@@ -234,11 +234,11 @@ class Attendance(Base):
         return self.roles
 
     def set_going_status(self, status):
-        assert(isinstance(status, str))
+        assert isinstance(status, str)
         self.going_status = status
 
     def add_role(self, role):
-        assert (isinstance(role, str))
+        assert isinstance(role, str)
         self.roles.append(role)
 
     def remove_role(self, role):

@@ -1,6 +1,6 @@
+from datetime import datetime
 from sqlalchemy import Column, Integer, Unicode, PickleType, Date
 from create_base import Base
-from datetime import datetime
 
 
 class User(Base):
@@ -12,7 +12,7 @@ class User(Base):
     events_attending_ids = Column(PickleType)
 
     def __init__(self, username):
-        assert(isinstance(username, str))
+        assert isinstance(username, str)
 
         self.id = None
         self.username = username
@@ -40,12 +40,12 @@ class User(Base):
         return self.events_attending_ids
 
     def set_username(self, username):
-        assert(isinstance(username, str))
+        assert isinstance(username, str)
         self.username = username
 
     def add_event_organised(self, obj):
-        """obj may be an int denoting an Event id or an Event object. Event is not added if it already exists.
-        Raises TypeError if obj is not either type."""
+        """obj may be an int denoting an Event id or an Event object. Event is not added
+        if it already exists. Raises TypeError if obj is not either type."""
         event_id = obj
         if isinstance(obj, Event):
             event_id = obj.id
@@ -56,8 +56,8 @@ class User(Base):
             self.events_organised_ids.append(event_id)
 
     def add_event_attending(self, obj):
-        """obj may be an int denoting an Event id or an Event object. Event is not added if it already exists.
-        Raises TypeError if obj is not either type."""
+        """obj may be an int denoting an Event id or an Event object. Event is not added if it
+        already exists. Raises TypeError if obj is not either type."""
         event_id = obj
 
         if isinstance(obj, Event):
@@ -69,8 +69,8 @@ class User(Base):
             self.events_attending_ids.append(event_id)
 
     def remove_event_organised(self, obj):
-        """obj may be an int denoting an Event id or an Event object. Raises TypeError if obj is not either type.
-        Returns None if the event id is not found in self.events_organised_ids."""
+        """obj may be an int denoting an Event id or an Event object. Raises TypeError if obj is
+        not either type. Returns None if the event id is not found in self.events_organised_ids."""
         event_id = obj
 
         if isinstance(obj, Event):
@@ -84,8 +84,8 @@ class User(Base):
             return None
 
     def remove_event_attending(self, obj):
-        """obj may be an int denoting an Event id or an Event object. Raises TypeError if obj is not either type.
-        Returns None if the event id is not found in self.events_attending_ids."""
+        """obj may be an int denoting an Event id or an Event object. Raises TypeError if obj is
+        not either type. Returns None if the event id is not found in self.events_attending_ids."""
         event_id = obj
 
         if isinstance(obj, Event):
@@ -109,10 +109,10 @@ class Event(Base):
     attendance_ids = Column(PickleType)
 
     def __init__(self, owner_id, name, location='', time=None):
-        assert(isinstance(owner_id, int))
-        assert(isinstance(name, str))
-        assert(isinstance(location, str))
-        assert(isinstance(time, datetime) or time is None)
+        assert isinstance(owner_id, int)
+        assert isinstance(name, str)
+        assert isinstance(location, str)
+        assert isinstance(time, datetime) or time is None
 
         self.id = None
         self.owner_id = owner_id
@@ -150,24 +150,24 @@ class Event(Base):
         return self.attendance_ids
 
     def set_owner_id(self, owner_id):
-        assert(isinstance(owner_id, int))
+        assert isinstance(owner_id, int)
         self.owner_id = owner_id
 
     def set_name(self, name):
-        assert (isinstance(name, str))
+        assert isinstance(name, str)
         self.name = name
 
     def set_location(self, location):
-        assert (isinstance(location, str))
+        assert isinstance(location, str)
         self.location = location
 
     def set_time(self, time):
-        assert (isinstance(time, datetime))
+        assert isinstance(time, datetime)
         self.time = time
 
     def add_attendance(self, obj):
-        """obj may be an int denoting an Attendance id or an Attendance object. Attendance id is not added if it
-        already exists. Raises TypeError if obj is not either type."""
+        """obj may be an int denoting an Attendance id or an Attendance object. Attendance id is
+        not added if it already exists. Raises TypeError if obj is not either type."""
         attendance_id = obj
 
         if isinstance(obj, Attendance):
@@ -179,8 +179,8 @@ class Event(Base):
             self.attendance_ids.append(attendance_id)
 
     def remove_attendance(self, obj):
-        """obj may be an int denoting an Attendance id or an Attendance object. Raises TypeError if obj is not
-        either type."""
+        """obj may be an int denoting an Attendance id or an Attendance object. Raises TypeError
+        if obj is not either type."""
         if isinstance(obj, int):
             self.attendance_ids.remove(obj)
         elif isinstance(obj, Attendance):

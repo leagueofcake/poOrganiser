@@ -33,6 +33,14 @@ class PorgWrapper:
         today = datetime.date.today()
         return self.db_interface.query(Event, Event.time > today, num='all')
 
+    def get_events_by_user(self, user_id):
+        res = []
+        u = self.db_interface.get_by_id(user_id, User)
+        for event_id in u.get_events_organised_ids():
+            e = self.db_interface.get_by_id(event_id, Event)
+            res.append(e)
+        return res
+
     def create_event(self, owner_id, name, location='', time=None):
         e = Event(owner_id, name, location, time)
         self.db_interface.add(e)

@@ -184,12 +184,12 @@ class Attendance(Base):
     going_status = Column(Unicode(40))
     roles = Column(PickleType)
 
-    def __init__(self, user_id, event_id):
+    def __init__(self, user_id, event_id, going_status="invited", roles=[]):
         self.id = None
         self.user_id = user_id
         self.event_id = event_id
-        self.going_status = ''
-        self.roles = []
+        self.going_status = going_status
+        self.roles = roles
 
     def __str__(self):
         return '{\n' + \

@@ -40,13 +40,13 @@ class TestAttendance(unittest.TestCase):
         at = Attendance(5, 10)
         self.assertEqual(at.get_roles(), [])
 
-        at = Attendance(32, 198, True, [])
+        at = Attendance(32, 198, "going", [])
         self.assertEqual(at.get_roles(), [])
 
-        at = Attendance(48, 3230, False, ['bring food'])
+        at = Attendance(48, 3230, "not_going", ['bring food'])
         self.assertEqual(at.get_roles(), ['bring food'])
 
-        at = Attendance(1266, 987, True, ['bring food', 'drive'])
+        at = Attendance(1266, 987, "going", ['bring food', 'drive'])
         self.assertEqual(at.get_roles(), ['bring food', 'drive'])
 
     def test_set_going_status(self):
@@ -58,23 +58,23 @@ class TestAttendance(unittest.TestCase):
         self.assertEqual(at.get_going_status(), "not_going")
 
     def test_add_role(self):
-        at = Attendance(5, 10, True, [])
+        at = Attendance(5, 10, "going", [])
         at.add_role('bring food')
         self.assertEqual(at.get_roles(), ['bring food'])
         at.add_role('drive')
         self.assertEqual(at.get_roles(), ['bring food', 'drive'])
-        at = Attendance(1032, 39281, False, ['Book venue'])
+        at = Attendance(1032, 39281, "not_going", ['Book venue'])
         at.add_role('do something')
         at.add_role('blah')
         self.assertEqual(at.get_roles(), ['Book venue', 'do something', 'blah'])
 
     def test_remove_role(self):
-        at = Attendance(5, 10, True, [])
+        at = Attendance(5, 10, "going", [])
         at.add_role('bring food')
         at.remove_role('bring food')
         self.assertEqual(at.get_roles(), [])
 
-        at = Attendance(321, 290, False, ['a', 'b'])
+        at = Attendance(321, 290, "not_going", ['a', 'b'])
         at.remove_role('a')
         self.assertEqual(at.get_roles(), ['b'])
         at.remove_role('b')

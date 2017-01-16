@@ -15,6 +15,13 @@ class DbInterface():
         """Returns an object in the database with matching object id and object type."""
         return self.s.query(obj_type).get(obj_id)
 
+    def query(self, obj_type, filter, num='one'):
+        res = self.s.query(obj_type).filter(filter)
+        if num == 'one':
+            return res.first()
+        elif num == 'all':
+            return res.all()
+
     def add(self, obj):
         """Inserts given object to the database."""
         self.s.add(obj)
@@ -25,6 +32,7 @@ class DbInterface():
         (such as list object to string conversion).
 
         Returns obj."""
+
         self.s.commit()
         return obj
 

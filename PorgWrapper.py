@@ -1,6 +1,7 @@
 import datetime
 from DbInterface import DbInterface
 from Poorganiser import User, Event, Attendance
+from PorgExceptions import *
 
 
 class PorgWrapper:
@@ -12,7 +13,7 @@ class PorgWrapper:
 
     def register_user(self, username):
         if self.get_user_by_username(username):
-            raise AssertionError
+            raise UserRegisteredError("User \"{}\" is already registered".format(username))
 
         u = User(username)
         self.db_interface.add(u)
@@ -20,7 +21,7 @@ class PorgWrapper:
     def unregister_user(self, username):
         u = self.get_user_by_username(username)
         if u:
-            raise AssertionError
+            raise UserNotFoundError("User \"{}\" could not be found".format(username))
 
         self.db_interface.delete(u)
 

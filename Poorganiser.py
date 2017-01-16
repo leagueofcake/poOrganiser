@@ -107,7 +107,7 @@ class Event(Base):
     name = Column(Unicode(40))
     location = Column(Unicode(40))
     time = Column(Date)
-    attendance_ids = Column(PickleType)
+    attendance_ids = Column(MutableList.as_mutable(PickleType))
 
     def __init__(self, owner_id, name, location='', time=None):
         assert isinstance(owner_id, int)
@@ -196,7 +196,7 @@ class Attendance(Base):
     user_id = Column(Integer)
     event_id = Column(Integer)
     going_status = Column(Unicode(40))
-    roles = Column(PickleType)
+    roles = Column(MutableList.as_mutable(PickleType))
 
     def __init__(self, user_id, event_id, going_status="invited", roles=list()):
         assert isinstance(user_id, int)

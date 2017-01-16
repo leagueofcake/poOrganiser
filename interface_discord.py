@@ -2,13 +2,18 @@
 """
 NB: Interface is currently broken - redesigning application structure
 """
+import datetime
+import discord
+import shlex
 from config import discord_config
-import discord, asyncio
-from DbInterface import DbInterface
-import shlex, datetime
+from Poorganiser import User, Event, Attendance
+from PorgWrapper import PorgWrapper
+from PorgExceptions import *
+
 
 client = discord.Client()
-porg = DbInterface()
+porg = PorgWrapper()
+
 
 def idToUsername(members, userID):
     for member in members:
@@ -16,18 +21,17 @@ def idToUsername(members, userID):
             return member.name
     return None
 
+
 def userToID(username):
     members = client.get_all_members()
     for member in members:
         if (member.name) == username:
             return int(member.id)
 
+
 def shortEventInfo(event):
-    eventID = event.get_id()
-    event_name = event.get_name()
-    event_location = event.get_location()
-    event_time = event.get_time()
-    return ("[{}]\t{}\t{}\t{}".format(eventID, event_name, event_location, event_time))
+    return "[{}]\t{}\t{}\t{}".format(event.get_id(), event.get_name(), event.get_location(),
+                                     event.get_time())
 
 
 def fullEventInfo(event):
@@ -41,12 +45,13 @@ def fullEventInfo(event):
     fullInfo += "**Date:** {}\n".format(event_time)
     fullInfo += "**People:**\n"
     fullInfo += "*Name\t\tGoing\tResponsibilities*\n"
-    eus = porg.get_eventusers(eventID)
-    for eu in eus:
-        eu_name = idToUsername(client.get_all_members(), eu.get_userid())
-        eu_going = eu.get_isgoing()
-        eu_roles = eu.get_roles()
-        fullInfo += "{}\t\t{}\t{}\n".format(eu_name, eu_going, ' '.join(eu_roles))
+    attendances = porg.get_attendances(eventID)
+    for at in attendances:
+        username = idToUsername(client.get_all_members(), at.get_user_id())
+        going_status = at.get_going_status()
+        roles = at.get_roles()
+
+        fullInfo += "{}\t\t{}\t{}\n".format(username, going_status, ' '.join(roles))
     return fullInfo
 
 @client.event
@@ -62,86 +67,50 @@ async def on_message(message):
     if content.startswith('!hello'):
         await client.send_message(message.channel, 'Hello {}!'.format(message.author.mention))
     elif content.strip() == '!register':
-        user_exists = porg.get_user(message.author.id)
-        if not user_exists:
-            porg.add_user(message.author.id)
-            await client.send_message(message.channel, 'Registered user {} with id {}.'.format(message.author.display_name, message.author.id))
-        else: # User already exists
+        try:
+            porg.register_user(message.author.id)
+            await client.send_message(message.channel, 'Registered user {} with id {}.'.format(
+                message.author.display_name, message.author.id))
+        except UserRegisteredError:
             await client.send_message(message.channel, 'You have already registered!')
     elif content.strip() == '!unregister':
-        user_exists = porg.get_user(message.author.id)
-        if not user_exists:
-            await client.send_message(message.channel, 'User not registered')
-        else:
-            porg.remove_user(message.author.id)
-            await client.send_message(message.channel, 'User removed. Goodbye!')
-    elif content.startswith('!help'):
-        helpOutput = ""
-        helpOutput += "         ヽ༼ຈل͜ຈ༽ﾉ Welcome to the Discord 'Poor Organizer' poOrganiser bot! ヽ༼ຈل͜ຈ༽ﾉ\n\n"
-        helpOutput += "                            (>´･ω･`)> Yeeeeeeeboizzz <(´･ω･`<)\n\n"
-        helpOutput += "（ ° ʖ °)つ━☆・\*。\n"
-        helpOutput += " ⊂　　 ノ 　　　・゜+.\n"
-        helpOutput += "　しーＪ　　　°。+ ´¨)\n"
-        helpOutput += "　　　　　　　　　.· ´¸.·\*´¨) ¸.·\*¨)\n"
-        helpOutput += "　　　　　　　　　　(¸.·´ (¸.·' ☆ User commands...\n"
-        helpOutput += "!register = Registers the user in the database.\n"
-        helpOutput += "!curr = View a list of all current events.\n"
-        helpOutput += "!past = View a list of all past events.\n"
-        helpOutput += "!allevents = View a list of all event\n"
-        helpOutput += "!mystatus = Brings up your current role for all events.\n"
-        helpOutput += "!survey <event ID> = Brings up a list of questions associated with event <ID>\n"
-        helpOutput += "!event <event ID> = View details for the associated event.\n"
-        helpOutput += "!question <question ID> <event ID> = View question text and options for the event<ID>\n"
-        helpOutput += "!vote <option ID> = Votes the selected option for the selected question.\n"
-        helpOutput += "!results <question ID> <event ID> = View results for the associated question in the event.\n"
-        helpOutput += "\n"
-        helpOutput += "（ ° ʖ °)つ━☆・\*。\n"
-        helpOutput += " ⊂　　 ノ 　　　・゜+.\n"
-        helpOutput += "　しーＪ　　　°。+ ´¨)\n"
-        helpOutput += "　　　　　　　　　.· ´¸.·\*´¨) ¸.·\*¨)\n"
-        helpOutput += "　　　　　　　　　　(¸.·´ (¸.·' ☆ Admin commands...\n"
-        helpOutput += "!create event '<name>, <place>, <time>' = Creates an event with the given details.\n"
-        helpOutput += "!edit event <ID> '<name>, <place>, <time>' = Edits an event with the given details.\n"
-        helpOutput += "!delete event <ID> = Deletes the event.\n"
-        helpOutput += "!add role <user ID> <role> = Assigns the user with given role.\n"
-        helpOutput += "!remove role <user ID> <role> = Removes the given role from the user.\n"
-        helpOutput += "!add question <event ID> '<Insert here>' = Adds a question to the list of questions.\n"
-        helpOutput += "!remove question <event ID> <question ID> = Removes the associated question from the event.\n\n"
-        helpOutput += "NOTE: When typing commands, ignore the <>. E.g. !event 69, NOT !event <69>\n\n"
+        try:
+            porg.unregister_user(message.author.id)
+            await client.send_message(message.channel, 'You have unregistered. Goodbye!')
+        except UserNotFoundError:
+            await client.send_message(message.channel, 'You have not registerd yet!')
 
-        await client.send_message(message.channel, helpOutput)
+    elif content.startswith('!help'):
+        await client.send_message(message.channel, porg.get_help())
     elif content.strip() == "!curr":
         events = porg.get_curr_events()
-        out = ''
-        out += "ID\tNAME\tLOCATION\tDATE\n"
+        out = "ID\tNAME\tLOCATION\tDATE\n"
         for event in events:
             out += shortEventInfo(event) + '\n'
         await client.send_message(message.channel, out)
     elif content.strip() == "!past":
         await client.send_message(message.channel, 'Not implemented yet!')
     elif content.strip() == "!allevents":
-        events = porg.get_events()
+        events = porg.get_all_events()
         out = "ID\tNAME\tLOCATION\tDATE\n"
         for event in events:
             if event:
                 out += shortEventInfo(event) + '\n'
         await client.send_message(message.channel, 'All Events:\n{}'.format(out))
     elif content.strip() == "!mystatus":
-        user = porg.get_user(message.author.id)
-        status_message = ""
+        user = porg.get_user_by_username(message.author.id)
         if not user:
-            status_message += 'Not registered! Use !register'
+            status_message = 'Not registered! Use !register'
         else:
-            status_message += 'Registered user {} with id {}.\n'.format(message.author.display_name, message.author.id)
-            #status_message += 'Test: ID to username = {}\n'.format(idToUsername(message.server.members, message.author.id))
+            status_message = 'Registered user {} with id {}.\n'.format(message.author.display_name, message.author.id)
             status_message += "Your events:\n"
-            user_events = porg.get_events_by_user(message.author.id)
+            user_events = porg.get_events_by_user(user.get_id())
             status_message += "ID\tNAME\tLOCATION\tDATE\tGOING\tRESPONSIBILITIES\n"
             for event in user_events:
                 if event:
                     event_details = shortEventInfo(event)
-                    eu = porg.get_eventuser(event.get_id(), message.author.id)
-                    event_details += "\t{}\t{}".format(eu.get_isgoing(), eu.get_roles())
+                    at = porg.get_attendance(event.get_id(), user.get_id())
+                    event_details += "\t{}\t{}".format(at.get_going_status(), at.get_roles())
                     status_message += event_details + "\n"
 
         await client.send_message(message.channel, status_message)
@@ -236,17 +205,19 @@ async def on_message(message):
                             year = int(splits[4])
                             month = int(splits[5])
                             day = int(splits[6])
+                            time = datetime.datetime(year, month, day)
                         except IndexError:
                             year, month, day = None, None, None #if error occured somewhere above, set date back to none
-                        new_event = porg.add_event(userID, event_name, location, year, month, day)
-                        newID = new_event.get_id()
-                        porg.update(new_event)
-                        await client.send_message(message.channel, 'New event {}, with ID {} created'.format(event_name, newID))
+
+                        u = porg.get_user_by_username(userID)
+                        new_event = porg.create_event(u.get_id(), event_name, location, time)
+                        event_id = new_event.get_id()
+                        await client.send_message(message.channel, 'New event {}, with ID {} created'.format(event_name, event_id))
                         members = message.server.members
                         for member in members:
-                            if porg.get_user(member.id): #only invite registered users
-                                eu = porg.add_eventuser(newID, member.id, "Invited")
-                                porg.update(eu)
+                            user = porg.get_user_by_username(member.id)
+                            if user: #only invite registered users
+                                porg.create_attendance(user.get_id(), event_id, going_status="invited")
                         await client.send_message(message.channel, 'All members of channel invited. See !mystatus to check')
                 elif cmd == "!edit":
                     if len(splits) < 4:

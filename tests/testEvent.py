@@ -1,23 +1,23 @@
 #!/usr/bin/env python3.5
 import unittest
-from Event import Event
+from Poorganiser import Event
 
 
 class TestEvent(unittest.TestCase):
-    def test_get_ownerid(self):
+    def test_get_owner_id(self):
         e1 = Event(0, "BBQ", "Parra Park", "01/10/2016")
-        self.assertEqual(e1.get_ownerid(), 0)
+        self.assertEqual(e1.get_owner_id(), 0)
         e1 = Event(52, "", "house", "01/10/2016")
-        self.assertEqual(e1.get_ownerid(), 52)
+        self.assertEqual(e1.get_owner_id(), 52)
 
-    def test_set_ownerid(self):
+    def test_set_owner_id(self):
         e1 = Event(0, "BBQ", "Parra Park", "01/10/2016")
-        e1.set_ownerid(42)
-        self.assertEqual(e1.get_ownerid(), 42)
+        e1.set_owner_id(42)
+        self.assertEqual(e1.get_owner_id(), 42)
         e1 = Event(52, "", "house", "01/10/2016")
-        e1.set_ownerid(10)
-        e1.set_ownerid(33)
-        self.assertEqual(e1.get_ownerid(), 33)
+        e1.set_owner_id(10)
+        e1.set_owner_id(33)
+        self.assertEqual(e1.get_owner_id(), 33)
 
     def test_get_name(self):
         e1 = Event(0, "BBQ", "Parra Park", "01/10/2016")

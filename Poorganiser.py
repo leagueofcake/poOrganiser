@@ -222,4 +222,7 @@ class Attendance(Base):
         self.roles.append(role)
 
     def remove_role(self, role):
-        self.roles.remove(role)
+        if role in self.roles:
+            self.roles.remove(role)
+        else:
+            return None

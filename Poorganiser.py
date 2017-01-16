@@ -104,7 +104,7 @@ class Event(Base):
     time = Column(Date)
     attendance_ids = Column(PickleType)
 
-    def __init__(self, owner_id, name, location, time):
+    def __init__(self, owner_id, name, location='', time=None):
         self.id = None
         self.owner_id = owner_id
         self.name = name
@@ -185,6 +185,7 @@ class Attendance(Base):
     roles = Column(PickleType)
 
     def __init__(self, user_id, event_id, going_status="invited", roles=[]):
+    def __init__(self, user_id, event_id, going_status="invited", roles=list()):
         self.id = None
         self.user_id = user_id
         self.event_id = event_id

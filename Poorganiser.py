@@ -1,5 +1,6 @@
 from datetime import datetime
 from sqlalchemy import Column, Integer, Unicode, PickleType, Date
+from sqlalchemy.ext.mutable import MutableList
 from create_base import Base
 
 
@@ -8,8 +9,8 @@ class User(Base):
     __tablename__ = 'users'
     id = Column(Integer, primary_key=True)
     username = Column(Unicode(40))
-    events_organised_ids = Column(PickleType)
-    events_attending_ids = Column(PickleType)
+    events_organised_ids = Column(MutableList.as_mutable(PickleType))
+    events_attending_ids = Column(MutableList.as_mutable(PickleType))
 
     def __init__(self, username):
         assert isinstance(username, str)

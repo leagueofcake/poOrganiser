@@ -16,6 +16,20 @@ class TestUser(unittest.TestCase):
         u = User("   Dave and Friends ")
         self.assertEqual(u.get_username(), "   Dave and Friends ")  # Normal string with whitespace
 
+    def test_get_events_organised_ids(self):
+        u = User("test")
+        self.assertEqual(u.get_events_organised_ids(), [])  # Blank case
+
+        u = User("blahblahblah")
+        self.assertEqual(u.get_events_organised_ids(), [])  # Blank case 2
+
+    def test_get_events_attending_ids(self):
+        u = User("test")
+        self.assertEqual(u.get_events_attending_ids(), [])  # Blank case
+
+        u = User("blahblahblah")
+        self.assertEqual(u.get_events_attending_ids(), [])  # Blank case 2
+
     def test_set_username(self):
         u = User("test")
         self.assertEqual(u.get_username(), "test")  # Check initialisation
@@ -32,19 +46,18 @@ class TestUser(unittest.TestCase):
         u.set_username("   Dave and Friends ")
         self.assertEqual(u.get_username(), "   Dave and Friends ")  # Normal string with whitespace
 
-    def test_get_events_organised(self):
-        u = User("test")
-        self.assertEqual(u.get_events_organised_ids(), [])  # Blank case
+        # Test setting usernames with invalid types
+        with self.assertRaises(AssertionError):
+            u.set_username(3)
 
-        u = User("blahblahblah")
-        self.assertEqual(u.get_events_organised_ids(), [])  # Blank case 2
+        with self.assertRaises(AssertionError):
+            u.set_username(3.14)
 
-    def test_get_events_attending(self):
-        u = User("test")
-        self.assertEqual(u.get_events_attending_ids(), [])  # Blank case
+        with self.assertRaises(AssertionError):
+            u.set_username(u)
 
-        u = User("blahblahblah")
-        self.assertEqual(u.get_events_attending_ids(), [])  # Blank case 2
+        with self.assertRaises(AssertionError):
+            u.set_username(Event(1, 2))
 
     def test_add_event_organised(self):
         # Adding events with event ids (integers)

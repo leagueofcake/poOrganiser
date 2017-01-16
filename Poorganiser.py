@@ -37,6 +37,7 @@ class User(Base):
         return self.events_attending_ids
 
     def set_username(self, username):
+        assert(isinstance(username, str))
         self.username = username
 
     def add_event_organised(self, obj):
@@ -184,7 +185,6 @@ class Attendance(Base):
     going_status = Column(Unicode(40))
     roles = Column(PickleType)
 
-    def __init__(self, user_id, event_id, going_status="invited", roles=[]):
     def __init__(self, user_id, event_id, going_status="invited", roles=list()):
         self.id = None
         self.user_id = user_id

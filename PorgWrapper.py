@@ -17,6 +17,7 @@ class PorgWrapper:
 
         u = User(username)
         self.db_interface.add(u)
+        return u
 
     def unregister_user(self, username):
         u = self.get_user_by_username(username)
@@ -59,6 +60,8 @@ class PorgWrapper:
         e.add_attendance(a)
         self.db_interface.update(e)
 
+        return e
+
     def delete_event(self, event_id):
         e = self.db_interface.get_by_id(event_id, Event)
 
@@ -69,8 +72,8 @@ class PorgWrapper:
         self.db_interface.delete(e)
 
     def get_attendance(self, user_id, event_id):
-        return self.db_interface.query(Attendance, Attendance.get_user_id() == user_id and
-                                    Attendance.get_event_id() == event_id, num='one')
+        return self.db_interface.query(Attendance, Attendance.user_id == user_id and
+                                    Attendance.event_id == event_id, num='one')
 
     def get_attendances(self, event_id):
         res = []
@@ -94,6 +97,8 @@ class PorgWrapper:
         # Add attendance id to Event
         e.add_attendance(a)
         self.db_interface.update(e)
+
+        return a
 
     def delete_attendance(self, attendance_id):
         a = self.db_interface.get_by_id(attendance_id, Attendance)

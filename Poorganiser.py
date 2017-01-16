@@ -1,5 +1,6 @@
 from sqlalchemy import Column, Integer, Unicode, PickleType, Date
 from create_base import Base
+from datetime import datetime
 
 
 class User(Base):
@@ -11,6 +12,8 @@ class User(Base):
     events_attending_ids = Column(PickleType)
 
     def __init__(self, username):
+        assert(isinstance(username, str))
+
         self.id = None
         self.username = username
         self.events_organised_ids = []
@@ -106,6 +109,11 @@ class Event(Base):
     attendance_ids = Column(PickleType)
 
     def __init__(self, owner_id, name, location='', time=None):
+        assert(isinstance(owner_id, int))
+        assert(isinstance(name, str))
+        assert(isinstance(location, str))
+        assert(isinstance(time, datetime) or time is None)
+
         self.id = None
         self.owner_id = owner_id
         self.name = name
@@ -142,15 +150,19 @@ class Event(Base):
         return self.attendance_ids
 
     def set_owner_id(self, owner_id):
+        assert(isinstance(owner_id, int))
         self.owner_id = owner_id
 
     def set_name(self, name):
+        assert (isinstance(name, str))
         self.name = name
 
     def set_location(self, location):
+        assert (isinstance(location, str))
         self.location = location
 
     def set_time(self, time):
+        assert (isinstance(time, datetime))
         self.time = time
 
     def add_attendance(self, obj):

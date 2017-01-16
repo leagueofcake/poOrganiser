@@ -1,6 +1,6 @@
 import unittest
 from Poorganiser import User, Event
-
+from datetime import datetime
 
 class TestUser(unittest.TestCase):
     def test_get_username(self):
@@ -77,12 +77,12 @@ class TestUser(unittest.TestCase):
         self.assertEqual(u.get_events_organised_ids(), [1, 4, 2])
 
         # Adding events with Event objects
-        e = Event(1, "event", "location", "time")
+        e = Event(1, "event", "location", datetime(2017, 1, 1))
         e.id = 34
         u.add_event_organised(e)
         self.assertEqual(u.get_events_organised_ids(), [1, 4, 2, 34])
 
-        e = Event(93, "event2", "location2", "time2")
+        e = Event(93, "event2", "location2", datetime(2017, 1, 2))
         e.id = 1234
         u.add_event_organised(e)
         self.assertEqual(u.get_events_organised_ids(), [1, 4, 2, 34, 1234])
@@ -118,12 +118,12 @@ class TestUser(unittest.TestCase):
         self.assertEqual(u.get_events_attending_ids(), [1, 4, 2])
 
         # Adding events with Event objects
-        e = Event(1, "event", "location", "time")  # Add event using Event object
+        e = Event(1, "event", "location", datetime(2017, 1, 1))  # Add event using Event object
         e.id = 34
         u.add_event_attending(e)
         self.assertEqual(u.get_events_attending_ids(), [1, 4, 2, 34])
 
-        e = Event(93, "event2", "location2", "time2")
+        e = Event(93, "event2", "location2", datetime(2017, 1, 2))
         e.id = 1234
         u.add_event_attending(e)
         self.assertEqual(u.get_events_attending_ids(), [1, 4, 2, 34, 1234])
@@ -159,24 +159,24 @@ class TestUser(unittest.TestCase):
         self.assertEqual(u.get_events_organised_ids(), [2, 1234])
 
         # Removing events with Event objects
-        e = Event(35, "e", "l", "t")
+        e = Event(35, "e", "l", datetime(2017, 1, 1))
         e.id = 1234
         u.remove_event_organised(e)
         self.assertEqual(u.get_events_organised_ids(), [2])
         u.remove_event_organised(2)
         self.assertEqual(u.get_events_organised_ids(), [])
 
-        e = Event(1, "event", "location", "time")
+        e = Event(1, "event", "location", datetime(2017, 1, 1))
         e.id = 34
         u.add_event_organised(e)
         self.assertEqual(u.get_events_organised_ids(), [34])
 
-        e2 = Event(1234, "event2", "location2", "time2")
+        e2 = Event(1234, "event2", "location2", datetime(2017, 1, 2))
         e2.id = 834
         u.add_event_organised(e2)
         self.assertEqual(u.get_events_organised_ids(), [34, 834])
 
-        e3 = Event(999, "event3", "location3", "time3")
+        e3 = Event(999, "event3", "location3", datetime(2017, 1, 3))
         e3.id = 99
         u.add_event_organised(e3)
         self.assertEqual(u.get_events_organised_ids(), [34, 834, 99])
@@ -227,24 +227,24 @@ class TestUser(unittest.TestCase):
         self.assertEqual(u.get_events_attending_ids(), [2, 1234])
 
         # Removing events with Event objects
-        e = Event(35, "e", "l", "t")
+        e = Event(35, "e", "l", datetime(2017, 1, 1))
         e.id = 1234
         u.remove_event_attending(e)
         self.assertEqual(u.get_events_attending_ids(), [2])
         u.remove_event_attending(2)
         self.assertEqual(u.get_events_attending_ids(), [])
 
-        e = Event(1, "event", "location", "time")
+        e = Event(1, "event", "location", datetime(2017, 1, 1))
         e.id = 34
         u.add_event_attending(e)
         self.assertEqual(u.get_events_attending_ids(), [34])
 
-        e2 = Event(1234, "event2", "location2", "time2")
+        e2 = Event(1234, "event2", "location2", datetime(2017, 1, 2))
         e2.id = 834
         u.add_event_attending(e2)
         self.assertEqual(u.get_events_attending_ids(), [34, 834])
 
-        e3 = Event(999, "event3", "location3", "time3")
+        e3 = Event(999, "event3", "location3", datetime(2017, 1, 3))
         e3.id = 99
         u.add_event_attending(e3)
         self.assertEqual(u.get_events_attending_ids(), [34, 834, 99])

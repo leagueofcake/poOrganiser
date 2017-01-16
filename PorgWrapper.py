@@ -41,6 +41,9 @@ class PorgWrapper:
             res.append(e)
         return res
 
+    def get_all_events(self):
+        return self.db_interface.query(Event, True, num='all')
+
     def create_event(self, owner_id, name, location='', time=None):
         e = Event(owner_id, name, location, time)
         self.db_interface.add(e)

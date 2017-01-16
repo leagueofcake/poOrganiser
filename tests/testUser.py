@@ -2,7 +2,22 @@ import unittest
 from Poorganiser import User, Event
 from datetime import datetime
 
+
 class TestUser(unittest.TestCase):
+    def test_constructor_assertions(self):
+        # Incorrect username type
+        with self.assertRaises(AssertionError):
+            User(1234)
+
+        with self.assertRaises(AssertionError):
+            User(User("bob"))
+
+        with self.assertRaises(AssertionError):
+            User(User(3.14))
+
+        with self.assertRaises(AssertionError):
+            User(list())
+
     def test_get_username(self):
         u = User("")
         self.assertEqual(u.get_username(), "")  # Empty case

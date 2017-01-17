@@ -20,7 +20,7 @@ class PorgWrapper:
         self.db_interface.add(u)
         return u
 
-    def unregister_user(self, obj):
+    def unregister_user(self, obj, delete_events=False):
         username = obj
         if isinstance(obj, User):
             u = self.db_interface.get_by_id(obj.get_id(), User)
@@ -36,6 +36,10 @@ class PorgWrapper:
         for event_id in events_participating:
             a = self.get_attendance(u.get_id(), event_id)
             self.delete_attendance(a)
+
+        if delete_events:
+            for e in self.get_events_by_user(u):
+                self.delete_event(e)
 
         self.db_interface.delete(u)
 

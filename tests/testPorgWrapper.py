@@ -64,20 +64,26 @@ class TestPorgWrapper(unittest.TestCase):
         u2 = p.register_user("jane")
         u3 = p.register_user("noot noot")
 
-        # Unregister them
-        p.unregister_user(u1)
-        p.unregister_user("jane")
+        # Create some events
+        e1 = p.create_event(u1.get_id(), "event 1")
+        e2 = p.create_event(u2.get_id(), "event 2")
+        e3 = p.create_event(u2.get_id(), "event 3", location="blob street")
+        self.assertEqual(u1.get_events_organised_ids(), [e1.get_id()])
+        self.assertEqual(u2.get_events_organised_ids(), [e2.get_id(), e3.get_id()])
+
+        # Unregister created users
+        p.unregister_user(u1)  # Only delete attendances - event should still exist
+        self.assertIsNone(e1.get_owner_id())  # Check owner_id is removed from Event
+        self.assertIsNotNone(p.db_interface.get_by_id(e1.get_id(), Event))
+        self.assertIsNone(p.get_attendance(u1.get_id(), e1.get_id()))  # Check attendance deleted
+
+        p.unregister_user("jane", delete_events=True)  # Delete attedances and events
+        self.assertIsNone(p.db_interface.get_by_id(e2.get_id(), Event))
+        self.assertIsNone(p.db_interface.get_by_id(e2.get_id(), Event))
+        self.assertIsNone(p.get_attendance(u2.get_id(), e2.get_id()))  # Check attendance deleted
+        self.assertIsNone(p.get_attendance(u2.get_id(), e3.get_id()))  # Check attendance deleted
+
         p.unregister_user(u3)
-
-        # Try re-add deleted user
-        with self.assertRaises(sqlalchemy.exc.InvalidRequestError):
-            p.db_interface.add(u1)
-
-        with self.assertRaises(sqlalchemy.exc.InvalidRequestError):
-            p.db_interface.add(u2)
-
-        with self.assertRaises(sqlalchemy.exc.InvalidRequestError):
-            p.db_interface.add(u3)
 
         # Try unregister users that have already been unregistered
         with self.assertRaises(UserNotFoundError):
@@ -377,8 +383,6 @@ class TestPorgWrapper(unittest.TestCase):
         # Check no more events returned by get_curr_events and get_all_events
         self.assertEqual(p.get_curr_events(), [])
         self.assertEqual(p.get_all_events(), [])
-
-
 
     def test_get_attendance(self):
         # TODO

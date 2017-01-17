@@ -138,12 +138,12 @@ class PorgWrapper:
                 a = self.db_interface.get_obj(attendance_id, Attendance)
                 res.append(a)
         elif isinstance(obj, User):
-            u = self.db_interface.get_obj(obj.get_id, User)
+            u = self.db_interface.get_obj(obj.get_id(), User)
             for event_id in u.get_events_attending_ids():
                 a = self.get_attendance(u.get_id(), event_id)
                 res.append(a)
         else:
-            raise TypeError("Invalid object type for remove_attendance: expected Event or User")
+            raise TypeError("Invalid object type for get_attendances: expected Event or User")
 
         return res
 

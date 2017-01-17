@@ -37,6 +37,10 @@ class PorgWrapper:
             a = self.get_attendance(u.get_id(), event_id)
             self.delete_attendance(a)
 
+        # Remove organiser id from organised events
+        for event in self.get_events_by_user(u):
+            event.set_owner_id(None)
+
         if delete_events:
             for e in self.get_events_by_user(u):
                 self.delete_event(e)

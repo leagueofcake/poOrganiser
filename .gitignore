@@ -1,5 +1,6 @@
 __pycache__/*
 *.pyc
 porg.db
+porg_test.db
 /config/discord_config.py
 /.idea/

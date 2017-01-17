@@ -3,7 +3,6 @@ import sqlite3
 import unittest
 from datetime import datetime, timedelta
 
-import sqlalchemy.exc
 from config import porg_config
 from gen_db import generate as generate_db
 from Poorganiser import User, Event, Attendance
@@ -480,8 +479,50 @@ class TestPorgWrapper(unittest.TestCase):
             p.get_attendances("event 1")
 
     def test_create_attendance(self):
-        # TODO
-        pass
+        # Create some users
+        u1 = p.register_user("u1")
+        u2 = p.register_user("u2")
+        u3 = p.register_user("u3")
+        u4 = p.register_user("u4")
+
+        e1 = p.create_event(u1, "e1")
+        a1 = p.get_attendance(u1, e1)
+        a2 = p.create_attendance(u2, e1)
+        self.assertEqual(p.get_attendances(e1), [a1, a2])
+
+        # Check properties of created Attendance
+        self.assertEqual(a2.get_user_id(), u2.get_id())
+        self.assertEqual(a2.get_event_id(), e1.get_id())
+        self.assertEqual(a2.get_going_status(), "invited")
+        self.assertEqual(a2.get_roles(), [])
+
+        a3 = p.create_attendance(u3, e1, going_status="maybe")
+        self.assertEqual(a3.get_user_id(), u3.get_id())
+        self.assertEqual(a3.get_event_id(), e1.get_id())
+        self.assertEqual(a3.get_going_status(), "maybe")
+        self.assertEqual(a3.get_roles(), [])
+
+        a4 = p.create_attendance(u4, e1, going_status="idk lol", roles=["hat wearer", "cook"])
+        self.assertEqual(a4.get_user_id(), u4.get_id())
+        self.assertEqual(a4.get_event_id(), e1.get_id())
+        self.assertEqual(a4.get_going_status(), "idk lol")
+        self.assertEqual(a4.get_roles(), ["hat wearer", "cook"])
+        self.assertEqual(p.get_attendances(e1), [a1, a2, a3, a4])
+
+        # Test attendance creation with events that don't exist
+        with self.assertRaises(EventNotFoundError):
+            p.create_attendance(u1, Event(u1.get_id(), "nonexistant event"))
+
+        with self.assertRaises(EventNotFoundError):
+            p.create_attendance(u1, Event(u2.get_id(), "nonexistant event 2", location="blah"))
+
+        # Test attendance creation with users that don't exist
+        with self.assertRaises(UserNotFoundError):
+            p.create_attendance(User("nonexistant user"), e1)
+
+        with self.assertRaises(UserNotFoundError):
+            p.create_attendance(User("nonexistant user 2"), e1)
+
 
     def test_delete_attendance(self):
         # TODO

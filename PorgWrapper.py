@@ -103,16 +103,13 @@ class PorgWrapper:
         event_owner_id = e.get_owner_id()
         self.db_interface.delete(e)
 
-        owner = self.db_interface.get_by_id(event_owner_id, User)
-
-        # Check owner exists in the database
-        if not owner:
-            raise UserNotFoundError("Event owner (id {}) could not be found".format(event_owner_id))
-
         # Remove event id from User.events_organised_ids and User.events_attending_ids
-        owner.remove_event_organised(e)
-        owner.remove_event_attending(e)  # May not be present if organising but not attending
-        self.db_interface.update(owner)
+        # NB: owner may not exist if they unregistered instead of deleting user
+        owner = self.db_interface.get_by_id(event_owner_id, User)
+        if owner:
+            owner.remove_event_organised(e)
+            owner.remove_event_attending(e)  # May not be present if organising but not attending
+            self.db_interface.update(owner)
 
     def get_attendance(self, user_id, event_id):
         attendance_filter = and_(Attendance.user_id == user_id, Attendance.event_id == event_id)

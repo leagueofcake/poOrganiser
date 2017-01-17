@@ -9,5 +9,10 @@ class UserRegisteredError(Error):
 
 
 class UserNotFoundError(Error):
-    """Raised when attempting to unregister or delete a User that does not exist in the database."""
+    """Raised when a User object is expected but cannot be found in the database."""
+    pass
+
+
+class EventNotFoundError(Error):
+    """Raised when an Event object is expected but cannot be found in the database."""
     pass

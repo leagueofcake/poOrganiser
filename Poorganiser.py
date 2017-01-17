@@ -109,10 +109,10 @@ class Event(Base):
     time = Column(Date)
     attendance_ids = Column(MutableList.as_mutable(PickleType))
 
-    def __init__(self, owner_id, name, location='', time=None):
+    def __init__(self, owner_id, name, location=None, time=None):
         assert isinstance(owner_id, int)
         assert isinstance(name, str)
-        assert isinstance(location, str)
+        assert isinstance(location, str) or location is None
         assert isinstance(time, datetime) or time is None
 
         self.id = None

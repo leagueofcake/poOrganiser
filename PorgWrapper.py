@@ -61,7 +61,7 @@ class PorgWrapper:
     def get_all_events(self):
         return self.db_interface.query(Event, True, num='all')
 
-    def create_event(self, owner_id, name, location='', time=None):
+    def create_event(self, owner_id, name, location=None, time=None):
         owner = self.db_interface.get_by_id(owner_id, User)
 
         # Check owner exists in the database

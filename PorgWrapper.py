@@ -1,5 +1,5 @@
 import datetime
-from sqlalchemy import or_
+from sqlalchemy import or_, and_
 from DbInterface import DbInterface
 from Poorganiser import User, Event, Attendance
 from PorgExceptions import *
@@ -108,8 +108,8 @@ class PorgWrapper:
         self.db_interface.update(owner)
 
     def get_attendance(self, user_id, event_id):
-        return self.db_interface.query(Attendance, Attendance.user_id == user_id and
-                                       Attendance.event_id == event_id, num='one')
+        attendance_filter = and_(Attendance.user_id == user_id, Attendance.event_id == event_id)
+        return self.db_interface.query(Attendance, attendance_filter, num='one')
 
     def get_attendances(self, event_id):
         res = []

@@ -16,6 +16,14 @@ class DbInterface():
         if obj_id:
             return self.s.query(obj_type).get(obj_id)
 
+    def get_obj(self, obj, obj_type):
+        """Given obj (usually id or Object), returns corresponding object within the database.
+        Usually used when a function can take either an Object id or an Object."""
+        if isinstance(obj, obj_type):
+            return self.get_by_id(obj.get_id(), obj_type)
+        else:
+            return self.get_by_id(obj, obj_type)
+
     def query(self, obj_type, filter, num='one'):
         res = self.s.query(obj_type).filter(filter)
         if num == 'one':

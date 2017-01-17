@@ -56,11 +56,8 @@ class PorgWrapper:
         curr_filter = or_(Event.time >= today, Event.time == None)
         return self.db_interface.query(Event, curr_filter, num='all')
 
-    def get_events_by_user(self, obj):
-        if isinstance(obj, User):
-            u = self.db_interface.get_by_id(obj.get_id(), User)
-        else:
-            u = self.db_interface.get_by_id(obj, User)
+    def get_events_by_user(self, user_obj):
+        u = self.db_interface.get_obj(user_obj, User)
 
         # Check user exists in the database
         if not u:
@@ -76,10 +73,7 @@ class PorgWrapper:
         return self.db_interface.query(Event, True, num='all')
 
     def create_event(self, owner_obj, name, location=None, time=None):
-        if isinstance(owner_obj, User):
-            owner = self.db_interface.get_by_id(owner_obj.get_id(), User)
-        else:
-            owner = self.db_interface.get_by_id(owner_obj, User)
+        owner = self.db_interface.get_obj(owner_obj, User)
 
         # Check owner exists in the database
         if not owner:
@@ -103,11 +97,8 @@ class PorgWrapper:
 
         return e
 
-    def delete_event(self, obj):
-        if isinstance(obj, Event):
-            e = self.db_interface.get_by_id(obj.get_id(), Event)
-        else:
-            e = self.db_interface.get_by_id(obj, Event)
+    def delete_event(self, event_obj):
+        e = self.db_interface.get_obj(event_obj, Event)
 
         if not e:
             raise EventNotFoundError("Event could not be found for deletion")
@@ -130,15 +121,8 @@ class PorgWrapper:
             self.db_interface.update(owner)
 
     def get_attendance(self, user_obj, event_obj):
-        if isinstance(user_obj, User):
-            u = self.db_interface.get_by_id(user_obj.get_id(), User)
-        else:
-            u = self.db_interface.get_by_id(user_obj, User)
-
-        if isinstance(event_obj, Event):
-            e = self.db_interface.get_by_id(event_obj.get_id(), Event)
-        else:
-            e = self.db_interface.get_by_id(event_obj, Event)
+        u = self.db_interface.get_obj(user_obj, User)
+        e = self.db_interface.get_obj(event_obj, Event)
 
         if not e or not u:
             return None
@@ -147,27 +131,25 @@ class PorgWrapper:
         return self.db_interface.query(Attendance, attendance_filter, num='one')
 
     def get_attendances(self, obj):
+        res = []
         if isinstance(obj, Event):
             e = self.db_interface.get_by_id(obj.get_id(), Event)
+            for attendance_id in e.get_attendance_ids():
+                a = self.db_interface.get_by_id(attendance_id, Attendance)
+                res.append(a)
+        elif isinstance(obj, User):
+            u = self.db_interface.get_by_id(obj.get_id, User)
+            for event_id in u.get_events_attending_ids():
+                a = self.get_attendance(u.get_id(), event_id)
+                res.append(a)
         else:
-            e = self.db_interface.get_by_id(obj, Event)
+            raise TypeError("Invalid object type for remove_attendance: expected Event or User")
 
-        res = []
-        for attendance_id in e.get_attendance_ids():
-            a = self.db_interface.get_by_id(attendance_id, Attendance)
-            res.append(a)
         return res
 
     def create_attendance(self, user_obj, event_obj, going_status='invited', roles=list()):
-        if isinstance(user_obj, User):
-            u = self.db_interface.get_by_id(user_obj.get_id(), User)
-        else:
-            u = self.db_interface.get_by_id(user_obj, User)
-
-        if isinstance(event_obj, Event):
-            e = self.db_interface.get_by_id(event_obj.get_id(), Event)
-        else:
-            e = self.db_interface.get_by_id(event_obj, Event)
+        u = self.db_interface.get_obj(user_obj, User)
+        e = self.db_interface.get_obj(event_obj, Event)
 
         # Check user and event exists in database
         if not e:
@@ -189,11 +171,8 @@ class PorgWrapper:
 
         return a
 
-    def delete_attendance(self, obj):
-        if isinstance(obj, Attendance):
-            a = self.db_interface.get_by_id(obj.get_id(), Attendance)
-        else:
-            a = self.db_interface.get_by_id(obj, Attendance)
+    def delete_attendance(self, attendance_obj):
+        a = self.db_interface.get_obj(attendance_obj, Attendance)
 
         if not a:
             raise AttendanceNotFoundError("Attendance object could not be found")

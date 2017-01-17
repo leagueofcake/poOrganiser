@@ -113,9 +113,13 @@ class PorgWrapper:
         attendance_filter = and_(Attendance.user_id == user_id, Attendance.event_id == event_id)
         return self.db_interface.query(Attendance, attendance_filter, num='one')
 
-    def get_attendances(self, event_id):
+    def get_attendances(self, obj):
+        if isinstance(obj, Event):
+            e = self.db_interface.get_by_id(obj.get_id(), Event)
+        else:
+            e = self.db_interface.get_by_id(obj, Event)
+
         res = []
-        e = self.db_interface.get_by_id(event_id, Event)
         for attendance_id in e.get_attendance_ids():
             a = self.db_interface.get_by_id(attendance_id, Attendance)
             res.append(a)

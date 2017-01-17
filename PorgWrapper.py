@@ -31,6 +31,12 @@ class PorgWrapper:
         if not u:
             raise UserNotFoundError("User \"{}\" could not be found".format(username))
 
+        # Remove Attendance objects from database - use set() to remove duplicates
+        events_participating = set(u.get_events_organised_ids() + u.get_events_attending_ids())
+        for event_id in events_participating:
+            a = self.get_attendance(u.get_id(), event_id)
+            self.delete_attendance(a)
+
         self.db_interface.delete(u)
 
     def get_help(self):

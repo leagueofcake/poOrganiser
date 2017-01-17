@@ -16,3 +16,8 @@ class UserNotFoundError(Error):
 class EventNotFoundError(Error):
     """Raised when an Event object is expected but cannot be found in the database."""
     pass
+
+
+class AttendanceNotFoundError(Error):
+    """Raised when an Attendance object is expected but cannot be found in the database."""
+    pass

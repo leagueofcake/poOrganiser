@@ -145,18 +145,25 @@ class PorgWrapper:
             res.append(a)
         return res
 
-    def create_attendance(self, user_id, event_id, going_status='invited', roles=list()):
-        u = self.db_interface.get_by_id(user_id, User)
-        e = self.db_interface.get_by_id(event_id, Event)
+    def create_attendance(self, user_obj, event_obj, going_status='invited', roles=list()):
+        if isinstance(user_obj, User):
+            u = self.db_interface.get_by_id(user_obj.get_id(), User)
+        else:
+            u = self.db_interface.get_by_id(user_obj, User)
+
+        if isinstance(event_obj, Event):
+            e = self.db_interface.get_by_id(event_obj.get_id(), Event)
+        else:
+            e = self.db_interface.get_by_id(event_obj, Event)
 
         # Check user and event exists in database
         if not e:
-            raise EventNotFoundError("Event with event id {} could not be found".format(event_id))
+            raise EventNotFoundError("Event could not be found")
         if not u:
-            raise UserNotFoundError("User with id {} could not be found".format(user_id))
+            raise UserNotFoundError("User could not be found")
 
         # Create attendance
-        a = Attendance(user_id, event_id, going_status, roles)
+        a = Attendance(u.get_id(), e.get_id(), going_status, roles)
         self.db_interface.add(a)
 
         # Add event id to User.events_attending_ids

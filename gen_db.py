@@ -10,7 +10,7 @@ def drop_tables(c):
         c.execute('DROP TABLE attendance')
         c.execute('DROP TABLE questions')
         c.execute('DROP TABLE choices')
-    except:
+    except sqlite3.OperationalError:
         pass
 
 

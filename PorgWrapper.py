@@ -72,8 +72,9 @@ class PorgWrapper:
         e = Event(owner_id, name, location, time)
         self.db_interface.add(e)
 
-        # Add event id to User.events_organised_ids
+        # Add event id to User.events_organised_ids and User.events_attending_ids
         owner.add_event_organised(e)
+        owner.add_event_attending(e)
         self.db_interface.update(owner)
 
         # Add Attendance
@@ -97,14 +98,15 @@ class PorgWrapper:
         event_owner_id = e.get_owner_id()
         self.db_interface.delete(e)
 
-        # Remove event id from User.events_organised_ids
         owner = self.db_interface.get_by_id(event_owner_id, User)
 
         # Check owner exists in the database
         if not owner:
             raise UserNotFoundError("Event owner (id {}) could not be found".format(event_owner_id))
 
+        # Remove event id from User.events_organised_ids and User.events_attending_ids
         owner.remove_event_organised(e)
+        owner.remove_event_attending(e)  # May not be present if organising but not attending
         self.db_interface.update(owner)
 
     def get_attendance(self, user_id, event_id):

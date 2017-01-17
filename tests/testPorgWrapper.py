@@ -66,7 +66,7 @@ class TestPorgWrapper(unittest.TestCase):
 
         # Unregister them
         p.unregister_user(u1)
-        p.unregister_user(u2)
+        p.unregister_user("jane")
         p.unregister_user(u3)
 
         # Try re-add deleted user
@@ -140,7 +140,7 @@ class TestPorgWrapper(unittest.TestCase):
 
         # Check that u1 and u2 don't have events
         u1_events = p.get_events_by_user(u1)
-        u2_events = p.get_events_by_user(u2)
+        u2_events = p.get_events_by_user(u2.get_id())
         self.assertEqual(u1_events, [])
         self.assertEqual(u2_events, [])
 
@@ -150,7 +150,7 @@ class TestPorgWrapper(unittest.TestCase):
         self.assertEqual(u1_events, [e1])
 
         e2 = p.create_event(u1.get_id(), "event 2a")
-        u1_events = p.get_events_by_user(u1)
+        u1_events = p.get_events_by_user(u1.get_id())
         self.assertEqual(u1_events, [e1, e2])
 
         # Create some events for u2, check none of u1's events were added to u2
@@ -214,6 +214,10 @@ class TestPorgWrapper(unittest.TestCase):
         self.assertIsNone(e1.get_location())
         self.assertIsNone(e1.get_time())
 
+        # Check events_organised_ids and events_attending_ids for u1
+        self.assertEqual(u1.get_events_organised_ids(), [e1.get_id()])
+        self.assertEqual(u1.get_events_attending_ids(), [e1.get_id()])
+
         # Check auto-created attendance for e1
         self.assertEqual(a1.get_user_id(), u1.get_id())
         self.assertEqual(a1.get_event_id(), e1.get_id())
@@ -226,6 +230,10 @@ class TestPorgWrapper(unittest.TestCase):
         self.assertEqual(e2.get_name(), "event 2")
         self.assertEqual(e2.get_location(), "somewhere over there")
         self.assertIsNone(e2.get_time())
+
+        # Check events_organised_ids and events_attending_ids for u1
+        self.assertEqual(u1.get_events_organised_ids(), [e1.get_id(), e2.get_id()])
+        self.assertEqual(u1.get_events_attending_ids(), [e1.get_id(), e2.get_id()])
 
         # Check auto-created attendance for e2
         self.assertEqual(a2.get_user_id(), u1.get_id())
@@ -241,6 +249,10 @@ class TestPorgWrapper(unittest.TestCase):
         self.assertIsNone(e3.get_location())
         self.assertEqual(e3.get_time(), third_time)
 
+        # Check events_organised_ids and events_attending_ids for u1
+        self.assertEqual(u1.get_events_organised_ids(), [e1.get_id(), e2.get_id(), e3.get_id()])
+        self.assertEqual(u1.get_events_attending_ids(), [e1.get_id(), e2.get_id(), e3.get_id()])
+
         # Check auto-created attendance for e3
         self.assertEqual(a3.get_user_id(), u1.get_id())
         self.assertEqual(a3.get_event_id(), e3.get_id())
@@ -254,6 +266,12 @@ class TestPorgWrapper(unittest.TestCase):
         self.assertEqual(e4.get_name(), "THE (4th) EVENT")
         self.assertEqual(e4.get_location(), "not here")
         self.assertEqual(e4.get_time(), fourth_time)
+
+        # Check events_organised_ids and events_attending_ids for u1 and u2
+        self.assertEqual(u1.get_events_organised_ids(), [e1.get_id(), e2.get_id(), e3.get_id()])
+        self.assertEqual(u1.get_events_attending_ids(), [e1.get_id(), e2.get_id(), e3.get_id()])
+        self.assertEqual(u2.get_events_organised_ids(), [e4.get_id()])
+        self.assertEqual(u2.get_events_attending_ids(), [e4.get_id()])
 
         # Check auto-created attendance for e4
         self.assertEqual(a4.get_user_id(), u2.get_id())
@@ -272,6 +290,12 @@ class TestPorgWrapper(unittest.TestCase):
         # Check correct all_events
         all_events = p.get_all_events()
         self.assertEqual(all_events, [e1, e2, e3, e4])
+
+        # Check u1 and u2 still have correct events_organised_ids and events_attending_ids
+        self.assertEqual(u1.get_events_organised_ids(), [e1.get_id(), e2.get_id(), e3.get_id()])
+        self.assertEqual(u1.get_events_attending_ids(), [e1.get_id(), e2.get_id(), e3.get_id()])
+        self.assertEqual(u2.get_events_organised_ids(), [e4.get_id()])
+        self.assertEqual(u2.get_events_attending_ids(), [e4.get_id()])
 
 # Generate empty test database
 conn = sqlite3.connect(porg_config.DB_NAME)

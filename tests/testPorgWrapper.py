@@ -213,6 +213,7 @@ class TestPorgWrapper(unittest.TestCase):
         self.assertEqual(e1.get_name(), "event 1")
         self.assertIsNone(e1.get_location())
         self.assertIsNone(e1.get_time())
+        self.assertEqual(p.get_attendances(e1), [a1])
 
         # Check events_organised_ids and events_attending_ids for u1
         self.assertEqual(u1.get_events_organised_ids(), [e1.get_id()])
@@ -230,6 +231,7 @@ class TestPorgWrapper(unittest.TestCase):
         self.assertEqual(e2.get_name(), "event 2")
         self.assertEqual(e2.get_location(), "somewhere over there")
         self.assertIsNone(e2.get_time())
+        self.assertEqual(p.get_attendances(e2), [a2])
 
         # Check events_organised_ids and events_attending_ids for u1
         self.assertEqual(u1.get_events_organised_ids(), [e1.get_id(), e2.get_id()])
@@ -248,6 +250,7 @@ class TestPorgWrapper(unittest.TestCase):
         self.assertEqual(e3.get_name(), "events are cool")
         self.assertIsNone(e3.get_location())
         self.assertEqual(e3.get_time(), third_time)
+        self.assertEqual(p.get_attendances(e3), [a3])
 
         # Check events_organised_ids and events_attending_ids for u1
         self.assertEqual(u1.get_events_organised_ids(), [e1.get_id(), e2.get_id(), e3.get_id()])
@@ -266,6 +269,7 @@ class TestPorgWrapper(unittest.TestCase):
         self.assertEqual(e4.get_name(), "THE (4th) EVENT")
         self.assertEqual(e4.get_location(), "not here")
         self.assertEqual(e4.get_time(), fourth_time)
+        self.assertEqual(p.get_attendances(e4), [a4])
 
         # Check events_organised_ids and events_attending_ids for u1 and u2
         self.assertEqual(u1.get_events_organised_ids(), [e1.get_id(), e2.get_id(), e3.get_id()])

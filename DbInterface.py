@@ -13,7 +13,8 @@ class DbInterface():
 
     def get_by_id(self, obj_id, obj_type):
         """Returns an object in the database with matching object id and object type."""
-        return self.s.query(obj_type).get(obj_id)
+        if obj_id:
+            return self.s.query(obj_type).get(obj_id)
 
     def query(self, obj_type, filter, num='one'):
         res = self.s.query(obj_type).filter(filter)

@@ -239,3 +239,35 @@ class Attendance(Base):
             self.roles.remove(role)
         else:
             return None
+
+
+class Choice(Base):
+    __tablename__ = 'choices'
+    id = Column(Integer, primary_key=True)
+    question_id = Column(Integer)
+    choice = Column(Unicode(40))
+
+    def __init__(self, question_id, choice):
+        assert isinstance(question_id, int)
+        assert isinstance(choice, str)
+
+        self.id = None
+        self.question_id = question_id
+        self.choice = choice
+
+    def get_id(self):
+        return self.id
+
+    def get_question_id(self):
+        return self.question_id
+
+    def get_choice(self):
+        return self.choice
+
+    def set_question_id(self, question_id):
+        assert isinstance(question_id, int)
+        self.question_id = question_id
+
+    def set_choice(self, choice):
+        assert isinstance(choice, str)
+        self.choice = choice

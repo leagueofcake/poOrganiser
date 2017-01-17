@@ -49,10 +49,9 @@ def create_tables(c):
     ''')
 
     c.execute('''CREATE TABLE choices(
-        choice_id INTEGER PRIMARY KEY,
+        id INTEGER PRIMARY KEY,
         question_id INTEGER NOT NULL,
-        choice_text text NOT NULL,
-        votes TEXT);
+        choice text NOT NULL);
     ''')
 
 

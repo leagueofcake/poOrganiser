@@ -177,8 +177,54 @@ class TestEvent(unittest.TestCase):
             e1.add_attendance_id([1, 2])
 
     def test_remove_attendance_id(self):
-        # TODO
-        pass
+        e1 = Event(0, "BBQ", "Parra Park", datetime(2016, 10, 1))
+        e1.add_attendance_id(1)
+        self.assertEqual(e1.get_attendance_ids(), [1])
+        e1.add_attendance_id(24)
+        self.assertEqual(e1.get_attendance_ids(), [1, 24])
+
+        # Test removing attendance ids with integers
+        e1.remove_attendance_id(1)
+        self.assertEqual(e1.get_attendance_ids(), [24])
+
+        mock_a1 = Attendance(1, 1)
+        mock_a1.id = 35
+        e1.add_attendance_id(mock_a1)
+        self.assertEqual(e1.get_attendance_ids(), [24, 35])
+
+        mock_a2 = Attendance(34, 1)
+        mock_a2.id = 490
+        e1.add_attendance_id(mock_a2)
+        self.assertEqual(e1.get_attendance_ids(), [24, 35, 490])
+
+        # Test removing attendance id that doesn't exist
+        e1.remove_attendance_id(999)
+        self.assertEqual(e1.get_attendance_ids(), [24, 35, 490])
+
+        # Test removing attendance ids with mock Attendance objects
+        e1.remove_attendance_id(mock_a1)
+        self.assertEqual(e1.get_attendance_ids(), [24, 490])
+
+        e1.remove_attendance_id(24)
+        self.assertEqual(e1.get_attendance_ids(), [490])
+
+        e1.remove_attendance_id(490)
+        self.assertEqual(e1.get_attendance_ids(), [])
+
+        # Test removing attendance id that doesn't exist
+        e1.remove_attendance_id(490)
+        self.assertEqual(e1.get_attendance_ids(), [])
+
+        # Test removing attendance ids with invalid types
+        with self.assertRaises(TypeError):
+            e1.remove_attendance_id("blob")
+
+        with self.assertRaises(TypeError):
+            e1.remove_attendance_id(e1)
+
+        with self.assertRaises(TypeError):
+            e1.remove_attendance_id(3.14)
+
 
 if __name__ == '__main__':
     unittest.main()

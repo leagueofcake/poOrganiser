@@ -529,10 +529,58 @@ class TestPorgWrapper(unittest.TestCase):
         with self.assertRaises(UserNotFoundError):
             p.create_attendance(User("nonexistant user 2"), e1)
 
-
     def test_delete_attendance(self):
-        # TODO
-        pass
+        # Create some users
+        u1 = p.register_user("u1")
+        u2 = p.register_user("u2")
+        u3 = p.register_user("u3")
+
+        e1 = p.create_event(u1, "e1")
+        a1 = p.get_attendance(u1, e1)
+
+        self.assertEqual(u1.get_events_organised_ids(), [e1.get_id()])
+        self.assertEqual(u1.get_events_attending_ids(), [e1.get_id()])
+        self.assertEqual(e1.get_attendance_ids(), [a1.get_id()])
+
+        p.delete_attendance(a1)
+
+        # Check event id removed from events_attending_ids but not events_organised_ids
+        self.assertEqual(u1.get_events_organised_ids(), [e1.get_id()])  # Still organising event...
+        self.assertEqual(u1.get_events_attending_ids(), [])  # ... but not attending
+
+        # Check attendance id removed from Event
+        self.assertEqual(e1.get_attendance_ids(), [])
+
+        # Create second Attendance
+        a2 = p.create_attendance(u2, e1)
+
+        # Check attendance id removed from Event
+        self.assertEqual(e1.get_attendance_ids(), [a2.get_id()])
+
+        # u2 did not organise e1
+        self.assertEqual(u2.get_events_organised_ids(), [])
+        self.assertEqual(u2.get_events_attending_ids(), [e1.get_id()])
+        self.assertEqual(e1.get_attendance_ids(), [a2.get_id()])
+
+        p.delete_attendance(a2)
+
+        # Check event id removed from events_attending_ids, events_organised_ids still empty
+        self.assertEqual(u2.get_events_organised_ids(), [])
+        self.assertEqual(u2.get_events_attending_ids(), [])
+
+        # Check attendance id removed from Event
+        self.assertEqual(e1.get_attendance_ids(), [])
+
+        # Try delete attendances that don't exist
+        with self.assertRaises(AttendanceNotFoundError):
+            p.delete_attendance(Attendance(1, 1))
+
+        with self.assertRaises(AttendanceNotFoundError):
+            p.delete_attendance(Attendance(1, e1.get_id()))
+
+        with self.assertRaises(AttendanceNotFoundError):
+            p.delete_attendance(Attendance(u1.get_id(), e1.get_id()))
+
 
 # Generate empty test database
 conn = sqlite3.connect(porg_config.DB_NAME)

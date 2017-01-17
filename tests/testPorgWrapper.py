@@ -469,6 +469,16 @@ class TestPorgWrapper(unittest.TestCase):
         self.assertEqual(p.get_attendances(e2), [a3, a4, a5])
         self.assertEqual(p.get_attendances(u1), [a1, a5])
 
+        # Try call get_attendance with invalid parameter types
+        with self.assertRaises(TypeError):
+            p.get_attendances(a1)
+
+        with self.assertRaises(TypeError):
+            p.get_attendances(12345)
+
+        with self.assertRaises(TypeError):
+            p.get_attendances("event 1")
+
     def test_create_attendance(self):
         # TODO
         pass

@@ -166,7 +166,7 @@ class Event(Base):
         assert isinstance(time, datetime)
         self.time = time
 
-    def add_attendance(self, obj):
+    def add_attendance_id(self, obj):
         """obj may be an int denoting an Attendance id or an Attendance object. Attendance id is
         not added if it already exists. Raises TypeError if obj is not either type."""
         attendance_id = obj
@@ -174,12 +174,12 @@ class Event(Base):
         if isinstance(obj, Attendance):
             attendance_id = obj.id
         elif not isinstance(obj, int):
-            raise TypeError("Invalid object type for add_attendance: expected int or Attendance")
+            raise TypeError("Invalid object type for add_attendance_id: expected int or Attendance")
 
         if attendance_id not in self.attendance_ids:
             self.attendance_ids.append(attendance_id)
 
-    def remove_attendance(self, obj):
+    def remove_attendance_id(self, obj):
         """obj may be an int denoting an Attendance id or an Attendance object. Raises TypeError
         if obj is not either type."""
         if isinstance(obj, int):
@@ -187,7 +187,7 @@ class Event(Base):
         elif isinstance(obj, Attendance):
             self.attendance_ids.remove(obj.id)
         else:
-            raise TypeError("Invalid object type for remove_attendance: expected int or Attendance")
+            raise TypeError("Invalid object type for remove_attendance_id: expected int or Attendance")
 
 
 class Attendance(Base):

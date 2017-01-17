@@ -92,7 +92,7 @@ class PorgWrapper:
         # Add Attendance
         a = Attendance(owner_id, e.get_id(), going_status="going", roles=["organiser"])
         self.db_interface.add(a)
-        e.add_attendance(a)
+        e.add_attendance_id(a)
         self.db_interface.update(e)
 
         return e
@@ -166,7 +166,7 @@ class PorgWrapper:
         self.db_interface.update(u)
 
         # Add attendance id to Event
-        e.add_attendance(a)
+        e.add_attendance_id(a)
         self.db_interface.update(e)
 
         return a
@@ -185,7 +185,7 @@ class PorgWrapper:
         self.db_interface.update(u)
 
         # Remove attendance id from Event.attendance_ids
-        e.remove_attendance(a)
+        e.remove_attendance_id(a)
         self.db_interface.update(e)
 
         # Delete attendance object

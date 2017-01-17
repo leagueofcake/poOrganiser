@@ -144,11 +144,11 @@ class TestEvent(unittest.TestCase):
         with self.assertRaises(AssertionError):
             e1.set_time("01/01/2001")
 
-    def test_add_attendance(self):
         # TODO
+    def test_add_attendance_id(self):
         pass
 
-    def test_remove_attendance(self):
+    def test_remove_attendance_id(self):
         # TODO
         pass
 

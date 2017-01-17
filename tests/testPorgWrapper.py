@@ -301,6 +301,101 @@ class TestPorgWrapper(unittest.TestCase):
         self.assertEqual(u2.get_events_organised_ids(), [e4.get_id()])
         self.assertEqual(u2.get_events_attending_ids(), [e4.get_id()])
 
+    def test_delete_event(self):
+        # Create some users
+        u1 = p.register_user("user1")
+        u2 = p.register_user("ThE sEcOnD uSeR")
+
+        # Create some events
+        e1 = p.create_event(u1.get_id(), "event 1")
+        e2 = p.create_event(u2.get_id(), "two to 2 too")
+        e3 = p.create_event(u1.get_id(), "free threes")
+
+        a1 = p.get_attendance(u1.get_id(), e1.get_id())
+        a2 = p.get_attendance(u2.get_id(), e2.get_id())
+        a3 = p.get_attendance(u1.get_id(), e3.get_id())
+
+        # Check events_organising_ids and events_attending_ids for u1 and u2
+        self.assertEqual(u1.get_events_organised_ids(), [e1.get_id(), e3.get_id()])
+        self.assertEqual(u1.get_events_attending_ids(), [e1.get_id(), e3.get_id()])
+        self.assertEqual(u2.get_events_organised_ids(), [e2.get_id()])
+        self.assertEqual(u2.get_events_attending_ids(), [e2.get_id()])
+
+        # Check attendances for created events
+        self.assertEqual(p.get_attendances(e1), [a1])
+        self.assertEqual(p.get_attendances(e2), [a2])
+        self.assertEqual(p.get_attendances(e3), [a3])
+
+        # Delete e1
+        p.delete_event(e1)
+
+        # Check user's events_organised_ids and events_attending_ids were removed
+        self.assertEqual(u1.get_events_organised_ids(), [e3.get_id()])
+        self.assertEqual(u1.get_events_attending_ids(), [e3.get_id()])
+
+        # Check attendances were removed
+        self.assertIsNone(p.get_attendance(u1.get_id(), e1.get_id()))
+
+        # Delete e2 by id
+        p.delete_event(e2.get_id())
+
+        # Check user's events_organised_ids and events_attending_ids were removed
+        self.assertEqual(u2.get_events_organised_ids(), [])
+        self.assertEqual(u2.get_events_attending_ids(), [])
+
+        # Check attendances were removed
+        self.assertIsNone(p.get_attendance(u2.get_id(), e2.get_id()))
+
+        # Delete e3
+        p.delete_event(e3)
+
+        # Check user's events_organised_ids and events_attending_ids were removed
+        self.assertEqual(u1.get_events_organised_ids(), [])
+        self.assertEqual(u1.get_events_attending_ids(), [])
+
+        # Check attendances were removed
+        self.assertIsNone(p.get_attendance(u1.get_id(), e3.get_id()))
+
+        # Try delete events that don't exist in database
+        with self.assertRaises(EventNotFoundError):
+            p.delete_event(e1)
+
+        with self.assertRaises(EventNotFoundError):
+            p.delete_event(e3)
+
+        with self.assertRaises(EventNotFoundError):
+            p.delete_event(103)
+
+        with self.assertRaises(EventNotFoundError):
+            p.delete_event(Event(u1.get_id(), "some event"))
+
+        # Try delete events with owners that no longer exist in database
+        e4 = p.create_event(u1.get_id(), "event_to_be_deleted")
+        p.unregister_user(u1)
+        p.delete_event(e4)
+
+        # Check no more events returned by get_curr_events and get_all_events
+        self.assertEqual(p.get_curr_events(), [])
+        self.assertEqual(p.get_all_events(), [])
+
+
+
+    def test_get_attendance(self):
+        # TODO
+        pass
+
+    def test_get_attendances(self):
+        # TODO
+        pass
+
+    def test_create_attendance(self):
+        # TODO
+        pass
+
+    def test_delete_attendance(self):
+        # TODO
+        pass
+
 # Generate empty test database
 conn = sqlite3.connect(porg_config.DB_NAME)
 c = conn.cursor()

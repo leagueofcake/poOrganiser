@@ -45,7 +45,7 @@ def fullEventInfo(event):
     fullInfo += "**Date:** {}\n".format(event_time)
     fullInfo += "**People:**\n"
     fullInfo += "*Name\t\tGoing\tResponsibilities*\n"
-    attendances = porg.get_attendances(eventID)
+    attendances = porg.get_attendances(event)
     for at in attendances:
         username = idToUsername(client.get_all_members(), at.get_user_id())
         going_status = at.get_going_status()

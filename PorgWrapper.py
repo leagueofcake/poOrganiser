@@ -48,6 +48,7 @@ class PorgWrapper:
         else:
             u = self.db_interface.get_by_id(obj, User)
 
+        # Check user exists in the database
         if not u:
             raise UserNotFoundError("User could not be found")
 
@@ -65,7 +66,7 @@ class PorgWrapper:
 
         # Check owner exists in the database
         if not owner:
-            raise UserNotFoundError("Owner with user id {} could not be found".format(owner_id))
+            raise UserNotFoundError("Owner (user id {}) could not be found".format(owner_id))
 
         # Create event and insert into database
         e = Event(owner_id, name, location, time)
@@ -83,18 +84,32 @@ class PorgWrapper:
 
         return e
 
-    def delete_event(self, event_id):
-        e = self.db_interface.get_by_id(event_id, Event)
+    def delete_event(self, obj):
+        if isinstance(obj, Event):
+            e = self.db_interface.get_by_id(obj.get_id(), Event)
+        else:
+            e = self.db_interface.get_by_id(obj, Event)
+
+        if not e:
+            raise EventNotFoundError("Event could not be found for deletion")
+
+        # Delete event
+        event_owner_id = e.get_owner_id()
+        self.db_interface.delete(e)
 
         # Remove event id from User.events_organised_ids
-        owner = self.db_interface.get_by_id(e.get_owner_id(), User)
+        owner = self.db_interface.get_by_id(event_owner_id, User)
+
+        # Check owner exists in the database
+        if not owner:
+            raise UserNotFoundError("Event owner (id {}) could not be found".format(event_owner_id))
+
         owner.remove_event_organised(e)
         self.db_interface.update(owner)
-        self.db_interface.delete(e)
 
     def get_attendance(self, user_id, event_id):
         return self.db_interface.query(Attendance, Attendance.user_id == user_id and
-                                    Attendance.event_id == event_id, num='one')
+                                       Attendance.event_id == event_id, num='one')
 
     def get_attendances(self, event_id):
         res = []

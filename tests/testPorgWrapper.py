@@ -435,9 +435,39 @@ class TestPorgWrapper(unittest.TestCase):
         self.assertEqual(a4.get_roles(), ['food buyer', 'driver'])
         self.assertEqual(a4, a4_gotten)
 
+        # Try get attendances that don't exist
+        self.assertIsNone(p.get_attendance(100, 200))
+        self.assertIsNone(p.get_attendance(u1, "asdf"))
+        self.assertIsNone(p.get_attendance(3, e1))
+
     def test_get_attendances(self):
-        # TODO
-        pass
+        # Create some users
+        u1 = p.register_user("u1")
+        u2 = p.register_user("u2")
+        u3 = p.register_user("u3")
+
+        # Create some events
+        e1 = p.create_event(u1, "e1")
+        a1 = p.get_attendance(u1, e1)
+        self.assertEqual(p.get_attendances(e1), [a1])  # Test on Event
+        self.assertEqual(p.get_attendances(e1), p.get_attendances(u1))  # Test on User
+
+        a2 = p.create_attendance(u2, e1)
+        self.assertEqual(p.get_attendances(e1), [a1, a2])
+        self.assertEqual(p.get_attendances(u2), [a2])
+
+        e2 = p.create_event(u2, "e2", location="springfield")
+        a3 = p.get_attendance(u2, e2)
+        self.assertEqual(p.get_attendances(e2), [a3])
+        self.assertEqual(p.get_attendances(u2), [a2, a3])
+
+        a4 = p.create_attendance(u3, e2)
+        self.assertEqual(p.get_attendances(e2), [a3, a4])
+        self.assertEqual(p.get_attendances(u3), [a4])
+
+        a5 = p.create_attendance(u1, e2)
+        self.assertEqual(p.get_attendances(e2), [a3, a4, a5])
+        self.assertEqual(p.get_attendances(u1), [a1, a5])
 
     def test_create_attendance(self):
         # TODO

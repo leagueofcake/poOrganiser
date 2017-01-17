@@ -129,8 +129,21 @@ class PorgWrapper:
             owner.remove_event_attending(e)  # May not be present if organising but not attending
             self.db_interface.update(owner)
 
-    def get_attendance(self, user_id, event_id):
-        attendance_filter = and_(Attendance.user_id == user_id, Attendance.event_id == event_id)
+    def get_attendance(self, user_obj, event_obj):
+        if isinstance(user_obj, User):
+            u = self.db_interface.get_by_id(user_obj.get_id(), User)
+        else:
+            u = self.db_interface.get_by_id(user_obj, User)
+
+        if isinstance(event_obj, Event):
+            e = self.db_interface.get_by_id(event_obj.get_id(), Event)
+        else:
+            e = self.db_interface.get_by_id(event_obj, Event)
+
+        if not e or not u:
+            return None
+
+        attendance_filter = and_(Attendance.user_id == u.get_id(), Attendance.event_id == e.get_id())
         return self.db_interface.query(Attendance, attendance_filter, num='one')
 
     def get_attendances(self, obj):

@@ -54,11 +54,17 @@ class PorgWrapper:
         return self.db_interface.query(Event, True, num='all')
 
     def create_event(self, owner_id, name, location='', time=None):
+        owner = self.db_interface.get_by_id(owner_id, User)
+
+        # Check owner exists in the database
+        if not owner:
+            raise UserNotFoundError("Owner with user id {} could not be found".format(owner_id))
+
+        # Create event and insert into database
         e = Event(owner_id, name, location, time)
         self.db_interface.add(e)
 
         # Add event id to User.events_organised_ids
-        owner = self.db_interface.get_by_id(owner_id, User)
         owner.add_event_organised(e)
         self.db_interface.update(owner)
 
@@ -92,13 +98,20 @@ class PorgWrapper:
         return res
 
     def create_attendance(self, user_id, event_id, going_status='invited', roles=list()):
+        u = self.db_interface.get_by_id(user_id, User)
+        e = self.db_interface.get_by_id(event_id, Event)
+
+        # Check user and event exists in database
+        if not e:
+            raise EventNotFoundError("Event with event id {} could not be found".format(event_id))
+        if not u:
+            raise UserNotFoundError("User with id {} could not be found".format(user_id))
+
+        # Create attendance
         a = Attendance(user_id, event_id, going_status, roles)
         self.db_interface.add(a)
 
-        e = self.db_interface.get_by_id(event_id, Event)
-
         # Add event id to User.events_attending_ids
-        u = self.db_interface.get_by_id(user_id, User)
         u.add_event_attending(e)
         self.db_interface.update(u)
 

@@ -182,12 +182,13 @@ class Event(Base):
     def remove_attendance_id(self, obj):
         """obj may be an int denoting an Attendance id or an Attendance object. Raises TypeError
         if obj is not either type."""
-        if isinstance(obj, int):
-            self.attendance_ids.remove(obj)
-        elif isinstance(obj, Attendance):
-            self.attendance_ids.remove(obj.id)
-        else:
+        if isinstance(obj, Attendance):
+            obj = obj.get_id()
+        elif not isinstance(obj, int):
             raise TypeError("Invalid object type for remove_attendance_id: expected int or Attendance")
+
+        if obj in self.attendance_ids:
+            self.attendance_ids.remove(obj)
 
 
 class Attendance(Base):

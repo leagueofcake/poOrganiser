@@ -17,7 +17,7 @@ def drop_tables(c):
 def create_tables(c):
     c.execute('''CREATE TABLE events(
         id INTEGER PRIMARY KEY,
-        owner_id INTEGER NOT NULL,
+        owner_id INTEGER,
         name TEXT NOT NULL,
         location TEXT,
         time DATETIME,

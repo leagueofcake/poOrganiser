@@ -65,9 +65,9 @@ class TestPorgWrapper(unittest.TestCase):
         u3 = p.register_user("noot noot")
 
         # Create some events
-        e1 = p.create_event(u1.get_id(), "event 1")
+        e1 = p.create_event(u1, "event 1")
         e2 = p.create_event(u2.get_id(), "event 2")
-        e3 = p.create_event(u2.get_id(), "event 3", location="blob street")
+        e3 = p.create_event(u2, "event 3", location="blob street")
         self.assertEqual(u1.get_events_organised_ids(), [e1.get_id()])
         self.assertEqual(u2.get_events_organised_ids(), [e2.get_id(), e3.get_id()])
 
@@ -155,14 +155,14 @@ class TestPorgWrapper(unittest.TestCase):
         u1_events = p.get_events_by_user(u1)
         self.assertEqual(u1_events, [e1])
 
-        e2 = p.create_event(u1.get_id(), "event 2a")
+        e2 = p.create_event(u1, "event 2a")
         u1_events = p.get_events_by_user(u1.get_id())
         self.assertEqual(u1_events, [e1, e2])
 
         # Create some events for u2, check none of u1's events were added to u2
         u2_events = p.get_events_by_user(u2)
         self.assertEqual(u2_events, [])
-        e3 = p.create_event(u2.get_id(), "event 1b")
+        e3 = p.create_event(u2, "event 1b")
         u2_events = p.get_events_by_user(u2)
         self.assertEqual(u2_events, [e3])
 

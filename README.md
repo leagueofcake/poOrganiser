@@ -42,11 +42,11 @@ d.add(u)
 
 Database insertion is performed by the generic add() method of DbInterface. The above code snippet is an example of this. 
 
-DbInterface provides the get_by_id() and query() methods to get an object within the database.
+DbInterface provides the get_obj() and query() methods to get an object within the database.
 
 ```python
 d = DbInterface()
-u = d.get_by_id(3, User)  # d.get_by_id(obj_id, obj_type)
+u = d.get_obj(3, User)  # d.get_obj(obj_id, obj_type)
 u = d.query(User, User.username == "Bob", num="all")  # d.query(obj_type, filter, num)
 ```
 

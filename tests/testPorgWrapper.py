@@ -74,12 +74,12 @@ class TestPorgWrapper(unittest.TestCase):
         # Unregister created users
         p.unregister_user(u1)  # Only delete attendances - event should still exist
         self.assertIsNone(e1.get_owner_id())  # Check owner_id is removed from Event
-        self.assertIsNotNone(p.db_interface.get_by_id(e1.get_id(), Event))
+        self.assertIsNotNone(p.db_interface.get_obj(e1.get_id(), Event))
         self.assertIsNone(p.get_attendance(u1.get_id(), e1.get_id()))  # Check attendance deleted
 
         p.unregister_user("jane", delete_events=True)  # Delete attedances and events
-        self.assertIsNone(p.db_interface.get_by_id(e2.get_id(), Event))
-        self.assertIsNone(p.db_interface.get_by_id(e2.get_id(), Event))
+        self.assertIsNone(p.db_interface.get_obj(e2.get_id(), Event))
+        self.assertIsNone(p.db_interface.get_obj(e2.get_id(), Event))
         self.assertIsNone(p.get_attendance(u2.get_id(), e2.get_id()))  # Check attendance deleted
         self.assertIsNone(p.get_attendance(u2.get_id(), e3.get_id()))  # Check attendance deleted
 

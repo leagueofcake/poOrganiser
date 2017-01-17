@@ -23,7 +23,7 @@ class PorgWrapper:
     def unregister_user(self, obj, delete_events=False):
         username = obj
         if isinstance(obj, User):
-            u = self.db_interface.get_by_id(obj.get_id(), User)
+            u = self.db_interface.get_obj(obj.get_id(), User)
             username = obj.get_username()
         else:
             u = self.get_user_by_username(obj)
@@ -65,7 +65,7 @@ class PorgWrapper:
 
         res = []
         for event_id in u.get_events_organised_ids():
-            e = self.db_interface.get_by_id(event_id, Event)
+            e = self.db_interface.get_obj(event_id, Event)
             res.append(e)
         return res
 
@@ -105,7 +105,7 @@ class PorgWrapper:
 
         # Remove attendances from database
         for attendance_id in e.get_attendance_ids():
-            a = self.db_interface.get_by_id(attendance_id, Attendance)
+            a = self.db_interface.get_obj(attendance_id, Attendance)
             self.delete_attendance(a.get_id())
 
         # Delete event
@@ -114,7 +114,7 @@ class PorgWrapper:
 
         # Remove event id from User.events_organised_ids and User.events_attending_ids
         # NB: owner may not exist if they unregistered instead of deleting user
-        owner = self.db_interface.get_by_id(event_owner_id, User)
+        owner = self.db_interface.get_obj(event_owner_id, User)
         if owner:
             owner.remove_event_organised(e)
             owner.remove_event_attending(e)  # May not be present if organising but not attending
@@ -133,12 +133,12 @@ class PorgWrapper:
     def get_attendances(self, obj):
         res = []
         if isinstance(obj, Event):
-            e = self.db_interface.get_by_id(obj.get_id(), Event)
+            e = self.db_interface.get_obj(obj.get_id(), Event)
             for attendance_id in e.get_attendance_ids():
-                a = self.db_interface.get_by_id(attendance_id, Attendance)
+                a = self.db_interface.get_obj(attendance_id, Attendance)
                 res.append(a)
         elif isinstance(obj, User):
-            u = self.db_interface.get_by_id(obj.get_id, User)
+            u = self.db_interface.get_obj(obj.get_id, User)
             for event_id in u.get_events_attending_ids():
                 a = self.get_attendance(u.get_id(), event_id)
                 res.append(a)
@@ -177,8 +177,8 @@ class PorgWrapper:
         if not a:
             raise AttendanceNotFoundError("Attendance object could not be found")
 
-        e = self.db_interface.get_by_id(a.get_event_id(), Event)
-        u = self.db_interface.get_by_id(a.get_user_id(), User)
+        e = self.db_interface.get_obj(a.get_event_id(), Event)
+        u = self.db_interface.get_obj(a.get_user_id(), User)
 
         # Remove event id from Users.events_attending_ids
         u.remove_event_attending(e)

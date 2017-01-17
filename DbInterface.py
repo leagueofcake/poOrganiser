@@ -11,7 +11,7 @@ class DbInterface():
         self._engine = create_engine(porg_config.DB_URL)
         self.s = sessionmaker(bind=self._engine)()
 
-    def get_by_id(self, obj_id, obj_type):
+    def _get_by_id(self, obj_id, obj_type):
         """Returns an object in the database with matching object id and object type."""
         if obj_id:
             return self.s.query(obj_type).get(obj_id)
@@ -20,9 +20,9 @@ class DbInterface():
         """Given obj (usually id or Object), returns corresponding object within the database.
         Usually used when a function can take either an Object id or an Object."""
         if isinstance(obj, obj_type):
-            return self.get_by_id(obj.get_id(), obj_type)
+            return self._get_by_id(obj.get_id(), obj_type)
         else:
-            return self.get_by_id(obj, obj_type)
+            return self._get_by_id(obj, obj_type)
 
     def query(self, obj_type, filter, num='one'):
         res = self.s.query(obj_type).filter(filter)

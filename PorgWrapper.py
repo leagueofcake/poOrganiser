@@ -21,7 +21,7 @@ class PorgWrapper:
 
     def unregister_user(self, username):
         u = self.get_user_by_username(username)
-        if u:
+        if not u:
             raise UserNotFoundError("User \"{}\" could not be found".format(username))
 
         self.db_interface.delete(u)

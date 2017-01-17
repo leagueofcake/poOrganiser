@@ -79,6 +79,8 @@ class TestEvent(unittest.TestCase):
         e1.set_owner_id(10)
         e1.set_owner_id(33)
         self.assertEqual(e1.get_owner_id(), 33)
+        e1.set_owner_id(None)
+        self.assertIsNone(e1.get_owner_id())
 
         # Test setting owner_ids with invalid types
         with self.assertRaises(AssertionError):

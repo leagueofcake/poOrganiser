@@ -151,8 +151,15 @@ class PorgWrapper:
 
         return a
 
-    def delete_attendance(self, attendance_id):
-        a = self.db_interface.get_by_id(attendance_id, Attendance)
+    def delete_attendance(self, obj):
+        if isinstance(obj, Attendance):
+            a = self.db_interface.get_by_id(obj.get_id(), Attendance)
+        else:
+            a = self.db_interface.get_by_id(obj, Attendance)
+
+        if not a:
+            raise AttendanceNotFoundError("Attendance object could not be found")
+
         e = self.db_interface.get_by_id(a.get_event_id(), Event)
         u = self.db_interface.get_by_id(a.get_user_id(), User)
 

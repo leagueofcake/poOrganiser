@@ -1,6 +1,6 @@
 #!/usr/bin/env python3.5
 import unittest
-from Poorganiser import Event
+from Poorganiser import Event, Attendance
 from datetime import datetime
 
 
@@ -144,9 +144,35 @@ class TestEvent(unittest.TestCase):
         with self.assertRaises(AssertionError):
             e1.set_time("01/01/2001")
 
-        # TODO
     def test_add_attendance_id(self):
-        pass
+        e1 = Event(0, "BBQ", "Parra Park", datetime(2016, 10, 1))
+
+        # Test adding attendance ids with integers
+        e1.add_attendance_id(1)
+        self.assertEqual(e1.get_attendance_ids(), [1])
+        e1.add_attendance_id(24)
+        self.assertEqual(e1.get_attendance_ids(), [1, 24])
+
+        # Test adding attendance ids with mock Attendance objects
+        mock_a1 = Attendance(1, 1)
+        mock_a1.id = 35
+        e1.add_attendance_id(mock_a1)
+        self.assertEqual(e1.get_attendance_ids(), [1, 24, 35])
+
+        mock_a2 = Attendance(34, 1)
+        mock_a2.id = 490
+        e1.add_attendance_id(mock_a2)
+        self.assertEqual(e1.get_attendance_ids(), [1, 24, 35, 490])
+
+        # Test adding attendance ids with invalid types
+        with self.assertRaises(TypeError):
+            e1.add_attendance_id("bob")
+
+        with self.assertRaises(TypeError):
+            e1.add_attendance_id(3.14)
+
+        with self.assertRaises(TypeError):
+            e1.add_attendance_id([1, 2])
 
     def test_remove_attendance_id(self):
         # TODO

@@ -94,6 +94,11 @@ class PorgWrapper:
         if not e:
             raise EventNotFoundError("Event could not be found for deletion")
 
+        # Remove attendances from database
+        for attendance_id in e.get_attendance_ids():
+            a = self.db_interface.get_by_id(attendance_id, Attendance)
+            self.delete_attendance(a.get_id())
+
         # Delete event
         event_owner_id = e.get_owner_id()
         self.db_interface.delete(e)

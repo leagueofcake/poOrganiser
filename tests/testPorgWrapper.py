@@ -385,8 +385,55 @@ class TestPorgWrapper(unittest.TestCase):
         self.assertEqual(p.get_all_events(), [])
 
     def test_get_attendance(self):
-        # TODO
-        pass
+        # Create some users
+        u1 = p.register_user("u1")
+        u2 = p.register_user("u2")
+        u3 = p.register_user("u3")
+
+        # Create some events
+        e1 = p.create_event(u1, "e1")
+        a1 = p.get_attendance(u1.get_id(), e1.get_id())
+
+        # Check fields for auto-created Attendance for e1
+        self.assertEqual(a1.get_user_id(), u1.get_id())
+        self.assertEqual(a1.get_event_id(), e1.get_id())
+        self.assertEqual(a1.get_going_status(), "going")
+        self.assertEqual(a1.get_roles(), ['organiser'])
+
+        # Create attendance
+        a2 = p.create_attendance(u2, e1)
+        a2_gotten = p.get_attendance(u2, e1)
+        self.assertEqual(a2_gotten.get_user_id(), u2.get_id())
+        self.assertEqual(a2_gotten.get_event_id(), e1.get_id())
+        self.assertEqual(a2.get_going_status(), "invited")
+        self.assertEqual(a2.get_roles(), [])
+        self.assertEqual(a2, a2_gotten)
+
+        e2 = p.create_event(u3, "e2")
+        a2 = p.get_attendance(u3, e2)
+
+        # Check fields for auto-created Attendance for e2
+        self.assertEqual(a2.get_user_id(), u3.get_id())
+        self.assertEqual(a2.get_event_id(), e2.get_id())
+        self.assertEqual(a2.get_going_status(), "going")
+        self.assertEqual(a2.get_roles(), ['organiser'])
+
+        # Create attendance
+        a3 = p.create_attendance(u2, e2, going_status="maybe")
+        a3_gotten = p.get_attendance(u2, e2)
+        self.assertEqual(a3.get_user_id(), u2.get_id())
+        self.assertEqual(a3.get_event_id(), e2.get_id())
+        self.assertEqual(a3.get_going_status(), "maybe")
+        self.assertEqual(a3.get_roles(), [])
+        self.assertEqual(a3, a3_gotten)
+
+        a4 = p.create_attendance(u1, e2, going_status="invited", roles=["food buyer", "driver"])
+        a4_gotten = p.get_attendance(u1, e2)
+        self.assertEqual(a4.get_user_id(), u1.get_id())
+        self.assertEqual(a4.get_event_id(), e2.get_id())
+        self.assertEqual(a4.get_going_status(), "invited")
+        self.assertEqual(a4.get_roles(), ['food buyer', 'driver'])
+        self.assertEqual(a4, a4_gotten)
 
     def test_get_attendances(self):
         # TODO

@@ -19,8 +19,14 @@ class PorgWrapper:
         self.db_interface.add(u)
         return u
 
-    def unregister_user(self, username):
-        u = self.get_user_by_username(username)
+    def unregister_user(self, obj):
+        username = obj
+        if isinstance(obj, User):
+            u = self.db_interface.get_by_id(obj.get_id(), User)
+            username = obj.get_username()
+        else:
+            u = self.get_user_by_username(obj)
+
         if not u:
             raise UserNotFoundError("User \"{}\" could not be found".format(username))
 

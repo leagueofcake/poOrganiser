@@ -1,4 +1,5 @@
 import datetime
+from sqlalchemy import or_
 from DbInterface import DbInterface
 from Poorganiser import User, Event, Attendance
 from PorgExceptions import *
@@ -38,7 +39,8 @@ class PorgWrapper:
 
     def get_curr_events(self):
         today = datetime.date.today()
-        return self.db_interface.query(Event, Event.time > today, num='all')
+        curr_filter = or_(Event.time >= today, Event.time == None)
+        return self.db_interface.query(Event, curr_filter, num='all')
 
     def get_events_by_user(self, user_id):
         res = []

@@ -42,9 +42,16 @@ class PorgWrapper:
         curr_filter = or_(Event.time >= today, Event.time == None)
         return self.db_interface.query(Event, curr_filter, num='all')
 
-    def get_events_by_user(self, user_id):
+    def get_events_by_user(self, obj):
+        if isinstance(obj, User):
+            u = self.db_interface.get_by_id(obj.get_id(), User)
+        else:
+            u = self.db_interface.get_by_id(obj, User)
+
+        if not u:
+            raise UserNotFoundError("User could not be found")
+
         res = []
-        u = self.db_interface.get_by_id(user_id, User)
         for event_id in u.get_events_organised_ids():
             e = self.db_interface.get_by_id(event_id, Event)
             res.append(e)

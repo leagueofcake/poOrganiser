@@ -1,5 +1,5 @@
 from datetime import datetime
-from sqlalchemy import Column, Integer, Unicode, PickleType, Date
+from sqlalchemy import Column, Integer, Unicode, PickleType, DateTime
 from sqlalchemy.ext.mutable import MutableList
 from create_base import Base
 
@@ -106,7 +106,7 @@ class Event(Base):
     owner_id = Column(Integer)
     name = Column(Unicode(40))
     location = Column(Unicode(40))
-    time = Column(Date)
+    time = Column(DateTime)
     attendance_ids = Column(MutableList.as_mutable(PickleType))
 
     def __init__(self, owner_id, name, location=None, time=None):

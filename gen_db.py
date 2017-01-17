@@ -20,7 +20,7 @@ def create_tables(c):
         owner_id INTEGER NOT NULL,
         name TEXT NOT NULL,
         location TEXT,
-        time DATE,
+        time DATETIME,
         attendance_ids BLOB);
     ''')
 

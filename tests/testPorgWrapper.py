@@ -5,7 +5,7 @@ from datetime import datetime, timedelta
 
 from config import porg_config
 from gen_db import generate as generate_db
-from Poorganiser import User, Event, Attendance
+from Poorganiser import User, Event, Attendance, Question, Survey, Choice, Response
 from PorgWrapper import PorgWrapper
 from PorgExceptions import *
 
@@ -15,7 +15,8 @@ class TestPorgWrapper(unittest.TestCase):
         generate_db(c)  # Generate blank database
 
     def tearDown(self):
-        generate_db(c)  # Generate blank database
+        # generate_db(c)  # Generate blank database
+        pass
 
     def test_get_user_by_username(self):
         self.assertIsNone(p.get_user_by_username("bob"))
@@ -580,6 +581,113 @@ class TestPorgWrapper(unittest.TestCase):
         with self.assertRaises(AttendanceNotFoundError):
             p.delete_attendance(Attendance(u1.get_id(), e1.get_id()))
 
+    def test_create_choice(self):
+        q = p.create_question("Hello?", "free")
+        ch = p.create_choice(q, "choice 1")
+        self.assertEqual(ch.get_id(), 1)
+        self.assertEqual(ch.get_question_id(), q.get_id())
+        self.assertEqual(ch.get_choice(), "choice 1")
+
+        ch = p.create_choice(q, "choice 2")
+        self.assertEqual(ch.get_id(), 2)
+        self.assertEqual(ch.get_question_id(), q.get_id())
+        self.assertEqual(ch.get_choice(), "choice 2")
+
+        q = p.create_question("write something", "free")
+        ch = p.create_choice(q, "choice 1.3")
+        self.assertEqual(ch.get_id(), 3)
+        self.assertEqual(ch.get_question_id(), q.get_id())
+        self.assertEqual(ch.get_choice(), "choice 1.3")
+
+        # Test creation with questions that don't exist
+        with self.assertRaises(QuestionNotFoundError):
+            p.create_choice(Question("LOL", "free"), "choice")
+
+        with self.assertRaises(QuestionNotFoundError):
+            p.create_choice(Question("blah", "free"), "choice 2")
+
+    def test_create_question(self):
+        q = p.create_question("Hello?", "free")
+        self.assertEqual(q.get_id(), 1)
+        self.assertEqual(q.get_question(), "Hello?")
+        self.assertEqual(q.get_question_type(), "free")
+        self.assertEqual(q.get_survey_id(), None)
+        self.assertEqual(q.get_allowed_choice_ids(), [])
+
+        u = p.register_user("User 1")
+        s = p.create_survey("SOME COOL SURVEY", u)
+        q = p.create_question("question 2", "free", survey_obj=s)
+        self.assertEqual(q.get_id(), 2)
+        self.assertEqual(q.get_question(), "question 2")
+        self.assertEqual(q.get_question_type(), "free")
+        self.assertEqual(q.get_survey_id(), s.get_id())
+        self.assertEqual(q.get_allowed_choice_ids(), [])
+
+        # Test creation with invalid question types
+        with self.assertRaises(InvalidQuestionTypeError):
+            p.create_question("invalid question", "invalid")
+
+        with self.assertRaises(InvalidQuestionTypeError):
+            p.create_question("invalid question", 3)
+
+        with self.assertRaises(InvalidQuestionTypeError):
+            p.create_question("invalid question", ["free"])
+
+        # Test creation with surveys that don't exist
+        with self.assertRaises(SurveyNotFoundError):
+            p.create_question("q1", "free", Survey("s1", 3))
+
+        with self.assertRaises(SurveyNotFoundError):
+            p.create_question("q2", "free", Survey("s2", 183))
+
+    def test_create_survey(self):
+        u1 = p.register_user("Bob")
+        s = p.create_survey("survey 1", u1)
+        self.assertEqual(s.get_id(), 1)
+        self.assertEqual(s.get_owner_id(), u1.get_id())
+        self.assertEqual(s.get_event_id(), None)
+        self.assertEqual(s.get_question_ids(), [])
+
+        q1 = p.create_question("q1", "free")
+        q2 = p.create_question("q2", "free")
+        e1 = p.create_event("event 1", u1)
+        s = p.create_survey("s2", u1, question_ids=[q1.get_id(), q2.get_id()], event_obj=e1.get_id())
+        self.assertEqual(s.get_id(), 2)
+        self.assertEqual(s.get_owner_id(), u1.get_id())
+        self.assertEqual(s.get_event_id(), 1)
+        self.assertEqual(s.get_question_ids(), [q1.get_id(), q2.get_id()])
+
+        # Test creation with owners that don't exist
+        with self.assertRaises(UserNotFoundError):
+            p.create_survey("s1", 999)
+
+        with self.assertRaises(UserNotFoundError):
+            p.create_survey("s1", 1234, event_obj=1234)
+
+        with self.assertRaises(UserNotFoundError):
+            p.create_survey("s1", User("lol"), question_ids=[q1.get_id()])
+
+        # Test creation with questions that don't (all) exist
+        with self.assertRaises(QuestionNotFoundError):
+            p.create_survey("in_s", u1, question_ids=[q1.get_id(), Question("?", "free")])
+
+        with self.assertRaises(QuestionNotFoundError):
+            p.create_survey("in_s", u1, question_ids=[Question(".", "free"), Question("?", "free")])
+
+        with self.assertRaises(QuestionNotFoundError):
+            q1_inv = Question(".", "free")
+            q2_inv = Question("?", "free")
+            p.create_survey("in_s", u1, question_ids=[q1_inv, q2_inv], event_obj=e1.get_id())
+
+        # Test creation with events that don't exist
+        with self.assertRaises(EventNotFoundError):
+            p.create_survey("s1", u1, event_obj=1234)
+
+        with self.assertRaises(EventNotFoundError):
+            p.create_survey("s1", u1, event_obj="asdf")
+
+        with self.assertRaises(EventNotFoundError):
+            p.create_survey("s1", u1, event_obj=Event("nonexistant event", u1.get_id()))
 
 # Generate empty test database
 conn = sqlite3.connect(porg_config.DB_NAME)

@@ -1,7 +1,8 @@
 import datetime
 from sqlalchemy import or_, and_
+from config import porg_config
 from DbInterface import DbInterface
-from Poorganiser import User, Event, Attendance
+from Poorganiser import User, Event, Attendance, Survey, Question, Choice, Response
 from PorgExceptions import *
 
 
@@ -22,6 +23,8 @@ class PorgWrapper:
             raise AttendanceNotFoundError("Attendance could not be found")
         elif obj_type is Question:
             raise QuestionNotFoundError("Question could not be found")
+        elif obj_type is Survey:
+            raise SurveyNotFoundError("Survey could not be found")
 
     def get_user_by_username(self, username):
         return self.db_interface.s.query(User).filter(User.username == username).first()
@@ -182,3 +185,43 @@ class PorgWrapper:
 
         # Delete attendance object
         self.db_interface.delete(a)
+
+    def create_choice(self, question_obj, choice):
+        question = self.check_obj_exists(question_obj, Question)
+        c = Choice(question.get_id(), choice)
+        self.db_interface.add(c)
+
+        return c
+
+    def create_question(self, question, question_type, survey_obj=None):
+        """Specifying allowed_choice_ids is forbidden here - since create_choice requires an
+        existing question, we cannot have choices existing before questions."""
+        if question_type not in porg_config.ALLOWED_QUESTION_TYPES:
+            raise InvalidQuestionTypeError("Invalid Question type: {}".format(question_type))
+
+        if survey_obj:
+            survey_obj = self.check_obj_exists(survey_obj, Survey)
+            survey_obj = survey_obj.get_id()
+
+        q = Question(question, question_type, survey_obj)
+        self.db_interface.add(q)
+
+        return q
+
+    def create_survey(self, name, owner_obj, question_ids=[], event_obj=None):
+        owner = self.check_obj_exists(owner_obj, User)
+
+        # Check each question_id can be found in the database
+        if question_ids:
+            for question_id in question_ids:
+                self.check_obj_exists(question_id, Question)
+
+        # Check each event_id can be found in the database
+        if event_obj:
+            event_obj = self.check_obj_exists(event_obj, Event)
+            event_obj = event_obj.get_id()
+
+        s = Survey(name, owner.get_id(), question_ids=question_ids, event_id=event_obj)
+        self.db_interface.add(s)
+
+        return s

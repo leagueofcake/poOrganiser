@@ -225,9 +225,20 @@ class PorgWrapper:
 
         return q
 
-    def create_response(self, responder_obj, question_obj, response_text=[], choice_ids=[]):
+    def create_response(self, responder_obj, question_obj, response_text=None, choice_ids=[]):
         # TODO: add User.response_ids
-        pass
+        responder = self.check_obj_exists(responder_obj, User)
+        q = self.check_obj_exists(question_obj, Question)
+
+        # Create Response
+        r = Response(responder.get_id(), q.get_id(), response_text, choice_ids)
+        self.db_interface.add(r)
+
+        # Add response id to Question.response_ids
+        q.add_response_id(r.get_id())
+        self.db_interface.update(q)
+
+        return r
 
     def create_survey(self, name, owner_obj, question_ids=[], event_obj=None):
         owner = self.check_obj_exists(owner_obj, User)

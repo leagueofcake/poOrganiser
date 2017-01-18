@@ -662,6 +662,56 @@ class TestPorgWrapper(unittest.TestCase):
         with self.assertRaises(SurveyNotFoundError):
             p.create_question(u1.get_id(), "q2", "free", Survey("s2", 183))
 
+    def test_create_response(self):
+        u1 = p.register_user("USER 1")
+        q1 = p.create_question(u1, "QUESTION?", "free")
+        r1 = p.create_response(u1, q1)
+
+        self.assertEqual(r1.get_id(), 1)
+        self.assertEqual(r1.get_responder_id(), u1.get_id())
+        self.assertEqual(r1.get_question_id(), q1.get_id())
+        self.assertEqual(r1.get_response_text(), None)
+        self.assertEqual(r1.get_choice_ids(), [])
+
+        # Check response_id was added to Question.response_ids
+        self.assertEqual(q1.get_response_ids(), [r1.get_id()])
+
+        r2 = p.create_response(u1, q1, response_text="lololol")
+        self.assertEqual(r2.get_id(), 2)
+        self.assertEqual(r2.get_responder_id(), u1.get_id())
+        self.assertEqual(r2.get_question_id(), q1.get_id())
+        self.assertEqual(r2.get_response_text(), "lololol")
+        self.assertEqual(r2.get_choice_ids(), [])
+
+        # Check response_id was added to Question.response_ids
+        self.assertEqual(q1.get_response_ids(), [r1.get_id(), r2.get_id()])
+
+        c1 = p.create_choice(q1, "choice 1")
+        c2 = p.create_choice(q1, "choice 2")
+        r3 = p.create_response(u1, q1, response_text="k", choice_ids=[c1.get_id(), c2.get_id()])
+        self.assertEqual(r3.get_id(), 3)
+        self.assertEqual(r3.get_responder_id(), u1.get_id())
+        self.assertEqual(r3.get_question_id(), q1.get_id())
+        self.assertEqual(r3.get_response_text(), "k")
+        self.assertEqual(r3.get_choice_ids(), [c1.get_id(), c2.get_id()])
+
+        # Check response_id was added to Question.response_ids
+        self.assertEqual(q1.get_response_ids(), [r1.get_id(), r2.get_id(), r3.get_id()])
+
+        # Test creation with non-existant responders (User)
+        with self.assertRaises(UserNotFoundError):
+            p.create_response(User("nonexistant user"), q1)
+
+        with self.assertRaises(UserNotFoundError):
+            p.create_response(1234, q1)
+
+        # Test creation with non-existant questions
+        with self.assertRaises(QuestionNotFoundError):
+            p.create_response(u1, 1234)
+
+        with self.assertRaises(QuestionNotFoundError):
+            p.create_response(u1, Question(1, "lol?", "free"))
+
     def test_create_survey(self):
         u1 = p.register_user("Bob")
         s = p.create_survey("survey 1", u1)

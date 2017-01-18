@@ -45,6 +45,12 @@ class TestAttendance(unittest.TestCase):
         with self.assertRaises(AssertionError):
             Attendance(4, 2, roles=("food buyer",))
 
+        with self.assertRaises(AssertionError):
+            Attendance(4, 2, roles=[1, 3, 4])
+
+        with self.assertRaises(AssertionError):
+            Attendance(4, 2, roles=["role 2", ["invalid role"]])
+
     def test_get_user_id(self):
         at = Attendance(4, 2)
         self.assertEqual(at.get_user_id(), 4)

@@ -23,7 +23,8 @@ def create_tables(c):
         owner_id INTEGER,
         location TEXT,
         time DATETIME,
-        attendance_ids BLOB);
+        attendance_ids BLOB,
+        survey_ids BLOB);
     ''')
 
     c.execute('''CREATE TABLE users(

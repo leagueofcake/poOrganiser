@@ -1,6 +1,6 @@
 #!/usr/bin/env python3.5
 import unittest
-from Poorganiser import Event, Attendance
+from Poorganiser import Event, Attendance, Survey
 from datetime import datetime
 
 
@@ -46,6 +46,12 @@ class TestEvent(unittest.TestCase):
         with self.assertRaises(AssertionError):
             Event("BBQ3", 245,  "Parra Park 2", [datetime(2017, 1, 1)])
 
+        # Incorrect survey_ids type
+        with self.assertRaises(AssertionError):
+            Event("BBQ3", 245,  "Parra Park 2", [datetime(2017, 1, 1)], survey_ids=[1, 3, 5, 7.2])
+
+        with self.assertRaises(AssertionError):
+            Event("BBQ3", 245, "Parra Park 2", [datetime(2017, 1, 1)], survey_ids="lolol")
 
     def test_get_owner_id(self):
         e1 = Event("BBQ", 0,  "Parra Park", datetime(2016, 10, 1))
@@ -225,6 +231,76 @@ class TestEvent(unittest.TestCase):
         with self.assertRaises(TypeError):
             e1.remove_attendance_id(3.14)
 
+    def test_get_attendance_ids(self):
+        e1 = Event("BBQ", 0, "Parra Park", datetime(2016, 10, 1))
+        self.assertEqual(e1.get_attendance_ids(), [])
+
+        e2 = Event("BBQ", 0, "Parra Park", datetime(2017, 1, 1))
+        self.assertEqual(e2.get_attendance_ids(), [])
+
+    def test_get_survey_ids(self):
+        e1 = Event("BBQ", 0, "Parra Park", datetime(2016, 10, 1))
+        self.assertEqual(e1.get_survey_ids(), [])
+
+        e2 = Event("BBQ", 0, "Parra Park", datetime(2017, 1, 1))
+        self.assertEqual(e2.get_survey_ids(), [])
+
+    def test_add_survey_id(self):
+        e1 = Event("BBQ", 0, "Parra Park", datetime(2016, 10, 1))
+        self.assertEqual(e1.get_survey_ids(), [])
+        e1.add_survey_id(123)
+        self.assertEqual(e1.get_survey_ids(), [123])
+        e1.add_survey_id(123)  # Test adding duplicate
+        self.assertEqual(e1.get_survey_ids(), [123])
+        e1.add_survey_id(930)
+        self.assertEqual(e1.get_survey_ids(), [123, 930])
+
+        # Test adding with mock Survey object
+        s_mock = Survey("s1", 3)
+        s_mock.id = 29
+        e1.add_survey_id(s_mock)
+        self.assertEqual(e1.get_survey_ids(), [123, 930, 29])
+
+        # Test adding with invalid survey type
+        with self.assertRaises(TypeError):
+            e1.add_survey_id(3.14)
+
+        with self.assertRaises(TypeError):
+            e1.add_survey_id(e1)
+
+        with self.assertRaises(TypeError):
+            e1.add_survey_id("fake event")
+
+    def test_remove_survey_id(self):
+        e1 = Event("BBQ", 0, "Parra Park", datetime(2016, 10, 1))
+        self.assertEqual(e1.get_survey_ids(), [])
+        e1.add_survey_id(123)
+        self.assertEqual(e1.get_survey_ids(), [123])
+        e1.remove_survey_id(1920)  # Test removing non-existant element
+        self.assertEqual(e1.get_survey_ids(), [123])
+        e1.add_survey_id(930)
+        self.assertEqual(e1.get_survey_ids(), [123, 930])
+
+        # Test removing with mock Survey object
+        s_mock = Survey("s1", 3)
+        s_mock.id = 29
+        e1.remove_survey_id(s_mock)  # Test removing non-existant element
+        self.assertEqual(e1.get_survey_ids(), [123, 930])
+        s_mock.id = 930
+        e1.remove_survey_id(s_mock)
+        self.assertEqual(e1.get_survey_ids(), [123])
+        e1.remove_survey_id(123)
+        self.assertEqual(e1.get_survey_ids(), [])
+
+        # Test removing with invalid survey type
+        with self.assertRaises(TypeError):
+            e1.remove_survey_id(3.14)
+
+        with self.assertRaises(TypeError):
+            e1.remove_survey_id(e1)
+
+        with self.assertRaises(TypeError):
+            e1.remove_survey_id("fake event")
 
 if __name__ == '__main__':
     unittest.main()

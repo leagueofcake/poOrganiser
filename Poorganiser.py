@@ -151,12 +151,16 @@ class Event(Base):
     location = Column(Unicode(40))
     time = Column(DateTime)
     attendance_ids = Column(MutableList.as_mutable(PickleType))
+    survey_ids = Column(MutableList.as_mutable(PickleType))
 
-    def __init__(self, name, owner_id, location=None, time=None):
+    def __init__(self, name, owner_id, location=None, time=None, survey_ids=[]):
         assert isinstance(name, str)
         assert isinstance(owner_id, int)  # Cannot be None on creation, but may later be
         assert isinstance(location, str) or location is None
         assert isinstance(time, datetime) or time is None
+        assert isinstance(survey_ids, list)
+        for survey_id in survey_ids:
+            assert isinstance(survey_id, int)
 
         self.id = None
         self.name = name
@@ -164,6 +168,7 @@ class Event(Base):
         self.location = location
         self.time = time
         self.attendance_ids = []
+        self.survey_ids = survey_ids
 
     def __str__(self):
         return '{\n' + \
@@ -173,6 +178,7 @@ class Event(Base):
                '    location: {},\n'.format(self.location) + \
                '    time: {}\n'.format(self.time) + \
                '    attendance_ids: {}\n'.format(self.attendance_ids) + \
+               '    survey_ids: {}\n'.format(self.survey_ids) + \
                '}'
 
     def get_id(self):
@@ -192,6 +198,9 @@ class Event(Base):
 
     def get_attendance_ids(self):
         return self.attendance_ids
+
+    def get_survey_ids(self):
+        return self.survey_ids
 
     def set_name(self, name):
         assert isinstance(name, str)
@@ -231,6 +240,24 @@ class Event(Base):
 
         if attendance_obj in self.attendance_ids:
             self.attendance_ids.remove(attendance_obj)
+
+    def add_survey_id(self, survey_obj):
+        if isinstance(survey_obj, Survey):
+            survey_obj = survey_obj.get_id()
+        elif not isinstance(survey_obj, int):
+            raise TypeError("Invalid object type for add_survey_id: expected int or Survey")
+
+        if survey_obj not in self.survey_ids:
+            self.survey_ids.append(survey_obj)
+
+    def remove_survey_id(self, survey_obj):
+        if isinstance(survey_obj, Survey):
+            survey_obj = survey_obj.get_id()
+        elif not isinstance(survey_obj, int):
+            raise TypeError("Invalid object type for remove_survey_id: expected int or Survey")
+
+        if survey_obj in self.survey_ids:
+            self.survey_ids.remove(survey_obj)
 
 
 class Attendance(Base):

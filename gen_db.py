@@ -30,7 +30,9 @@ def create_tables(c):
         id INTEGER PRIMARY KEY,
         username TEXT NOT NULL,
         events_organised_ids BLOB,
-        events_attending_ids BLOB);
+        events_attending_ids BLOB,
+        survey_ids BLOB,
+        question_ids BLOB);
     ''')
 
     c.execute('''CREATE TABLE attendance(

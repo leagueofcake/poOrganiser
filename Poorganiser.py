@@ -424,3 +424,73 @@ class Question(Base):
             self.response_ids.remove(response_obj)
 
 
+class Survey(Base):
+    __tablename__ = 'surveys'
+    id = Column(Integer, primary_key=True)
+    owner_id = Column(Integer)
+    name = Column(Unicode(40))
+    event_id = Column(Integer)
+    question_ids = Column(MutableList.as_mutable(PickleType))
+
+    def __init__(self, name, owner_id, question_ids=[], event_id=None):
+        assert isinstance(name, str)
+        assert isinstance(owner_id, int)
+        assert isinstance(question_ids, list)
+        for question_id in question_ids:
+            assert isinstance(question_id, int)
+        assert isinstance(event_id, int) or event_id is None
+
+        self.id = None
+        self.name = name
+        self.owner_id = owner_id
+        self.event_id = event_id
+        self.question_ids = question_ids
+
+    def get_id(self):
+        return self.id
+
+    def get_name(self):
+        return self.name
+
+    def get_owner_id(self):
+        return self.owner_id
+
+    def get_question_ids(self):
+        return self.question_ids
+
+    def get_event_id(self):
+        return self.event_id
+
+    def set_name(self, name):
+        assert isinstance(name, str)
+        self.name = name
+
+    def set_owner_id(self, owner_id):
+        assert isinstance(owner_id, int)
+        self.owner_id = owner_id
+
+    def add_question_id(self, question_obj):
+        if isinstance(question_obj, Question):
+            question_obj = question_obj.get_id()
+        elif not isinstance(question_obj, int):
+            raise TypeError("Invalid object type for add_question_id: expected int or Question")
+
+        if question_obj not in self.question_ids:
+            self.question_ids.append(question_obj)
+
+    def remove_question_id(self, question_obj):
+        if isinstance(question_obj, Question):
+            question_obj = question_obj.get_id()
+        elif not isinstance(question_obj, int):
+            raise TypeError("Invalid object type for remove_question_id: expected int or Question")
+
+        if question_obj in self.question_ids:
+            self.question_ids.remove(question_obj)
+
+    def set_event_id(self, event_obj):
+        if isinstance(event_obj, Event):
+            event_obj = event_obj.get_id()
+        elif not isinstance(event_obj, int):
+            raise TypeError("Invalid object type for set_event_id: expected int or Event")
+
+        self.event_id = event_obj

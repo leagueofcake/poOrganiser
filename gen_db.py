@@ -11,6 +11,7 @@ def drop_tables(c):
         c.execute('DROP TABLE questions')
         c.execute('DROP TABLE choices')
         c.execute('DROP TABLE responses')
+        c.execute('DROP TABLE surveys')
     except sqlite3.OperationalError:
         pass
 
@@ -38,6 +39,14 @@ def create_tables(c):
         event_id INTEGER NOT NULL,
         going_status TEXT NOT NULL,
         roles BLOB);
+    ''')
+
+    c.execute('''CREATE TABLE surveys(
+        id INTEGER PRIMARY KEY,
+        name TEXT NOT NULL,
+        owner_id INTEGER,
+        event_id INTEGER,
+        question_ids BLOB);
     ''')
 
     c.execute('''CREATE TABLE questions(

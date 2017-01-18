@@ -310,3 +310,66 @@ class Response(Base):
         if choice_id in self.choice_ids:
             self.choice_ids.remove(choice_id)
 
+
+class Question(Base):
+    __tablename__ = 'questions'
+    id = Column(Integer, primary_key=True)
+    question = Column(Unicode(40))
+    question_type = Column(Unicode(40))
+    survey_id = Column(Integer)
+    allowed_choice_ids = Column(MutableList.as_mutable(PickleType))
+    response_choice_ids = Column(MutableList.as_mutable(PickleType))
+
+    def __init__(self, question, question_type, survey_id=None, allowed_choice_ids=[]):
+        assert isinstance(question, str)
+        assert isinstance(question_type, str)
+        assert isinstance(survey_id, int) or survey_id is None
+        assert isinstance(allowed_choice_ids, list)
+        for choice_id in allowed_choice_ids:
+            assert isinstance(choice_id, int)
+
+        self.id = None
+        self.question = question
+        self.question_type = question_type
+        self.survey_id = survey_id
+        self.allowed_choice_ids = allowed_choice_ids
+        self.response_ids = []
+
+    def get_id(self):
+        return self.id
+
+    def get_survey_id(self):
+        return self.survey_id
+
+    def get_question(self):
+        return self.question
+
+    def get_question_type(self):
+        return self.question_type
+
+    def get_allowed_choice_ids(self):
+        return self.allowed_choice_ids
+
+    def get_response_choice_ids(self):
+        return self.response_choice
+
+    def set_survey_id(self, survey_id):
+        self.survey_id = survey_id
+
+    def set_question(self, question):
+        assert isinstance(question, str)
+        self.question = question
+
+    def set_question_type(self, question_type):
+        assert isinstance(question_type, str)
+        self.question_type = question_type
+
+    def add_allowed_choice_id(self, choice_id):
+        assert isinstance(choice_id, int)
+        if choice_id not in self.allowed_choice_ids:
+            self.allowed_choice_ids.append(choice_id)
+
+    def remove_allowed_choice_id(self, choice_id):
+        assert isinstance(choice_id, int)
+        if choice_id in self.allowed_choice_ids:
+            self.allowed_choice_ids.remove(choice_id)

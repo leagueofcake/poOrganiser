@@ -41,12 +41,12 @@ def create_tables(c):
     ''')
 
     c.execute('''CREATE TABLE questions(
-        question_id INTEGER PRIMARY KEY,
-        event_id INTEGER NOT NULL,
-        text TEXT NOT NULL,
-        num_choices INTEGER NOT NULL,
-        preferential BOOLEAN NOT NULL,
-        yet_to_vote TEXT);
+        id INTEGER PRIMARY KEY,
+        question TEXT NOT NULL,
+        question_type TEXT NOT NULL,
+        survey_id INTEGER,
+        allowed_choice_ids BLOB,
+        response_ids BLOB);
     ''')
 
     c.execute('''CREATE TABLE choices(

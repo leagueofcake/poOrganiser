@@ -52,7 +52,7 @@ class User(Base):
         """event_obj may be an int denoting an Event id or an Event object. Event is not added
         if it already exists. Raises TypeError if event_obj is not either type."""
         if isinstance(event_obj, Event):
-            event_obj = event_obj.id
+            event_obj = event_obj.get_id()
         elif not isinstance(event_obj, int):
             raise TypeError("Invalid object type for add_event_organised: expected int or Event")
 
@@ -63,7 +63,7 @@ class User(Base):
         """event_obj may be an int denoting an Event id or an Event object. Event is not added if it
         already exists. Raises TypeError if event_obj is not either type."""
         if isinstance(event_obj, Event):
-            event_obj = event_obj.id
+            event_obj = event_obj.get_id()
         elif not isinstance(event_obj, int):
             raise TypeError("Invalid object type for add_event_attending: expected int or Event")
 
@@ -75,7 +75,7 @@ class User(Base):
         event_obj is not either type. Returns None if the event id is not found in
         self.events_organised_ids."""
         if isinstance(event_obj, Event):
-            event_obj = event_obj.id
+            event_obj = event_obj.get_id()
         elif not isinstance(event_obj, int):
             raise TypeError("Invalid object type for remove_event_organised: expected int or Event")
 
@@ -87,7 +87,7 @@ class User(Base):
         event_obj is not either type. Returns None if the event id is not found in
         self.events_attending_ids."""
         if isinstance(event_obj, Event):
-            event_obj = event_obj.id
+            event_obj = event_obj.get_id()
         elif not isinstance(event_obj, int):
             raise TypeError("Invalid object type for remove_event_attending: expected int or Event")
 
@@ -166,7 +166,7 @@ class Event(Base):
         Attendance id is not added if it already exists. Raises TypeError if attendance_obj is
         not either type."""
         if isinstance(attendance_obj, Attendance):
-            attendance_obj = attendance_obj.id
+            attendance_obj = attendance_obj.get_id()
         elif not isinstance(attendance_obj, int):
             raise TypeError("Invalid object type for add_attendance_id: expected int or Attendance")
 

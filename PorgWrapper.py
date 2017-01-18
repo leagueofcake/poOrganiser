@@ -187,9 +187,13 @@ class PorgWrapper:
         self.db_interface.delete(a)
 
     def create_choice(self, question_obj, choice):
-        question = self.check_obj_exists(question_obj, Question)
-        c = Choice(question.get_id(), choice)
+        q = self.check_obj_exists(question_obj, Question)
+        c = Choice(q.get_id(), choice)
         self.db_interface.add(c)
+
+        # Add choice id to Question.allowed_choice_ids
+        q.add_allowed_choice_id(c.get_id())
+        self.db_interface.update(q)
 
         return c
 
@@ -201,10 +205,16 @@ class PorgWrapper:
 
         if survey_obj:
             survey_obj = self.check_obj_exists(survey_obj, Survey)
-            survey_obj = survey_obj.get_id()
+            q = Question(question, question_type, survey_obj.get_id())
+        else:
+            q = Question(question, question_type, survey_obj)
 
-        q = Question(question, question_type, survey_obj)
         self.db_interface.add(q)
+
+        # Add question id to Survey.question_ids
+        if survey_obj:
+            survey_obj.add_question_id(q.get_id())
+            self.db_interface.update(survey_obj)
 
         return q
 
@@ -212,9 +222,11 @@ class PorgWrapper:
         owner = self.check_obj_exists(owner_obj, User)
 
         # Check each question_id can be found in the database
+        questions = []
         if question_ids:
             for question_id in question_ids:
-                self.check_obj_exists(question_id, Question)
+                q = self.check_obj_exists(question_id, Question)
+                questions.append(q)
 
         # Check each event_id can be found in the database
         if event_obj:
@@ -223,5 +235,10 @@ class PorgWrapper:
 
         s = Survey(name, owner.get_id(), question_ids=question_ids, event_id=event_obj)
         self.db_interface.add(s)
+
+        # Set survey_id for each Question
+        for q in questions:
+            q.set_survey_id(s.get_id())
+            self.db_interface.update(q)
 
         return s

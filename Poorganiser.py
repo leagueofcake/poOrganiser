@@ -268,9 +268,12 @@ class Choice(Base):
     def get_choice(self):
         return self.choice
 
-    def set_question_id(self, question_id):
-        assert isinstance(question_id, int)
-        self.question_id = question_id
+    def set_question_id(self, question_obj):
+        if isinstance(question_obj, Question):
+            question_obj = question_obj.get_id()
+        elif not isinstance(question_obj, int):
+            raise TypeError("Invalid object type for set_question_id: expected int or Question")
+        self.question_id = question_obj
 
     def set_choice(self, choice):
         assert isinstance(choice, str)

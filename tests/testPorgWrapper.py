@@ -63,9 +63,9 @@ class TestPorgWrapper(unittest.TestCase):
         u3 = p.register_user("noot noot")
 
         # Create some events
-        e1 = p.create_event(u1, "event 1")
-        e2 = p.create_event(u2.get_id(), "event 2")
-        e3 = p.create_event(u2, "event 3", location="blob street")
+        e1 = p.create_event("event 1", u1)
+        e2 = p.create_event("event 2", u2.get_id())
+        e3 = p.create_event("event3", u2, location="blob street")
         self.assertEqual(u1.get_events_organised_ids(), [e1.get_id()])
         self.assertEqual(u2.get_events_organised_ids(), [e2.get_id(), e3.get_id()])
 
@@ -117,9 +117,9 @@ class TestPorgWrapper(unittest.TestCase):
         self.assertEqual(u2.get_id(), 2)
 
         # Create some events
-        e1 = p.create_event(1, "event 1")
-        e2 = p.create_event(2, "event 2", location="location 2")
-        e3 = p.create_event(2, "event 3", time=datetime.today() + timedelta(days=10))
+        e1 = p.create_event("event 1", 1)
+        e2 = p.create_event("event 2", 2, location="location 2")
+        e3 = p.create_event("event 3", 2, time=datetime.today() + timedelta(days=10))
 
         # Check current events are as expected
         curr_events = p.get_curr_events()
@@ -128,8 +128,8 @@ class TestPorgWrapper(unittest.TestCase):
         # Create events dated before today, check they don't appear in curr_events
         before_yesterday = datetime.today() - timedelta(days=134)
         yesterday = datetime.today() - timedelta(days=1)
-        p.create_event(1, "event 4", time=yesterday, location="location 4")
-        p.create_event(1, "event 5", time=before_yesterday)
+        p.create_event("event 4", 1, time=yesterday, location="location 4")
+        p.create_event("event 5", 1, time=before_yesterday)
         curr_events = p.get_curr_events()
         self.assertEqual(curr_events, [e1, e2, e3])
 
@@ -149,22 +149,22 @@ class TestPorgWrapper(unittest.TestCase):
         self.assertEqual(u2_events, [])
 
         # Create some events for u1
-        e1 = p.create_event(u1.get_id(), "event 1a")
+        e1 = p.create_event("event 1a", u1.get_id())
         u1_events = p.get_events_by_user(u1)
         self.assertEqual(u1_events, [e1])
 
-        e2 = p.create_event(u1, "event 2a")
+        e2 = p.create_event("event 2a", u1)
         u1_events = p.get_events_by_user(u1.get_id())
         self.assertEqual(u1_events, [e1, e2])
 
         # Create some events for u2, check none of u1's events were added to u2
         u2_events = p.get_events_by_user(u2)
         self.assertEqual(u2_events, [])
-        e3 = p.create_event(u2, "event 1b")
+        e3 = p.create_event("event 1b", u2)
         u2_events = p.get_events_by_user(u2)
         self.assertEqual(u2_events, [e3])
 
-        e4 = p.create_event(u2.get_id(), "event 2b")
+        e4 = p.create_event("event 2b", u2.get_id())
         u2_events = p.get_events_by_user(u2)
         self.assertEqual(u2_events, [e3, e4])
 
@@ -186,17 +186,17 @@ class TestPorgWrapper(unittest.TestCase):
         u1 = p.register_user("user 1")
 
         # Add some events
-        e1 = p.create_event(u1.get_id(), "event 1")
+        e1 = p.create_event("event 1", u1.get_id())
 
         all_events = p.get_all_events()
         self.assertEqual(all_events, [e1])
 
-        e2 = p.create_event(u1.get_id(), "event 2", location="loc1")
+        e2 = p.create_event("event 2", u1.get_id(), location="loc1")
         all_events = p.get_all_events()
         self.assertEqual(all_events, [e1, e2])
 
         yesterday = datetime.today() - timedelta(days=1)
-        e3 = p.create_event(u1.get_id(), "event 3", time=yesterday)
+        e3 = p.create_event("event 3", u1.get_id(), time=yesterday)
         all_events = p.get_all_events()
         self.assertEqual(all_events, [e1, e2, e3])
 
@@ -211,7 +211,7 @@ class TestPorgWrapper(unittest.TestCase):
 
         # Create some events
         # No specified location/time
-        e1 = p.create_event(u1.get_id(), "event 1")
+        e1 = p.create_event("event 1", u1.get_id())
         a1 = p.get_attendance(u1.get_id(), e1.get_id())
         self.assertEqual(e1.get_id(), 1)
         self.assertEqual(e1.get_name(), "event 1")
@@ -230,7 +230,7 @@ class TestPorgWrapper(unittest.TestCase):
         self.assertEqual(a1.get_roles(), ["organiser"])
 
         # Specified location, no specified time
-        e2 = p.create_event(u1.get_id(), "event 2", location="somewhere over there")
+        e2 = p.create_event("event 2", u1.get_id(), location="somewhere over there")
         a2 = p.get_attendance(u1.get_id(), e2.get_id())
         self.assertEqual(e2.get_name(), "event 2")
         self.assertEqual(e2.get_location(), "somewhere over there")
@@ -249,7 +249,7 @@ class TestPorgWrapper(unittest.TestCase):
 
         # Specified time, no specified location
         third_time = datetime(year=2016, month=4, day=1)
-        e3 = p.create_event(u1.get_id(), "events are cool", time=third_time)
+        e3 = p.create_event("events are cool", u1.get_id(), time=third_time)
         a3 = p.get_attendance(u1.get_id(), e3.get_id())
         self.assertEqual(e3.get_name(), "events are cool")
         self.assertIsNone(e3.get_location())
@@ -268,7 +268,7 @@ class TestPorgWrapper(unittest.TestCase):
 
         # Specified location and time
         fourth_time = datetime(year=2017, month=10, day=25)
-        e4 = p.create_event(u2.get_id(), "THE (4th) EVENT", location="not here", time=fourth_time)
+        e4 = p.create_event("THE (4th) EVENT", u2.get_id(), location="not here", time=fourth_time)
         a4 = p.get_attendance(u2.get_id(), e4.get_id())
         self.assertEqual(e4.get_name(), "THE (4th) EVENT")
         self.assertEqual(e4.get_location(), "not here")
@@ -289,11 +289,11 @@ class TestPorgWrapper(unittest.TestCase):
 
         # Test creating events with user ids that don't exist
         with self.assertRaises(UserNotFoundError):
-            p.create_event(0, "fourth invalid event")
+            p.create_event("fourth invalid event", 0)
         with self.assertRaises(UserNotFoundError):
-            p.create_event(1023, "something", location="blah")
+            p.create_event("something", 1023, location="blah")
         with self.assertRaises(UserNotFoundError):
-            p.create_event(-321, "lalalalal", location="alalala", time=fourth_time)
+            p.create_event("lalalalal", -321, location="alalala", time=fourth_time)
 
         # Check correct all_events
         all_events = p.get_all_events()
@@ -311,9 +311,9 @@ class TestPorgWrapper(unittest.TestCase):
         u2 = p.register_user("ThE sEcOnD uSeR")
 
         # Create some events
-        e1 = p.create_event(u1.get_id(), "event 1")
-        e2 = p.create_event(u2.get_id(), "two to 2 too")
-        e3 = p.create_event(u1.get_id(), "free threes")
+        e1 = p.create_event("event 1", u1.get_id())
+        e2 = p.create_event("two to 2 too", u2.get_id())
+        e3 = p.create_event("free threes", u1.get_id())
 
         a1 = p.get_attendance(u1.get_id(), e1.get_id())
         a2 = p.get_attendance(u2.get_id(), e2.get_id())
@@ -371,10 +371,10 @@ class TestPorgWrapper(unittest.TestCase):
             p.delete_event(103)
 
         with self.assertRaises(EventNotFoundError):
-            p.delete_event(Event(u1.get_id(), "some event"))
+            p.delete_event(Event("some event", u1.get_id()))
 
         # Try delete events with owners that no longer exist in database
-        e4 = p.create_event(u1.get_id(), "event_to_be_deleted")
+        e4 = p.create_event("event_to_be_deleted", u1.get_id())
         p.unregister_user(u1)
         p.delete_event(e4)
 
@@ -389,7 +389,7 @@ class TestPorgWrapper(unittest.TestCase):
         u3 = p.register_user("u3")
 
         # Create some events
-        e1 = p.create_event(u1, "e1")
+        e1 = p.create_event("e1", u1)
         a1 = p.get_attendance(u1.get_id(), e1.get_id())
 
         # Check fields for auto-created Attendance for e1
@@ -407,7 +407,7 @@ class TestPorgWrapper(unittest.TestCase):
         self.assertEqual(a2.get_roles(), [])
         self.assertEqual(a2, a2_gotten)
 
-        e2 = p.create_event(u3, "e2")
+        e2 = p.create_event("e2", u3)
         a2 = p.get_attendance(u3, e2)
 
         # Check fields for auto-created Attendance for e2
@@ -445,7 +445,7 @@ class TestPorgWrapper(unittest.TestCase):
         u3 = p.register_user("u3")
 
         # Create some events
-        e1 = p.create_event(u1, "e1")
+        e1 = p.create_event("e1", u1)
         a1 = p.get_attendance(u1, e1)
         self.assertEqual(p.get_attendances(e1), [a1])  # Test on Event
         self.assertEqual(p.get_attendances(e1), p.get_attendances(u1))  # Test on User
@@ -454,7 +454,7 @@ class TestPorgWrapper(unittest.TestCase):
         self.assertEqual(p.get_attendances(e1), [a1, a2])
         self.assertEqual(p.get_attendances(u2), [a2])
 
-        e2 = p.create_event(u2, "e2", location="springfield")
+        e2 = p.create_event("e2", u2, location="springfield")
         a3 = p.get_attendance(u2, e2)
         self.assertEqual(p.get_attendances(e2), [a3])
         self.assertEqual(p.get_attendances(u2), [a2, a3])
@@ -483,7 +483,7 @@ class TestPorgWrapper(unittest.TestCase):
         u2 = p.register_user("u2")
         u3 = p.register_user("u3")
 
-        e1 = p.create_event(u1, "e1")
+        e1 = p.create_event("e1", u1)
         a1 = p.get_attendance(u1, e1)
         a2 = p.create_attendance(u2, e1)
 
@@ -516,10 +516,10 @@ class TestPorgWrapper(unittest.TestCase):
 
         # Test attendance creation with events that don't exist
         with self.assertRaises(EventNotFoundError):
-            p.create_attendance(u1, Event(u1.get_id(), "nonexistant event"))
+            p.create_attendance(u1, Event("nonexistant event", u1.get_id()))
 
         with self.assertRaises(EventNotFoundError):
-            p.create_attendance(u1, Event(u2.get_id(), "nonexistant event 2", location="blah"))
+            p.create_attendance(u1, Event("nonexistant event 2", u2.get_id(), location="blah"))
 
         # Test attendance creation with users that don't exist
         with self.assertRaises(UserNotFoundError):
@@ -534,7 +534,7 @@ class TestPorgWrapper(unittest.TestCase):
         u2 = p.register_user("u2")
         u3 = p.register_user("u3")
 
-        e1 = p.create_event(u1, "e1")
+        e1 = p.create_event("e1", u1)
         a1 = p.get_attendance(u1, e1)
 
         self.assertEqual(u1.get_events_organised_ids(), [e1.get_id()])

@@ -96,21 +96,21 @@ class User(Base):
 class Event(Base):
     __tablename__ = 'events'
     id = Column(Integer, primary_key=True)
-    owner_id = Column(Integer)
     name = Column(Unicode(40))
+    owner_id = Column(Integer)
     location = Column(Unicode(40))
     time = Column(DateTime)
     attendance_ids = Column(MutableList.as_mutable(PickleType))
 
-    def __init__(self, owner_id, name, location=None, time=None):
-        assert isinstance(owner_id, int)  # Cannot be None on creation, but may later be
+    def __init__(self, name, owner_id, location=None, time=None):
         assert isinstance(name, str)
+        assert isinstance(owner_id, int)  # Cannot be None on creation, but may later be
         assert isinstance(location, str) or location is None
         assert isinstance(time, datetime) or time is None
 
         self.id = None
-        self.owner_id = owner_id
         self.name = name
+        self.owner_id = owner_id
         self.location = location
         self.time = time
         self.attendance_ids = []
@@ -118,8 +118,8 @@ class Event(Base):
     def __str__(self):
         return '{\n' + \
                '    id: {},\n'.format(self.id) + \
-               '    owner_id: {},\n'.format(self.owner_id) + \
                '    name: {},\n'.format(self.name) + \
+               '    owner_id: {},\n'.format(self.owner_id) + \
                '    location: {},\n'.format(self.location) + \
                '    time: {}\n'.format(self.time) + \
                '    attendance_ids: {}\n'.format(self.attendance_ids) + \
@@ -128,11 +128,11 @@ class Event(Base):
     def get_id(self):
         return self.id
 
-    def get_owner_id(self):
-        return self.owner_id
-
     def get_name(self):
         return self.name
+
+    def get_owner_id(self):
+        return self.owner_id
 
     def get_location(self):
         return self.location
@@ -143,13 +143,13 @@ class Event(Base):
     def get_attendance_ids(self):
         return self.attendance_ids
 
-    def set_owner_id(self, owner_id):
-        assert isinstance(owner_id, int) or owner_id is None
-        self.owner_id = owner_id
-
     def set_name(self, name):
         assert isinstance(name, str)
         self.name = name
+
+    def set_owner_id(self, owner_id):
+        assert isinstance(owner_id, int) or owner_id is None
+        self.owner_id = owner_id
 
     def set_location(self, location):
         assert isinstance(location, str)

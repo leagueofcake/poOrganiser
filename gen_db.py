@@ -18,8 +18,8 @@ def drop_tables(c):
 def create_tables(c):
     c.execute('''CREATE TABLE events(
         id INTEGER PRIMARY KEY,
-        owner_id INTEGER,
         name TEXT NOT NULL,
+        owner_id INTEGER,
         location TEXT,
         time DATETIME,
         attendance_ids BLOB);
@@ -56,11 +56,11 @@ def create_tables(c):
     ''')
 
     c.execute('''CREATE TABLE responses(
-            id INTEGER PRIMARY KEY,
-            responder_id INTEGER NOT NULL,
-            question_id INTEGER NOT NULL,
-            choice_ids BLOB);
-        ''')
+        id INTEGER PRIMARY KEY,
+        responder_id INTEGER NOT NULL,
+        question_id INTEGER NOT NULL,
+        choice_ids BLOB);
+    ''')
 
 
 def generate(c):

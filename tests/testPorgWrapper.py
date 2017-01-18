@@ -748,6 +748,83 @@ class TestPorgWrapper(unittest.TestCase):
         with self.assertRaises(QuestionNotFoundError):
             p.create_choice(Question(6, "blah", "free"), "choice 2")
 
+    def test_delete_question(self):
+        u1 = p.register_user("user1")
+        q = p.create_question(u1.get_id(), "Hello?", "free")
+        self.assertEqual(q.get_id(), 1)
+        self.assertEqual(q.get_owner_id(), 1)
+        self.assertEqual(q.get_question(), "Hello?")
+        self.assertEqual(q.get_question_type(), "free")
+        self.assertEqual(q.get_survey_id(), None)
+        self.assertEqual(q.get_allowed_choice_ids(), [])
+
+        p.delete_question(q)
+
+        # Check Choice object was deleted
+        self.assertIsNone(p.db_interface.get_obj(1, Question))
+
+        u2 = p.register_user("User 1")
+        s = p.create_survey("SOME COOL SURVEY", u2)
+        self.assertEqual(s.get_question_ids(), [])
+        q1 = p.create_question(u2.get_id(), "question 1", "free", survey_obj=s)
+        self.assertEqual(q1.get_id(), 1)
+        self.assertEqual(q1.get_owner_id(), 2)
+        self.assertEqual(q1.get_question(), "question 1")
+        self.assertEqual(q1.get_question_type(), "free")
+        self.assertEqual(q1.get_survey_id(), s.get_id())
+        self.assertEqual(q1.get_allowed_choice_ids(), [])
+
+        c1 = p.create_choice(q1, "choice 1")
+        c2 = p.create_choice(q1, "choice 2")
+        self.assertEqual(q1.get_allowed_choice_ids(), [c1.get_id(), c2.get_id()])
+
+        p.delete_question(q1)
+
+        # Check Choice objects were deleted
+        self.assertIsNone(p.db_interface.get_obj(1, Choice))
+        self.assertIsNone(p.db_interface.get_obj(2, Choice))
+
+        # Check Survey.question_ids was updated
+        self.assertEqual(s.get_question_ids(), [])
+
+        q2 = p.create_question(u1, "the sec0nd question", "free", survey_obj=s)
+        self.assertEqual(q2.get_id(), 1)
+        self.assertEqual(q2.get_owner_id(), 1)
+        self.assertEqual(q2.get_question(), "the sec0nd question")
+        self.assertEqual(q2.get_question_type(), "free")
+        self.assertEqual(q2.get_survey_id(), s.get_id())
+        self.assertEqual(q2.get_allowed_choice_ids(), [])
+
+        c1 = p.create_choice(q2, "choice 1.2")
+        c2 = p.create_choice(q2, "choice 2.2")
+        self.assertEqual(q2.get_allowed_choice_ids(), [c1.get_id(), c2.get_id()])
+
+        p.delete_question(q2)
+
+        # Check Choice objects were deleted
+        self.assertIsNone(p.db_interface.get_obj(1, Choice))
+        self.assertIsNone(p.db_interface.get_obj(2, Choice))
+
+        # Check Survey.question_ids was updated
+        self.assertEqual(s.get_question_ids(), [])
+
+        # Test creation with invalid question types
+        with self.assertRaises(InvalidQuestionTypeError):
+            p.create_question(89, "invalid question", "invalid")
+
+        with self.assertRaises(InvalidQuestionTypeError):
+            p.create_question(12, "invalid question", 3)
+
+        with self.assertRaises(InvalidQuestionTypeError):
+            p.create_question(42, "invalid question", ["free"])
+
+        # Test deletion of questions that don't exist
+        with self.assertRaises(QuestionNotFoundError):
+            p.delete_question(q2)
+
+        with self.assertRaises(QuestionNotFoundError):
+            p.delete_question(Question(1, "lol?", "free"))
+
 # Generate empty test database
 conn = sqlite3.connect(porg_config.DB_NAME)
 c = conn.cursor()

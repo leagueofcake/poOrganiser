@@ -25,6 +25,8 @@ class PorgWrapper:
             raise QuestionNotFoundError("Question could not be found")
         elif obj_type is Survey:
             raise SurveyNotFoundError("Survey could not be found")
+        elif obj_type is Choice:
+            raise ChoiceNotFoundError("Choice could not be found")
 
     def get_user_by_username(self, username):
         return self.db_interface.s.query(User).filter(User.username == username).first()
@@ -264,4 +266,21 @@ class PorgWrapper:
 
         # Delete choice
         self.db_interface.delete(c)
+
+    def delete_question(self, question_obj):
+        q = self.check_obj_exists(question_obj, Question)
+
+        # Remove question id from Survey.question_ids
+        if q.get_survey_id():
+            s = self.check_obj_exists(q.get_survey_id(), Survey)
+            s.remove_question_id(q)
+            self.db_interface.update(s)
+
+        # Delete Choice objects from database
+        for choice_id in q.get_allowed_choice_ids():
+            c = self.check_obj_exists(choice_id, Choice)
+            self.db_interface.delete(c)
+
+        # Delete question
+        self.db_interface.delete(q)
 

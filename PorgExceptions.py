@@ -56,6 +56,12 @@ class ResponseNotFoundError(Error):
     pass
 
 
+class InvalidResponseError(Error):
+    """Raised when a Response object is created that does not match the question_type of its
+    parent Question."""
+    pass
+
+
 class SurveyNotFoundError(Error):
     """Raised when a Survey object is expected but cannot be found in the database."""
     pass

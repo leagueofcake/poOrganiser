@@ -76,8 +76,6 @@ class User(Base):
 
         if obj in self.events_organised_ids:
             self.events_organised_ids.remove(obj)
-        else:
-            return None
 
     def remove_event_attending(self, obj):
         """obj may be an int denoting an Event id or an Event object. Raises TypeError if obj is
@@ -89,8 +87,6 @@ class User(Base):
 
         if obj in self.events_attending_ids:
             self.events_attending_ids.remove(obj)
-        else:
-            return None
 
 
 class Event(Base):
@@ -240,8 +236,6 @@ class Attendance(Base):
     def remove_role(self, role):
         if role in self.roles:
             self.roles.remove(role)
-        else:
-            return None
 
 
 class Choice(Base):

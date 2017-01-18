@@ -290,18 +290,21 @@ class Choice(Base):
 class Response(Base):
     __tablename__ = 'responses'
     id = Column(Integer, primary_key=True)
+    response_text = Column(Unicode(40))
     responder_id = Column(Integer)
     question_id = Column(Integer)
     choice_ids = Column(MutableList.as_mutable(PickleType))
 
-    def __init__(self, responder_id, question_id, choice_ids=[]):
+    def __init__(self, responder_id, question_id, response_text=None, choice_ids=[]):
         assert isinstance(responder_id, int)
         assert isinstance(question_id, int)
         assert isinstance(choice_ids, list)
+        assert isinstance(response_text, str) or response_text is None
         for choice_id in choice_ids:
             assert isinstance(choice_id, int)
 
         self.id = None
+        self.response_text = response_text
         self.responder_id = responder_id
         self.question_id = question_id
         self.choice_ids = choice_ids
@@ -311,6 +314,7 @@ class Response(Base):
                '    id: {},\n'.format(self.id) + \
                '    responder_id: {},\n'.format(self.responder_id) + \
                '    question_id: {},\n'.format(self.question_id) + \
+               '    response_text: {},\n'.format(self.response_text) + \
                '    choice_ids: {},\n'.format(self.choice_ids) + \
                '}'
 
@@ -323,8 +327,15 @@ class Response(Base):
     def get_question_id(self):
         return self.question_id
 
+    def get_response_text(self):
+        return self.response_text
+
     def get_choice_ids(self):
         return self.choice_ids
+
+    def set_response_text(self, response_text):
+        assert isinstance(response_text, str)
+        self.response_text = response_text
 
     def add_choice_id(self, choice_obj):
         if isinstance(choice_obj, Choice):

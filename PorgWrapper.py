@@ -323,6 +323,11 @@ class PorgWrapper:
         # Delete survey
         self.db_interface.delete(s)
 
-    def get_obj_owner(self, obj):
-        # TODO: takes Event, Question, Survey and returns a User
-        pass
+    def get_owner(self, obj):
+        is_event = isinstance(obj, Event)
+        is_survey = isinstance(obj, Survey)
+        is_question = isinstance(obj, Question)
+        if not is_event and not is_survey and not is_question:
+            raise TypeError("Invalid object type for get_obj_owner: expected Event, Survey "
+                            "or Question")
+        return self.db_interface.get_obj(obj.get_owner_id(), User)

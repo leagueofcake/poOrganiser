@@ -940,7 +940,39 @@ class TestPorgWrapper(unittest.TestCase):
         with self.assertRaises(SurveyNotFoundError):
             p.delete_survey(9923)
 
+    def test_get_obj_owner(self):
+        u1 = p.register_user("User 1")
+        u2 = p.register_user("u2")
+        u3 = p.register_user("3rd")
 
+        # Test event
+        e1 = p.create_event("event 1", u1)
+        e2 = p.create_event("2nd event", u2, location="lol world")
+
+        self.assertEqual(p.get_owner(e1), u1)
+        self.assertEqual(p.get_owner(e2), u2)
+
+        # Test surveys
+        s1 = p.create_survey("s1", u2)
+        s2 = p.create_survey("survey 2", u3)
+        self.assertEqual(p.get_owner(s1), u2)
+        self.assertEqual(p.get_owner(s2), u3)
+
+        # Test questions
+        q1 = p.create_question(u3, "question?", "free")
+        q2 = p.create_question(u1, "question?", "free", survey_obj=s1)
+        self.assertEqual(p.get_owner(q1), u3)
+        self.assertEqual(p.get_owner(q2), u1)
+
+        # Test invalid types
+        with self.assertRaises(TypeError):
+            p.get_owner(u1)
+
+        with self.assertRaises(TypeError):
+            p.get_owner("lalala")
+
+        with self.assertRaises(TypeError):
+            p.get_owner(3012)
 
 # Generate empty test database
 conn = sqlite3.connect(porg_config.DB_NAME)

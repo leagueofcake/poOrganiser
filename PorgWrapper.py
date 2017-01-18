@@ -9,6 +9,20 @@ class PorgWrapper:
     def __init__(self):
         self.db_interface = DbInterface()
 
+    def check_obj_exists(self, obj, obj_type):
+        o = self.db_interface.get_obj(obj, obj_type)
+
+        if o:
+            return o
+        elif obj_type is User:
+            raise UserNotFoundError("User could not be found")
+        elif obj_type is Event:
+            raise EventNotFoundError("Event could not be found")
+        elif obj_type is Attendance:
+            raise AttendanceNotFoundError("Attendance could not be found")
+        elif obj_type is Question:
+            raise QuestionNotFoundError("Question could not be found")
+
     def get_user_by_username(self, username):
         return self.db_interface.s.query(User).filter(User.username == username).first()
 
@@ -23,7 +37,7 @@ class PorgWrapper:
     def unregister_user(self, obj, delete_events=False):
         username = obj
         if isinstance(obj, User):
-            u = self.db_interface.get_obj(obj.get_id(), User)
+            u = self.db_interface.get_obj(obj, User)
             username = obj.get_username()
         else:
             u = self.get_user_by_username(obj)
@@ -57,11 +71,7 @@ class PorgWrapper:
         return self.db_interface.query(Event, curr_filter, num='all')
 
     def get_events_by_user(self, user_obj):
-        u = self.db_interface.get_obj(user_obj, User)
-
-        # Check user exists in the database
-        if not u:
-            raise UserNotFoundError("User could not be found")
+        u = self.check_obj_exists(user_obj, User)
 
         res = []
         for event_id in u.get_events_organised_ids():
@@ -73,12 +83,7 @@ class PorgWrapper:
         return self.db_interface.query(Event, True, num='all')
 
     def create_event(self, name, owner_obj, location=None, time=None):
-        owner = self.db_interface.get_obj(owner_obj, User)
-
-        # Check owner exists in the database
-        if not owner:
-            raise UserNotFoundError("Owner could not be found")
-
+        owner = self.check_obj_exists(owner_obj, User)
         owner_id = owner.get_id()
         # Create event and insert into database
         e = Event(name, owner_id, location, time)
@@ -98,10 +103,7 @@ class PorgWrapper:
         return e
 
     def delete_event(self, event_obj):
-        e = self.db_interface.get_obj(event_obj, Event)
-
-        if not e:
-            raise EventNotFoundError("Event could not be found for deletion")
+        e = self.check_obj_exists(event_obj, Event)
 
         # Remove attendances from database
         for attendance_id in e.get_attendance_ids():
@@ -148,14 +150,8 @@ class PorgWrapper:
         return res
 
     def create_attendance(self, user_obj, event_obj, going_status='invited', roles=list()):
-        u = self.db_interface.get_obj(user_obj, User)
-        e = self.db_interface.get_obj(event_obj, Event)
-
-        # Check user and event exists in database
-        if not e:
-            raise EventNotFoundError("Event could not be found")
-        if not u:
-            raise UserNotFoundError("User could not be found")
+        u = self.check_obj_exists(user_obj, User)
+        e = self.check_obj_exists(event_obj, Event)
 
         # Create attendance
         a = Attendance(u.get_id(), e.get_id(), going_status, roles)
@@ -172,13 +168,9 @@ class PorgWrapper:
         return a
 
     def delete_attendance(self, attendance_obj):
-        a = self.db_interface.get_obj(attendance_obj, Attendance)
-
-        if not a:
-            raise AttendanceNotFoundError("Attendance object could not be found")
-
-        e = self.db_interface.get_obj(a.get_event_id(), Event)
-        u = self.db_interface.get_obj(a.get_user_id(), User)
+        a = self.check_obj_exists(attendance_obj, Attendance)
+        e = self.check_obj_exists(a.get_event_id(), Event)
+        u = self.check_obj_exists(a.get_user_id(), User)
 
         # Remove event id from Users.events_attending_ids
         u.remove_event_attending(e)

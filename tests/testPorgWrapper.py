@@ -75,7 +75,7 @@ class TestPorgWrapper(unittest.TestCase):
         self.assertIsNotNone(p.db_interface.get_obj(e1.get_id(), Event))
         self.assertIsNone(p.get_attendance(u1.get_id(), e1.get_id()))  # Check attendance deleted
 
-        p.unregister_user("jane", delete_events=True)  # Delete attedances and events
+        p.unregister_user("jane", delete_events=True)  # Delete attendances and events
         self.assertIsNone(p.db_interface.get_obj(e2.get_id(), Event))
         self.assertIsNone(p.db_interface.get_obj(e2.get_id(), Event))
         self.assertIsNone(p.get_attendance(u2.get_id(), e2.get_id()))  # Check attendance deleted

@@ -620,6 +620,9 @@ class TestPorgWrapper(unittest.TestCase):
         self.assertEqual(q.get_survey_id(), None)
         self.assertEqual(q.get_allowed_choice_ids(), [])
 
+        # Check User.question_ids was updated
+        self.assertEqual(u1.get_question_ids(), [q.get_id()])
+
         u2 = p.register_user("User 1")
         s = p.create_survey("SOME COOL SURVEY", u2)
         self.assertEqual(s.get_question_ids(), [])
@@ -631,6 +634,9 @@ class TestPorgWrapper(unittest.TestCase):
         self.assertEqual(q1.get_survey_id(), s.get_id())
         self.assertEqual(q1.get_allowed_choice_ids(), [])
 
+        # Check User.question_ids was updated
+        self.assertEqual(u2.get_question_ids(), [q1.get_id()])
+
         # Check Survey.question_ids was updated
         self.assertEqual(s.get_question_ids(), [q1.get_id()])
 
@@ -641,6 +647,9 @@ class TestPorgWrapper(unittest.TestCase):
         self.assertEqual(q2.get_question_type(), "free")
         self.assertEqual(q2.get_survey_id(), s.get_id())
         self.assertEqual(q2.get_allowed_choice_ids(), [])
+
+        # Check User.question_ids was updated
+        self.assertEqual(u1.get_question_ids(), [q.get_id(), q2.get_id()])
 
         # Check Survey.question_ids was updated
         self.assertEqual(s.get_question_ids(), [q1.get_id(), q2.get_id()])
@@ -673,6 +682,9 @@ class TestPorgWrapper(unittest.TestCase):
         self.assertEqual(r1.get_response_text(), None)
         self.assertEqual(r1.get_choice_ids(), [])
 
+        # Check response_id was added to User.response_ids
+        self.assertEqual(u1.get_response_ids(), [r1.get_id()])
+
         # Check response_id was added to Question.response_ids
         self.assertEqual(q1.get_response_ids(), [r1.get_id()])
 
@@ -682,6 +694,9 @@ class TestPorgWrapper(unittest.TestCase):
         self.assertEqual(r2.get_question_id(), q1.get_id())
         self.assertEqual(r2.get_response_text(), "lololol")
         self.assertEqual(r2.get_choice_ids(), [])
+
+        # Check response_id was added to User.response_ids
+        self.assertEqual(u1.get_response_ids(), [r1.get_id(), r2.get_id()])
 
         # Check response_id was added to Question.response_ids
         self.assertEqual(q1.get_response_ids(), [r1.get_id(), r2.get_id()])
@@ -695,6 +710,9 @@ class TestPorgWrapper(unittest.TestCase):
         self.assertEqual(r3.get_question_id(), q1.get_id())
         self.assertEqual(r3.get_response_text(), "k")
         self.assertEqual(r3.get_choice_ids(), [c1.get_id()])
+
+        # Check response_id was added to User.response_ids
+        self.assertEqual(u1.get_response_ids(), [r1.get_id(), r2.get_id(), r3.get_id()])
 
         # Check response_id was added to Question.response_ids
         self.assertEqual(q1.get_response_ids(), [r1.get_id(), r2.get_id(), r3.get_id()])
@@ -729,16 +747,22 @@ class TestPorgWrapper(unittest.TestCase):
         q1 = p.create_question(u1, "q1", "free")
         q2 = p.create_question(u1.get_id(), "q2", "free")
         e1 = p.create_event("event 1", u1)
-        s = p.create_survey("s", u1, question_ids=[q1.get_id(), q2.get_id()], event_obj=e1.get_id())
-        self.assertEqual(s.get_name(), "s")
-        self.assertEqual(s.get_id(), 2)
-        self.assertEqual(s.get_owner_id(), u1.get_id())
-        self.assertEqual(s.get_event_id(), 1)
-        self.assertEqual(s.get_question_ids(), [q1.get_id(), q2.get_id()])
+        s2 = p.create_survey("s", u1, question_ids=[q1.get_id(), q2.get_id()], event_obj=e1.get_id())
+        self.assertEqual(s2.get_name(), "s")
+        self.assertEqual(s2.get_id(), 2)
+        self.assertEqual(s2.get_owner_id(), u1.get_id())
+        self.assertEqual(s2.get_event_id(), 1)
+        self.assertEqual(s2.get_question_ids(), [q1.get_id(), q2.get_id()])
+
+        # Check User.survey_ids was updated
+        self.assertEqual(u1.get_survey_ids(), [s.get_id(), s2.get_id()])
+
+        # Check Event.survey_ids was updated
+        self.assertEqual(e1.get_survey_ids(), [s2.get_id()])
 
         # Check Question.survey_id was updated
-        self.assertEqual(q1.get_survey_id(), s.get_id())
-        self.assertEqual(q2.get_survey_id(), s.get_id())
+        self.assertEqual(q1.get_survey_id(), s2.get_id())
+        self.assertEqual(q2.get_survey_id(), s2.get_id())
 
         # Test creation with owners that don't exist
         with self.assertRaises(UserNotFoundError):
@@ -804,15 +828,20 @@ class TestPorgWrapper(unittest.TestCase):
         u1 = p.register_user("user1")
         u2 = p.register_user("second user")
         q = p.create_question(u1.get_id(), "Hello?", "free")
+        self.assertEqual(u1.get_question_ids(), [q.get_id()])
+
         p.delete_question(q)
 
         # Check Choice object was deleted
         self.assertIsNone(p.db_interface.get_obj(1, Question))
 
-        u2 = p.register_user("User 1")
+        # Check User.question_ids was updated
+        self.assertEqual(u1.get_question_ids(), [])
+
         s = p.create_survey("SOME COOL SURVEY", u2)
         self.assertEqual(s.get_question_ids(), [])
         q1 = p.create_question(u2.get_id(), "question 1", "free", survey_obj=s)
+        self.assertEqual(u2.get_question_ids(), [q1.get_id()])
 
         c1 = p.create_choice(q1, "choice 1")
         c2 = p.create_choice(q1, "choice 2")
@@ -823,10 +852,16 @@ class TestPorgWrapper(unittest.TestCase):
         self.assertIsNone(p.db_interface.get_obj(c1, Choice))
         self.assertIsNone(p.db_interface.get_obj(c2, Choice))
 
+        # Check User.question_ids was updated
+        self.assertEqual(u1.get_question_ids(), [])
+        self.assertEqual(u2.get_question_ids(), [])
+
         # Check Survey.question_ids was updated
         self.assertEqual(s.get_question_ids(), [])
 
         q2 = p.create_question(u1, "the sec0nd question", "free", survey_obj=s)
+        self.assertEqual(u1.get_question_ids(), [q2.get_id()])
+        self.assertEqual(u2.get_question_ids(), [])
 
         c1 = p.create_choice(q2, "choice 1.2")
         c2 = p.create_choice(q2, "choice 2.2")
@@ -839,6 +874,10 @@ class TestPorgWrapper(unittest.TestCase):
         # Check Choice objects were deleted
         self.assertIsNone(p.db_interface.get_obj(c1, Choice))
         self.assertIsNone(p.db_interface.get_obj(c2, Choice))
+
+        # Check User.question_ids was updated
+        self.assertEqual(u1.get_question_ids(), [])
+        self.assertEqual(u2.get_question_ids(), [])
 
         # Check Response objects were deleted
         self.assertIsNone(p.db_interface.get_obj(r1, Response))
@@ -866,6 +905,8 @@ class TestPorgWrapper(unittest.TestCase):
 
     def test_delete_response(self):
         u1 = p.register_user("USER 1")
+        self.assertEqual(u1.get_response_ids(), [])
+
         q1 = p.create_question(u1, "QUESTION?", "free")
         r1 = p.create_response(u1, q1)
 
@@ -873,11 +914,14 @@ class TestPorgWrapper(unittest.TestCase):
         self.assertEqual(q1.get_response_ids(), [r1.get_id()])
 
         r2 = p.create_response(u1, q1, response_text="lololol")
+        # Check User.response_ids was updated
+        self.assertEqual(u1.get_response_ids(), [r1.get_id(), r2.get_id()])
 
         # Check response_id was added to Question.response_ids
         self.assertEqual(q1.get_response_ids(), [r1.get_id(), r2.get_id()])
 
         p.delete_response(r2)
+        self.assertEqual(u1.get_response_ids(), [r1.get_id()])
         self.assertIsNone(p.db_interface.get_obj(r2, Response))
 
         # Check response_id was removed from Question.response_ids
@@ -893,11 +937,17 @@ class TestPorgWrapper(unittest.TestCase):
         p.delete_response(r1)
         self.assertIsNone(p.db_interface.get_obj(r1, Response))
 
+        # Check User.response_ids was updated
+        self.assertEqual(u1.get_response_ids(), [r3.get_id()])
+
         # Check response_id was removed from Question.response_ids
         self.assertEqual(q1.get_response_ids(), [r3.get_id()])
 
         p.delete_response(r3)
         self.assertIsNone(p.db_interface.get_obj(r1, Response))
+
+        # Check User.response_ids was updated
+        self.assertEqual(u1.get_response_ids(), [])
 
         # Check response_id was removed from Question.response_ids
         self.assertEqual(q1.get_response_ids(), [])
@@ -913,9 +963,13 @@ class TestPorgWrapper(unittest.TestCase):
         u1 = p.register_user("Bob")
         u2 = p.register_user("Jane")
         s = p.create_survey("survey 1", u1)
+        self.assertEqual(u1.get_survey_ids(), [s.get_id()])
 
         p.delete_survey(s)
+        # Check User.survey_ids was updated
+        self.assertEqual(u1.get_survey_ids(), [])
         self.assertIsNone(p.db_interface.get_obj(s, Survey))
+
 
         q1 = p.create_question(u1, "q1", "free")
         q2 = p.create_question(u1.get_id(), "q2", "free")
@@ -925,8 +979,11 @@ class TestPorgWrapper(unittest.TestCase):
         r3 = p.create_response(u2, q2)
         e1 = p.create_event("event 1", u1)
         s = p.create_survey("s", u1, question_ids=[q1.get_id(), q2.get_id()], event_obj=e1.get_id())
+        self.assertEqual(u1.get_survey_ids(), [s.get_id()])
 
         p.delete_survey(s)
+        # Check User.survey_ids was updated
+        self.assertEqual(u1.get_survey_ids(), [])
         self.assertIsNone(p.db_interface.get_obj(s, Survey))
 
         # Check questions were deleted

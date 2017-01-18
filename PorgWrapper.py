@@ -209,8 +209,6 @@ class PorgWrapper:
 
         owner = self.check_obj_exists(owner_obj, User)
 
-        # TODO: add User.question_ids
-
         survey_id = None
         if survey_obj:
             survey_obj = self.check_obj_exists(survey_obj, Survey)
@@ -220,6 +218,10 @@ class PorgWrapper:
 
         self.db_interface.add(q)
 
+        # Add question id to User.question_ids
+        owner.add_question_id(q)
+        self.db_interface.update(owner)
+
         # Add question id to Survey.question_ids
         if survey_id:
             survey_obj.add_question_id(q.get_id())
@@ -228,7 +230,6 @@ class PorgWrapper:
         return q
 
     def create_response(self, responder_obj, question_obj, response_text=None, choice_ids=[]):
-        # TODO: add User.response_ids
         responder = self.check_obj_exists(responder_obj, User)
         q = self.check_obj_exists(question_obj, Question)
 
@@ -242,6 +243,10 @@ class PorgWrapper:
         r = Response(responder.get_id(), q.get_id(), response_text, choice_ids)
         self.db_interface.add(r)
 
+        # Add response id to User.question_ids
+        responder.add_response_id(r)
+        self.db_interface.update(responder)
+
         # Add response id to Question.response_ids
         q.add_response_id(r.get_id())
         self.db_interface.update(q)
@@ -251,8 +256,6 @@ class PorgWrapper:
     def create_survey(self, name, owner_obj, question_ids=[], event_obj=None):
         owner = self.check_obj_exists(owner_obj, User)
 
-        # TODO: Add User.survey_ids
-
         # Check each question_id can be found in the database
         questions = []
         if question_ids:
@@ -261,12 +264,22 @@ class PorgWrapper:
                 questions.append(q)
 
         # Check each event_id can be found in the database
+        event_id = event_obj
         if event_obj:
             event_obj = self.check_obj_exists(event_obj, Event)
-            event_obj = event_obj.get_id()
+            event_id = event_obj.get_id()
 
-        s = Survey(name, owner.get_id(), question_ids=question_ids, event_id=event_obj)
+        s = Survey(name, owner.get_id(), question_ids=question_ids, event_id=event_id)
         self.db_interface.add(s)
+
+        if event_id:  # Add survey to Event.survey_ids
+            e = self.db_interface.get_obj(event_id, Event)
+            e.add_survey_id(s)
+            self.db_interface.update(e)
+
+        # Add survey id to User.survey_ids
+        owner.add_survey_id(s)
+        self.db_interface.update(owner)
 
         # Set survey_id for each Question
         for q in questions:
@@ -288,6 +301,11 @@ class PorgWrapper:
 
     def delete_question(self, question_obj, remove_from_survey=True):
         q = self.check_obj_exists(question_obj, Question)
+        owner = self.get_owner(q)
+
+        # Remove question_id from User.question_ids
+        owner.remove_question_id(q)
+        self.db_interface.update(owner)
 
         if remove_from_survey:  # Remove question id from Survey.question_ids
             if q.get_survey_id():
@@ -312,6 +330,11 @@ class PorgWrapper:
         r = self.check_obj_exists(response_obj, Response)
         q = self.check_obj_exists(r.get_question_id(), Question)
 
+        # Remove response_id from User.response_ids
+        responder = self.db_interface.get_obj(r.get_responder_id(), User)
+        responder.remove_response_id(r)
+        self.db_interface.update(responder)
+
         if remove_from_question:  # Remove response id from Question.response_ids
             q.remove_response_id(r)
             self.db_interface.update(q)
@@ -321,6 +344,11 @@ class PorgWrapper:
 
     def delete_survey(self, survey_obj):
         s = self.check_obj_exists(survey_obj, Survey)
+        owner = self.get_owner(s)
+
+        # Remove survey_id from User.survey_id
+        owner.remove_survey_id(s)
+        self.db_interface.update(owner)
 
         # Delete questions from database (and choices+responses via delete_question)
         for question_id in s.get_question_ids():

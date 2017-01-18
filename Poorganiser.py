@@ -1,7 +1,11 @@
+from config import porg_config
 from datetime import datetime
-from sqlalchemy import Column, Integer, Unicode, PickleType, DateTime
+from sqlalchemy import create_engine, Column, Integer, Unicode, PickleType, DateTime
 from sqlalchemy.ext.mutable import MutableList
-from create_base import Base
+from sqlalchemy.ext.declarative import declarative_base
+
+engine = create_engine(porg_config.DB_URL, echo=False)
+Base = declarative_base(bind=engine)
 
 
 class User(Base):

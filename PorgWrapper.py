@@ -294,6 +294,11 @@ class PorgWrapper:
             c = self.check_obj_exists(choice_id, Choice)
             self.db_interface.delete(c)
 
+        # Delete Response bojects from database
+        for response_id in q.get_response_ids():
+            r = self.check_obj_exists(response_id, Response)
+            self.db_interface.delete(r)
+
         # Delete question
         self.db_interface.delete(q)
 

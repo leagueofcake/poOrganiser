@@ -797,6 +797,7 @@ class TestPorgWrapper(unittest.TestCase):
 
     def test_delete_question(self):
         u1 = p.register_user("user1")
+        u2 = p.register_user("second user")
         q = p.create_question(u1.get_id(), "Hello?", "free")
         p.delete_question(q)
 
@@ -825,11 +826,18 @@ class TestPorgWrapper(unittest.TestCase):
         c1 = p.create_choice(q2, "choice 1.2")
         c2 = p.create_choice(q2, "choice 2.2")
 
+        r1 = p.create_response(u1, q2, "lololol")
+        r2 = p.create_response(u2, q2, "lololol")
+
         p.delete_question(q2)
 
         # Check Choice objects were deleted
         self.assertIsNone(p.db_interface.get_obj(c1, Choice))
         self.assertIsNone(p.db_interface.get_obj(c2, Choice))
+
+        # Check Response objects were deleted
+        self.assertIsNone(p.db_interface.get_obj(r1, Response))
+        self.assertIsNone(p.db_interface.get_obj(r2, Response))
 
         # Check Survey.question_ids was updated
         self.assertEqual(s.get_question_ids(), [])

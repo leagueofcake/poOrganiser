@@ -67,7 +67,7 @@ def create_tables(c):
 
     c.execute('''CREATE TABLE responses(
         id INTEGER PRIMARY KEY,
-        response_text TEXT
+        response_text TEXT,
         responder_id INTEGER NOT NULL,
         question_id INTEGER NOT NULL,
         choice_ids BLOB);

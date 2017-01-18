@@ -23,13 +23,13 @@ class AttendanceNotFoundError(Error):
     pass
 
 
-class QuestionNotFoundError(Error):
-    """Raised when an Question object is expected but cannot be found in the database."""
+class ChoiceNotFoundError(Error):
+    """Raised when a Choice object is expected but cannot be found in the database."""
     pass
 
 
-class SurveyNotFoundError(Error):
-    """Raised when a Survey object is expected but cannot be found in the database."""
+class QuestionNotFoundError(Error):
+    """Raised when an Question object is expected but cannot be found in the database."""
     pass
 
 
@@ -39,11 +39,11 @@ class InvalidQuestionTypeError(Error):
     pass
 
 
-class ChoiceNotFoundError(Error):
-    """Raised when a Choice object is expected but cannot be found in the database."""
+class ResponseNotFoundError(Error):
+    """Raised when a Response object is expected but cannot be found in the database."""
     pass
 
 
-class ResponseNotFoundError(Error):
-    """Raised when a Response object is expected but cannot be found in the database."""
+class SurveyNotFoundError(Error):
+    """Raised when a Survey object is expected but cannot be found in the database."""
     pass

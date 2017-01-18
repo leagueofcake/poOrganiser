@@ -15,8 +15,7 @@ class TestPorgWrapper(unittest.TestCase):
         generate_db(c)  # Generate blank database
 
     def tearDown(self):
-        pass
-        # generate_db(c)  # Generate blank database
+        generate_db(c)  # Generate blank database
 
     def test_get_user_by_username(self):
         self.assertIsNone(p.get_user_by_username("bob"))

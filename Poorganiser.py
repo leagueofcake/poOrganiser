@@ -373,3 +373,13 @@ class Question(Base):
         assert isinstance(choice_id, int)
         if choice_id in self.allowed_choice_ids:
             self.allowed_choice_ids.remove(choice_id)
+
+    def add_response_id(self, response_id):
+        assert isinstance(response_id, int)
+        if response_id not in self.response_ids:
+            self.response_ids.append(response_id)
+
+    def remove_response_id(self, response_id):
+        assert isinstance(response_id, int)
+        if response_id  in self.response_ids:
+            self.response_ids.remove(response_id)

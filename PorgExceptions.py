@@ -28,6 +28,12 @@ class ChoiceNotFoundError(Error):
     pass
 
 
+class InvalidQuestionIdError(Error):
+    """Raised when there are mis-matching question ids e.g. adding a choice to a response with
+    different question ids"""
+    pass
+
+
 class QuestionNotFoundError(Error):
     """Raised when an Question object is expected but cannot be found in the database."""
     pass

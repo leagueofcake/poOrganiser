@@ -232,6 +232,12 @@ class PorgWrapper:
         responder = self.check_obj_exists(responder_obj, User)
         q = self.check_obj_exists(question_obj, Question)
 
+        # Check choice_ids are have equal question_id to question_obj
+        for choice_id in choice_ids:
+            ch = self.check_obj_exists(choice_id, Choice)
+            if not ch.get_question_id() == q.get_id():
+                raise InvalidQuestionIdError("Mismatching choice and response question_id")
+
         # Create Response
         r = Response(responder.get_id(), q.get_id(), response_text, choice_ids)
         self.db_interface.add(r)

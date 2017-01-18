@@ -686,17 +686,22 @@ class TestPorgWrapper(unittest.TestCase):
         # Check response_id was added to Question.response_ids
         self.assertEqual(q1.get_response_ids(), [r1.get_id(), r2.get_id()])
 
+        q2 = p.create_question(u1, "trick?", "free")
         c1 = p.create_choice(q1, "choice 1")
-        c2 = p.create_choice(q1, "choice 2")
-        r3 = p.create_response(u1, q1, response_text="k", choice_ids=[c1.get_id(), c2.get_id()])
+        c2 = p.create_choice(q2, "choice 2")
+        r3 = p.create_response(u1, q1, response_text="k", choice_ids=[c1.get_id()])
         self.assertEqual(r3.get_id(), 3)
         self.assertEqual(r3.get_responder_id(), u1.get_id())
         self.assertEqual(r3.get_question_id(), q1.get_id())
         self.assertEqual(r3.get_response_text(), "k")
-        self.assertEqual(r3.get_choice_ids(), [c1.get_id(), c2.get_id()])
+        self.assertEqual(r3.get_choice_ids(), [c1.get_id()])
 
         # Check response_id was added to Question.response_ids
         self.assertEqual(q1.get_response_ids(), [r1.get_id(), r2.get_id(), r3.get_id()])
+
+        # Test adding choice to response with mis-matching question_id
+        with self.assertRaises(InvalidQuestionIdError):
+            p.create_response(u1, q1, response_text="k", choice_ids=[c1.get_id(), c2.get_id()])
 
         # Test creation with non-existant responders (User)
         with self.assertRaises(UserNotFoundError):

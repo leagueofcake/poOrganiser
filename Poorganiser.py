@@ -307,15 +307,23 @@ class Response(Base):
     def get_choice_ids(self):
         return self.choice_ids
 
-    def add_choice_id(self, choice_id):
-        assert isinstance(choice_id, int)
-        if choice_id not in self.choice_ids:
-            self.choice_ids.append(choice_id)
+    def add_choice_id(self, choice_obj):
+        if isinstance(choice_obj, Choice):
+            choice_obj = choice_obj.get_id()
+        elif not isinstance(choice_obj, int):
+            raise TypeError("Invalid object type for add_choice_id: expected int or Choice")
 
-    def remove_choice_id(self, choice_id):
-        assert isinstance(choice_id, int)
-        if choice_id in self.choice_ids:
-            self.choice_ids.remove(choice_id)
+        if choice_obj not in self.choice_ids:
+            self.choice_ids.append(choice_obj)
+
+    def remove_choice_id(self, choice_obj):
+        if isinstance(choice_obj, Choice):
+            choice_obj = choice_obj.get_id()
+        elif not isinstance(choice_obj, int):
+            raise TypeError("Invalid object type for remove_choice_id: expected int or Choice")
+
+        if choice_obj in self.choice_ids:
+            self.choice_ids.remove(choice_obj)
 
 
 class Question(Base):

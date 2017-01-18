@@ -1,5 +1,5 @@
 import unittest
-from Poorganiser import Response
+from Poorganiser import Response, Choice
 
 
 class TestResponse(unittest.TestCase):
@@ -76,9 +76,14 @@ class TestResponse(unittest.TestCase):
 
         r = Response(290, 34, choice_ids=[10])
         self.assertEqual(r.get_choice_ids(), [10])
-        r.add_choice_id(201)
+
+        # Test adding with mock Choice objects
+        c = Choice(1, "lol")
+        c.id = 201
+        r.add_choice_id(c)
         self.assertEqual(r.get_choice_ids(), [10, 201])
-        r.add_choice_id(245)
+        c.id = 245
+        r.add_choice_id(c)
         self.assertEqual(r.get_choice_ids(), [10, 201, 245])
 
         # Test adding duplicates
@@ -86,6 +91,16 @@ class TestResponse(unittest.TestCase):
         r.add_choice_id(245)
         r.add_choice_id(10)
         self.assertEqual(r.get_choice_ids(), [10, 201, 245])
+
+        # Test adding ids with invalid types
+        with self.assertRaises(TypeError):
+            r.add_choice_id("lol")
+
+        with self.assertRaises(TypeError):
+            r.add_choice_id(31.45)
+
+        with self.assertRaises(TypeError):
+            r.add_choice_id(r)
 
     def test_remove_choice_id(self):
         r = Response(1, 64)
@@ -112,12 +127,29 @@ class TestResponse(unittest.TestCase):
         self.assertEqual(r.get_choice_ids(), [10, 201])
         r.add_choice_id(245)
         self.assertEqual(r.get_choice_ids(), [10, 201, 245])
-        r.remove_choice_id(10)
+
+        # Test removing with mock Choice objects
+        c = Choice(45, "something")
+        c.id = 10
+        r.remove_choice_id(c)
         self.assertEqual(r.get_choice_ids(), [201, 245])
-        r.remove_choice_id(245)
+        c.id = 245
+        r.remove_choice_id(c)
+        self.assertEqual(r.get_choice_ids(), [201])
+        c.id = 999  # Doesn't exist
         self.assertEqual(r.get_choice_ids(), [201])
         r.remove_choice_id(201)
         self.assertEqual(r.get_choice_ids(), [])
+
+        # Test removing ids with invalid types
+        with self.assertRaises(TypeError):
+            r.remove_choice_id("lol")
+
+        with self.assertRaises(TypeError):
+            r.remove_choice_id(31.45)
+
+        with self.assertRaises(TypeError):
+            r.remove_choice_id(r)
 
 if __name__ == '__main__':
     unittest.main()

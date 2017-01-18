@@ -583,21 +583,25 @@ class TestPorgWrapper(unittest.TestCase):
 
     def test_create_choice(self):
         q = p.create_question("Hello?", "free")
+        self.assertEqual(q.get_allowed_choice_ids(), [])
         ch = p.create_choice(q, "choice 1")
         self.assertEqual(ch.get_id(), 1)
         self.assertEqual(ch.get_question_id(), q.get_id())
         self.assertEqual(ch.get_choice(), "choice 1")
+        self.assertEqual(q.get_allowed_choice_ids(), [ch.get_id()])
 
-        ch = p.create_choice(q, "choice 2")
-        self.assertEqual(ch.get_id(), 2)
-        self.assertEqual(ch.get_question_id(), q.get_id())
-        self.assertEqual(ch.get_choice(), "choice 2")
+        ch2 = p.create_choice(q, "choice 2")
+        self.assertEqual(ch2.get_id(), 2)
+        self.assertEqual(ch2.get_question_id(), q.get_id())
+        self.assertEqual(ch2.get_choice(), "choice 2")
+        self.assertEqual(q.get_allowed_choice_ids(), [ch.get_id(), ch2.get_id()])
 
         q = p.create_question("write something", "free")
         ch = p.create_choice(q, "choice 1.3")
         self.assertEqual(ch.get_id(), 3)
         self.assertEqual(ch.get_question_id(), q.get_id())
         self.assertEqual(ch.get_choice(), "choice 1.3")
+        self.assertEqual(q.get_allowed_choice_ids(), [ch.get_id()])
 
         # Test creation with questions that don't exist
         with self.assertRaises(QuestionNotFoundError):
@@ -616,12 +620,26 @@ class TestPorgWrapper(unittest.TestCase):
 
         u = p.register_user("User 1")
         s = p.create_survey("SOME COOL SURVEY", u)
-        q = p.create_question("question 2", "free", survey_obj=s)
-        self.assertEqual(q.get_id(), 2)
-        self.assertEqual(q.get_question(), "question 2")
-        self.assertEqual(q.get_question_type(), "free")
-        self.assertEqual(q.get_survey_id(), s.get_id())
-        self.assertEqual(q.get_allowed_choice_ids(), [])
+        self.assertEqual(s.get_question_ids(), [])
+        q1 = p.create_question("question 1", "free", survey_obj=s)
+        self.assertEqual(q1.get_id(), 2)
+        self.assertEqual(q1.get_question(), "question 1")
+        self.assertEqual(q1.get_question_type(), "free")
+        self.assertEqual(q1.get_survey_id(), s.get_id())
+        self.assertEqual(q1.get_allowed_choice_ids(), [])
+
+        # Check Survey.question_ids was updated
+        self.assertEqual(s.get_question_ids(), [q1.get_id()])
+
+        q2 = p.create_question("the sec0nd question", "free", survey_obj=s)
+        self.assertEqual(q2.get_id(), 3)
+        self.assertEqual(q2.get_question(), "the sec0nd question")
+        self.assertEqual(q2.get_question_type(), "free")
+        self.assertEqual(q2.get_survey_id(), s.get_id())
+        self.assertEqual(q2.get_allowed_choice_ids(), [])
+
+        # Check Survey.question_ids was updated
+        self.assertEqual(s.get_question_ids(), [q1.get_id(), q2.get_id()])
 
         # Test creation with invalid question types
         with self.assertRaises(InvalidQuestionTypeError):
@@ -656,6 +674,10 @@ class TestPorgWrapper(unittest.TestCase):
         self.assertEqual(s.get_owner_id(), u1.get_id())
         self.assertEqual(s.get_event_id(), 1)
         self.assertEqual(s.get_question_ids(), [q1.get_id(), q2.get_id()])
+
+        # Check Question.survey_id was updated
+        self.assertEqual(q1.get_survey_id(), s.get_id())
+        self.assertEqual(q2.get_survey_id(), s.get_id())
 
         # Test creation with owners that don't exist
         with self.assertRaises(UserNotFoundError):

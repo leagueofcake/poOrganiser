@@ -163,16 +163,132 @@ class TestQuestion(unittest.TestCase):
             q.set_question_type(q)
 
     def test_add_allowed_choice_id(self):
-        pass
+        q = Question("hello?", "free")
+        self.assertEqual(q.get_allowed_choice_ids(), [])
+
+        q.add_allowed_choice_id(24)
+        self.assertEqual(q.get_allowed_choice_ids(), [24])
+        q.add_allowed_choice_id(91)
+        self.assertEqual(q.get_allowed_choice_ids(), [24, 91])
+        q.add_allowed_choice_id(91)  # Try add duplicate
+        self.assertEqual(q.get_allowed_choice_ids(), [24, 91])
+
+        q = Question("Do you like cake", "choose_many", survey_id=24, allowed_choice_ids=[34, 45])
+        self.assertEqual(q.get_allowed_choice_ids(), [34, 45])
+        q.add_allowed_choice_id(56)
+        self.assertEqual(q.get_allowed_choice_ids(), [34, 45, 56])
+        q.add_allowed_choice_id(56)
+        self.assertEqual(q.get_allowed_choice_ids(), [34, 45, 56])
+        q.add_allowed_choice_id(67)
+        self.assertEqual(q.get_allowed_choice_ids(), [34, 45, 56, 67])
+
+        # Test adding chohice_ids with invalid types
+        with self.assertRaises(AssertionError):
+            q.add_allowed_choice_id("invalid choice")
+
+        with self.assertRaises(AssertionError):
+            q.add_allowed_choice_id(32.1)
+
+        with self.assertRaises(AssertionError):
+            q.add_allowed_choice_id(q)
 
     def test_remove_allowed_choice_id(self):
-        pass
+        q = Question("question text", "question type")
+        self.assertEqual(q.get_allowed_choice_ids(), [])
+        q.remove_allowed_choice_id(34)  # Remove allowed_choice_id that doesn't exist
+        self.assertEqual(q.get_allowed_choice_ids(), [])
+        q.remove_allowed_choice_id(1234)  # Remove allowed_choice_id that doesn't exist
+        self.assertEqual(q.get_allowed_choice_ids(), [])
+
+        q = Question("question text 2", "question type 2", allowed_choice_ids=[24, 56, 34])
+        q.remove_allowed_choice_id(1234)  # Remove allowed_choice_id that doesn't exist
+        self.assertEqual(q.get_allowed_choice_ids(), [24, 56, 34])
+        q.remove_allowed_choice_id(24)
+        self.assertEqual(q.get_allowed_choice_ids(), [56, 34])
+        q.remove_allowed_choice_id(34)
+        self.assertEqual(q.get_allowed_choice_ids(), [56])
+        q.add_allowed_choice_id(50)
+        self.assertEqual(q.get_allowed_choice_ids(), [56, 50])
+        q.remove_allowed_choice_id(56)
+        self.assertEqual(q.get_allowed_choice_ids(), [50])
+        q.remove_allowed_choice_id(50)
+        self.assertEqual(q.get_allowed_choice_ids(), [])
+
+        # Try remove choice ids with invalid types
+        with self.assertRaises(AssertionError):
+            q.remove_allowed_choice_id(40.6)
+
+        with self.assertRaises(AssertionError):
+            q.remove_allowed_choice_id("something lel")
+
+        with self.assertRaises(AssertionError):
+            q.remove_allowed_choice_id(q)
 
     def test_add_response_id(self):
-        pass
+        q = Question("question text", "question type")
+        self.assertEqual(q.get_response_ids(), [])
+        q.add_response_id(34)
+        self.assertEqual(q.get_response_ids(), [34])
+        q.add_response_id(34)  # Try add duplicate response_id
+        self.assertEqual(q.get_response_ids(), [34])
+        q.add_response_id(40)
+        self.assertEqual(q.get_response_ids(), [34, 40])
+        q.add_response_id(751)
+        self.assertEqual(q.get_response_ids(), [34, 40, 751])
+
+        q = Question("question text 2", "question type 2", allowed_choice_ids=[1, 2, 3])
+        self.assertEqual(q.get_response_ids(), [])
+        q.add_response_id(99)
+        self.assertEqual(q.get_response_ids(), [99])
+        q.add_response_id(29)
+        self.assertEqual(q.get_response_ids(), [99, 29])
+
+        # Try add choice ids with invalid types
+        with self.assertRaises(AssertionError):
+            q.add_response_id(40.6)
+
+        with self.assertRaises(AssertionError):
+            q.add_response_id("something lel")
+
+        with self.assertRaises(AssertionError):
+            q.add_response_id(q)
 
     def test_remove_response_id(self):
-        pass
+        q = Question("question text", "question type")
+        self.assertEqual(q.get_response_ids(), [])
+        q.add_response_id(34)
+        self.assertEqual(q.get_response_ids(), [34])
+        q.add_response_id(34)  # Try add duplicate response_id
+        self.assertEqual(q.get_response_ids(), [34])
+        q.add_response_id(40)
+        self.assertEqual(q.get_response_ids(), [34, 40])
+        q.remove_response_id(40)
+        self.assertEqual(q.get_response_ids(), [34])
+        q.remove_response_id(999)  # Try remove response_id that isn't in list
+        self.assertEqual(q.get_response_ids(), [34])
+        q.add_response_id(751)
+        self.assertEqual(q.get_response_ids(), [34, 751])
+        q.remove_response_id(34)
+        self.assertEqual(q.get_response_ids(), [751])
+        q.remove_response_id(751)
+        self.assertEqual(q.get_response_ids(), [])
+
+        q = Question("question text 2", "question type 2", allowed_choice_ids=[1, 2, 3])
+        self.assertEqual(q.get_response_ids(), [])
+        q.add_response_id(99)
+        self.assertEqual(q.get_response_ids(), [99])
+        q.add_response_id(29)
+        self.assertEqual(q.get_response_ids(), [99, 29])
+
+        # Try add choice ids with invalid types
+        with self.assertRaises(AssertionError):
+            q.remove_response_id(10.5)
+
+        with self.assertRaises(AssertionError):
+            q.remove_response_id("something else lol")
+
+        with self.assertRaises(AssertionError):
+            q.remove_response_id(q)
 
 if __name__ == '__main__':
     unittest.main()

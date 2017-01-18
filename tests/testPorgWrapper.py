@@ -904,6 +904,44 @@ class TestPorgWrapper(unittest.TestCase):
         with self.assertRaises(ResponseNotFoundError):
             p.delete_response(Response(1, 3))
 
+    def test_delete_survey(self):
+        u1 = p.register_user("Bob")
+        u2 = p.register_user("Jane")
+        s = p.create_survey("survey 1", u1)
+
+        p.delete_survey(s)
+        self.assertIsNone(p.db_interface.get_obj(s, Survey))
+
+        q1 = p.create_question(u1, "q1", "free")
+        q2 = p.create_question(u1.get_id(), "q2", "free")
+        c1 = p.create_choice(q1, "choice 1")
+        r1 = p.create_response(u1, q1)
+        r2 = p.create_response(u2, q1, choice_ids=[c1.get_id()])
+        r3 = p.create_response(u2, q2)
+        e1 = p.create_event("event 1", u1)
+        s = p.create_survey("s", u1, question_ids=[q1.get_id(), q2.get_id()], event_obj=e1.get_id())
+
+        p.delete_survey(s)
+        self.assertIsNone(p.db_interface.get_obj(s, Survey))
+
+        # Check questions were deleted
+        self.assertIsNone(p.db_interface.get_obj(q1, Question))
+        self.assertIsNone(p.db_interface.get_obj(q2, Question))
+
+        # Check responses were deleted
+        self.assertIsNone(p.db_interface.get_obj(r1, Response))
+        self.assertIsNone(p.db_interface.get_obj(r2, Response))
+        self.assertIsNone(p.db_interface.get_obj(r3, Response))
+
+        # Test deletion with non-existant surveys
+        with self.assertRaises(SurveyNotFoundError):
+            p.delete_survey(Survey("lol", 3))
+
+        with self.assertRaises(SurveyNotFoundError):
+            p.delete_survey(9923)
+
+
+
 # Generate empty test database
 conn = sqlite3.connect(porg_config.DB_NAME)
 c = conn.cursor()

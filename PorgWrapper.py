@@ -313,6 +313,15 @@ class PorgWrapper:
         # Delete response
         self.db_interface.delete(r)
 
+    def delete_survey(self, survey_obj):
+        s = self.check_obj_exists(survey_obj, Survey)
+
+        # Delete questions from database (and choices+responses via delete_question)
+        for question_id in s.get_question_ids():
+            self.delete_question(question_id, remove_from_survey=False)
+
+        # Delete survey
+        self.db_interface.delete(s)
 
     def get_obj_owner(self, obj):
         # TODO: takes Event, Question, Survey and returns a User

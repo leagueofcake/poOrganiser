@@ -160,6 +160,9 @@ class PorgWrapper:
         u = self.check_obj_exists(user_obj, User)
         e = self.check_obj_exists(event_obj, Event)
 
+        if e.get_id() in u.get_events_attending_ids():
+            raise DuplicateAttendanceError("User is already attending event")
+
         # Create attendance
         a = Attendance(u.get_id(), e.get_id(), going_status, roles)
         self.db_interface.add(a)

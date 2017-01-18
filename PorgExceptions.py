@@ -18,6 +18,12 @@ class EventNotFoundError(Error):
     pass
 
 
+class DuplicateAttendanceError(Error):
+    """Raised when attempting to create an Attendance object for a User that is already
+    attending an Event."""
+    pass
+
+
 class AttendanceNotFoundError(Error):
     """Raised when an Attendance object is expected but cannot be found in the database."""
     pass

@@ -515,6 +515,13 @@ class TestPorgWrapper(unittest.TestCase):
         # Check attendance_ids for Event was updated
         self.assertEqual(e1.get_attendance_ids(), [a1.get_id(), a2.get_id(), a3.get_id()])
 
+        # Test creating duplicate events (event a user is already attending)
+        with self.assertRaises(DuplicateAttendanceError):
+            p.create_attendance(u1, e1)
+
+        with self.assertRaises(DuplicateAttendanceError):
+            p.create_attendance(u3, e1)
+
         # Test attendance creation with events that don't exist
         with self.assertRaises(EventNotFoundError):
             p.create_attendance(u1, Event("nonexistant event", u1.get_id()))

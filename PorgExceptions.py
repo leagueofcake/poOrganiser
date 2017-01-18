@@ -37,3 +37,8 @@ class InvalidQuestionTypeError(Error):
     """Raised when a Question is given a question type that is not allowed by
     config.ALLOWED_QUESTION_TYPES"""
     pass
+
+
+class ChoiceNotFoundError(Error):
+    """Raised when a Choice object is expected but cannot be found in the database."""
+    pass

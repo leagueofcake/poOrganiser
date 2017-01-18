@@ -195,6 +195,8 @@ class Attendance(Base):
         assert isinstance(event_id, int)
         assert isinstance(going_status, str)
         assert isinstance(roles, list)
+        for role in roles:
+            assert isinstance(role, str)
 
         self.id = None
         self.user_id = user_id

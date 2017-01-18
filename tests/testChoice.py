@@ -38,7 +38,7 @@ class TestChoice(unittest.TestCase):
         c = Choice(12345, "choice 3333")
         self.assertEqual(c.get_choice(), "choice 3333")
 
-    def set_question_id(self):
+    def test_set_question_id(self):
         c = Choice(1, "choice text")
         self.assertEqual(c.get_question_id(), 1)
         c.set_question_id(32)
@@ -50,13 +50,13 @@ class TestChoice(unittest.TestCase):
         self.assertEqual(c.get_question_id(), 42)
 
         # Test setting question id with invalid types
-        with self.assertRaises(AssertionError):
+        with self.assertRaises(TypeError):
             c.set_question_id("abc")
 
-        with self.assertRaises(AssertionError):
+        with self.assertRaises(TypeError):
             c.set_question_id(2.46)
 
-    def set_choice(self):
+    def test_set_choice(self):
         c = Choice(1, "choice text")
         self.assertEqual(c.get_choice(), "choice text")
         c.set_choice("new choice text!")
@@ -70,10 +70,10 @@ class TestChoice(unittest.TestCase):
 
         # Test setting choice with invalid types
         with self.assertRaises(AssertionError):
-            c.set_question_id(3456)
+            c.set_choice(3456)
 
         with self.assertRaises(AssertionError):
-            c.set_question_id(["invalid choice"])
+            c.set_choice(["invalid choice"])
 
 if __name__ == '__main__':
     unittest.main()

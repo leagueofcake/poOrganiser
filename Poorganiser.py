@@ -318,7 +318,7 @@ class Question(Base):
     question_type = Column(Unicode(40))
     survey_id = Column(Integer)
     allowed_choice_ids = Column(MutableList.as_mutable(PickleType))
-    response_choice_ids = Column(MutableList.as_mutable(PickleType))
+    response_ids = Column(MutableList.as_mutable(PickleType))
 
     def __init__(self, question, question_type, survey_id=None, allowed_choice_ids=[]):
         assert isinstance(question, str)
@@ -350,8 +350,8 @@ class Question(Base):
     def get_allowed_choice_ids(self):
         return self.allowed_choice_ids
 
-    def get_response_choice_ids(self):
-        return self.response_choice
+    def get_response_ids(self):
+        return self.response_ids
 
     def set_survey_id(self, survey_id):
         self.survey_id = survey_id

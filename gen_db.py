@@ -10,6 +10,7 @@ def drop_tables(c):
         c.execute('DROP TABLE attendance')
         c.execute('DROP TABLE questions')
         c.execute('DROP TABLE choices')
+        c.execute('DROP TABLE responses')
     except sqlite3.OperationalError:
         pass
 
@@ -53,6 +54,13 @@ def create_tables(c):
         question_id INTEGER NOT NULL,
         choice text NOT NULL);
     ''')
+
+    c.execute('''CREATE TABLE responses(
+            id INTEGER PRIMARY KEY,
+            responder_id INTEGER NOT NULL,
+            question_id INTEGER NOT NULL,
+            choices BLOB);
+        ''')
 
 
 def generate(c):

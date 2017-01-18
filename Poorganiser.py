@@ -273,3 +273,38 @@ class Choice(Base):
     def set_choice(self, choice):
         assert isinstance(choice, str)
         self.choice = choice
+
+
+class Response(Base):
+    __tablename__ = 'responses'
+    id = Column(Integer, primary_key=True)
+    question_id = Column(Integer)
+    choices = Column(MutableList.as_mutable(PickleType))
+
+    def __init__(self, responder_id, question_id, choices=[]):
+        assert isinstance(responder_id, int)
+        assert isinstance(question_id, int)
+        assert isinstance(choices, list)
+        for choice in choices:
+            assert isinstance(choice, Choice)
+
+        self.id = None
+        self.responder_id = responder_id
+        self.question_id = question_id
+        self.choices = choices
+
+    def get_id(self):
+        return self.id
+
+    def get_responder_id(self):
+        return self.responder_id
+
+    def get_question_id(self):
+        return self.question_id
+
+    def get_choices(self):
+        return self.choices
+
+    def add_choice(self, choice):
+        assert isinstance(choice, Choice)
+        self.choices.append(choice)

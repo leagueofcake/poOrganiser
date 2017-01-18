@@ -354,6 +354,7 @@ class Question(Base):
         return self.response_ids
 
     def set_survey_id(self, survey_id):
+        assert isinstance(survey_id, int)
         self.survey_id = survey_id
 
     def set_question(self, question):

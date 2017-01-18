@@ -983,6 +983,65 @@ class TestPorgWrapper(unittest.TestCase):
         with self.assertRaises(ResponseNotFoundError):
             p.get_responder(Response(1, 2))
 
+    def test_get_allowed_choices(self):
+        u1 = p.register_user("user 1")
+
+        q1 = p.create_question(u1, "question 1", "free")
+        self.assertEqual(p.get_allowed_choices(q1), [])
+        c1 = p.create_choice(q1, "choice 1")
+        c2 = p.create_choice(q1, "choice 2")
+
+        self.assertEqual(p.get_allowed_choices(q1), [c1, c2])
+
+        # Test getting from a question that doesn't exist
+        with self.assertRaises(QuestionNotFoundError):
+            p.get_allowed_choices(9123)
+
+        with self.assertRaises(QuestionNotFoundError):
+            p.get_allowed_choices(Question(1, "question?", "free"))
+
+    def test_get_responses(self):
+        u1 = p.register_user("user 1")
+        u2 = p.register_user("user 2")
+
+        q1 = p.create_question(u1, "question 1", "free")
+        self.assertEqual(p.get_responses(q1), [])
+
+        c1 = p.create_choice(q1, "choice 1")
+        r1 = p.create_response(u1, q1, "ceebs")
+        r2 = p.create_response(u2, q1, "nup", choice_ids=[c1.get_id()])
+
+        self.assertEqual(p.get_responses(q1), [r1, r2])
+
+        # Test getting from a question that doesn't exist
+        with self.assertRaises(QuestionNotFoundError):
+            p.get_allowed_choices(9123)
+
+        with self.assertRaises(QuestionNotFoundError):
+            p.get_allowed_choices(Question(1, "question?", "free"))
+
+    def test_get_questions(self):
+        u1 = p.register_user("user 1")
+        q1 = p.create_question(u1, "question 1", "free")
+        s1 = p.create_survey("survey 1", u1, question_ids=[q1.get_id()])
+        self.assertEqual(p.get_questions(s1), [q1])
+
+        q2 = p.create_question(u1, "lol?", "free", survey_obj=s1)
+        self.assertEqual(p.get_questions(s1), [q1, q2])
+
+        q3 = p.create_question(u1, "k then?", "free")
+        s1.add_question_id(q3)
+        p.db_interface.update(s1)
+        self.assertEqual(p.get_questions(s1), [q1, q2, q3])
+
+        # Test getting from a survey that doesn't exist
+        with self.assertRaises(SurveyNotFoundError):
+            p.get_questions(9123)
+
+        with self.assertRaises(SurveyNotFoundError):
+            p.get_questions(Survey("s1", 123))
+
+    def test_get_owner(self):
         u1 = p.register_user("User 1")
         u2 = p.register_user("u2")
         u3 = p.register_user("3rd")

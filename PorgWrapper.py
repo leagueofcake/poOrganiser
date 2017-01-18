@@ -337,6 +337,36 @@ class PorgWrapper:
 
         return res
 
+    def get_allowed_choices(self, question_obj):
+        q = self.check_obj_exists(question_obj, Question)
+
+        res = []
+        for choice_id in q.get_allowed_choice_ids():
+            ch = self.check_obj_exists(choice_id, Choice)
+            res.append(ch)
+
+        return res
+
+    def get_responses(self, question_obj):
+        q = self.check_obj_exists(question_obj, Question)
+
+        res = []
+        for response_id in q.get_response_ids():
+            r = self.check_obj_exists(response_id, Response)
+            res.append(r)
+
+        return res
+
+    def get_questions(self, survey_obj):
+        s = self.check_obj_exists(survey_obj, Survey)
+
+        res = []
+        for question_id in s.get_question_ids():
+            q = self.check_obj_exists(question_id, Question)
+            res.append(q)
+
+        return res
+
     def get_owner(self, obj):
         is_event = isinstance(obj, Event)
         is_survey = isinstance(obj, Survey)

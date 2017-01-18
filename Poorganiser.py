@@ -338,14 +338,14 @@ class Question(Base):
     def get_id(self):
         return self.id
 
-    def get_survey_id(self):
-        return self.survey_id
-
     def get_question(self):
         return self.question
 
     def get_question_type(self):
         return self.question_type
+
+    def get_survey_id(self):
+        return self.survey_id
 
     def get_allowed_choice_ids(self):
         return self.allowed_choice_ids

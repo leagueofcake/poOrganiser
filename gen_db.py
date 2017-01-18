@@ -51,6 +51,7 @@ def create_tables(c):
 
     c.execute('''CREATE TABLE questions(
         id INTEGER PRIMARY KEY,
+        owner_id INTEGER NOT NULL,
         question TEXT NOT NULL,
         question_type TEXT NOT NULL,
         survey_id INTEGER,

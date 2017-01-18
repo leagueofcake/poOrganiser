@@ -197,29 +197,40 @@ class PorgWrapper:
 
         return c
 
-    def create_question(self, question, question_type, survey_obj=None):
+    def create_question(self, owner_obj, question, question_type, survey_obj=None):
         """Specifying allowed_choice_ids is forbidden here - since create_choice requires an
         existing question, we cannot have choices existing before questions."""
         if question_type not in porg_config.ALLOWED_QUESTION_TYPES:
             raise InvalidQuestionTypeError("Invalid Question type: {}".format(question_type))
 
+        owner = self.check_obj_exists(owner_obj, User)
+
+        # TODO: add User.question_ids
+
+        survey_id = None
         if survey_obj:
             survey_obj = self.check_obj_exists(survey_obj, Survey)
-            q = Question(question, question_type, survey_obj.get_id())
-        else:
-            q = Question(question, question_type, survey_obj)
+            survey_id = survey_obj.get_id()
+
+        q = Question(owner.get_id(), question, question_type, survey_id)
 
         self.db_interface.add(q)
 
         # Add question id to Survey.question_ids
-        if survey_obj:
+        if survey_id:
             survey_obj.add_question_id(q.get_id())
             self.db_interface.update(survey_obj)
 
         return q
 
+    def create_response(self, responder_obj, question_obj, response_text=[], choice_ids=[]):
+        # TODO: add User.response_ids
+        pass
+
     def create_survey(self, name, owner_obj, question_ids=[], event_obj=None):
         owner = self.check_obj_exists(owner_obj, User)
+
+        # TODO: Add User.survey_ids
 
         # Check each question_id can be found in the database
         questions = []

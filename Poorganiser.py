@@ -359,13 +359,15 @@ class Response(Base):
 class Question(Base):
     __tablename__ = 'questions'
     id = Column(Integer, primary_key=True)
+    owner_id = Column(Integer)
     question = Column(Unicode(40))
     question_type = Column(Unicode(40))
     survey_id = Column(Integer)
     allowed_choice_ids = Column(MutableList.as_mutable(PickleType))
     response_ids = Column(MutableList.as_mutable(PickleType))
 
-    def __init__(self, question, question_type, survey_id=None, allowed_choice_ids=[]):
+    def __init__(self, owner_id, question, question_type, survey_id=None, allowed_choice_ids=[]):
+        assert isinstance(owner_id, int)
         assert isinstance(question, str)
         assert isinstance(question_type, str)
         assert isinstance(survey_id, int) or survey_id is None
@@ -374,6 +376,7 @@ class Question(Base):
             assert isinstance(choice_id, int)
 
         self.id = None
+        self.owner_id = owner_id
         self.question = question
         self.question_type = question_type
         self.survey_id = survey_id
@@ -383,6 +386,7 @@ class Question(Base):
     def __str__(self):
         return '{\n' + \
                '    id: {},\n'.format(self.id) + \
+               '    owner_id: {}\n'.format(self.owner_id) + \
                '    question: {},\n'.format(self.question) + \
                '    question_type: {},\n'.format(self.question_type) + \
                '    survey_id: {},\n'.format(self.survey_id) + \
@@ -392,6 +396,9 @@ class Question(Base):
 
     def get_id(self):
         return self.id
+
+    def get_owner_id(self):
+        return self.owner_id
 
     def get_question(self):
         return self.question
@@ -407,6 +414,10 @@ class Question(Base):
 
     def get_response_ids(self):
         return self.response_ids
+
+    def set_owner_id(self, owner_id):
+        assert isinstance(owner_id, int)
+        self.owner_id = owner_id
 
     def set_survey_id(self, survey_obj):
         if isinstance(survey_obj, Survey):

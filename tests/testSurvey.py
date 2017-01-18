@@ -153,7 +153,7 @@ class TestSurvey(unittest.TestCase):
         self.assertEqual(s.get_question_ids(), [24, 38])
 
         # Try to add with mock Question objects
-        q_mock = Question("hello", "lol")
+        q_mock = Question(12, "hello", "lol")
         q_mock.id = 24
         s.add_question_id(q_mock)  # Try add duplicate
         self.assertEqual(s.get_question_ids(), [24, 38])
@@ -196,7 +196,7 @@ class TestSurvey(unittest.TestCase):
         self.assertEqual(s.get_question_ids(), [24])
 
         # Try to remove with mock Question objects
-        q_mock = Question("hello", "lol")
+        q_mock = Question(24, "hello", "lol")
         q_mock.id = 24
         s.remove_question_id(q_mock)
         self.assertEqual(s.get_question_ids(), [])

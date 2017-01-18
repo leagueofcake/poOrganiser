@@ -717,6 +717,37 @@ class TestPorgWrapper(unittest.TestCase):
         with self.assertRaises(EventNotFoundError):
             p.create_survey("s1", u1, event_obj=Event("nonexistant event", u1.get_id()))
 
+    def test_delete_choice(self):
+        u1 = p.register_user("bob")
+        q = p.create_question(u1, "Hello?", "free")
+        ch = p.create_choice(q, "choice 1")
+        self.assertEqual(q.get_allowed_choice_ids(), [ch.get_id()])
+
+        ch = p.create_choice(q, "choice 2")
+        self.assertEqual(ch.get_id(), 2)
+        self.assertEqual(ch.get_question_id(), q.get_id())
+        self.assertEqual(ch.get_choice(), "choice 2")
+
+        q = p.create_question(1, "write something", "free")
+        ch = p.create_choice(q, "choice 1.3")
+        self.assertEqual(ch.get_id(), 3)
+        self.assertEqual(ch.get_question_id(), q.get_id())
+        self.assertEqual(ch.get_choice(), "choice 1.3")
+
+        # Test deletion with choices that don't exist
+        with self.assertRaises(QuestionNotFoundError):
+            p.create_choice(Question(9, "LOL", "free"), "choice")
+
+        with self.assertRaises(QuestionNotFoundError):
+            p.create_choice(Question(8, "blah", "free"), "choice 2")
+
+        # Test deletion with questions that don't exist
+        with self.assertRaises(QuestionNotFoundError):
+            p.create_choice(Question(7, "LOL", "free"), "choice")
+
+        with self.assertRaises(QuestionNotFoundError):
+            p.create_choice(Question(6, "blah", "free"), "choice 2")
+
 # Generate empty test database
 conn = sqlite3.connect(porg_config.DB_NAME)
 c = conn.cursor()

@@ -253,3 +253,15 @@ class PorgWrapper:
             self.db_interface.update(q)
 
         return s
+
+    def delete_choice(self, choice_obj):
+        c = self.check_obj_exists(choice_obj, Choice)
+        q = self.check_obj_exists(c.get_question_id(), Question)
+
+        # Delete choice from parent Question
+        q.remove_allowed_choice_id(c)
+        self.db_interface.update(q)
+
+        # Delete choice
+        self.db_interface.delete(c)
+

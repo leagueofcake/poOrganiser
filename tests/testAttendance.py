@@ -125,6 +125,12 @@ class TestAttendance(unittest.TestCase):
         at.add_role('blah')
         self.assertEqual(at.get_roles(), ['Book venue', 'do something', 'blah'])
 
+        # Test adding duplicate roles
+        at.add_role('blah')
+        at.add_role('blah')
+        at.add_role('Book venue')
+        self.assertEqual(at.get_roles(), ['Book venue', 'do something', 'blah'])
+
         # Test setting role with invalid types
         with self.assertRaises(AssertionError):
             at.add_role(1234)

@@ -259,6 +259,13 @@ class Choice(Base):
         self.question_id = question_id
         self.choice = choice
 
+    def __str__(self):
+        return '{\n' + \
+               '    id: {},\n'.format(self.id) + \
+               '    question_id: {},\n'.format(self.question_id) + \
+               '    choice: {},\n'.format(self.choice) + \
+               '}'
+
     def get_id(self):
         return self.id
 
@@ -283,6 +290,7 @@ class Choice(Base):
 class Response(Base):
     __tablename__ = 'responses'
     id = Column(Integer, primary_key=True)
+    responder_id = Column(Integer)
     question_id = Column(Integer)
     choice_ids = Column(MutableList.as_mutable(PickleType))
 
@@ -297,6 +305,14 @@ class Response(Base):
         self.responder_id = responder_id
         self.question_id = question_id
         self.choice_ids = choice_ids
+
+    def __str__(self):
+        return '{\n' + \
+               '    id: {},\n'.format(self.id) + \
+               '    responder_id: {},\n'.format(self.responder_id) + \
+               '    question_id: {},\n'.format(self.question_id) + \
+               '    choice_ids: {},\n'.format(self.choice_ids) + \
+               '}'
 
     def get_id(self):
         return self.id
@@ -352,6 +368,16 @@ class Question(Base):
         self.survey_id = survey_id
         self.allowed_choice_ids = allowed_choice_ids
         self.response_ids = []
+
+    def __str__(self):
+        return '{\n' + \
+               '    id: {},\n'.format(self.id) + \
+               '    question: {},\n'.format(self.question) + \
+               '    question_type: {},\n'.format(self.question_type) + \
+               '    survey_id: {},\n'.format(self.survey_id) + \
+               '    allowed_choice_ids: {},\n'.format(self.allowed_choice_ids) + \
+               '    response_ids: {},\n'.format(self.response_ids) + \
+               '}'
 
     def get_id(self):
         return self.id
@@ -445,6 +471,15 @@ class Survey(Base):
         self.owner_id = owner_id
         self.event_id = event_id
         self.question_ids = question_ids
+
+    def __str__(self):
+        return '{\n' + \
+               '    id: {},\n'.format(self.id) + \
+               '    name: {},\n'.format(self.name) + \
+               '    owner_id: {},\n'.format(self.owner_id) + \
+               '    event_id: {},\n'.format(self.event_id) + \
+               '    question_ids: {},\n'.format(self.question_ids) + \
+               '}'
 
     def get_id(self):
         return self.id

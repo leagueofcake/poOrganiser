@@ -851,6 +851,51 @@ class TestPorgWrapper(unittest.TestCase):
         with self.assertRaises(QuestionNotFoundError):
             p.delete_question(Question(1, "lol?", "free"))
 
+    def test_delete_response(self):
+        u1 = p.register_user("USER 1")
+        q1 = p.create_question(u1, "QUESTION?", "free")
+        r1 = p.create_response(u1, q1)
+
+        # Check response_id was added to Question.response_ids
+        self.assertEqual(q1.get_response_ids(), [r1.get_id()])
+
+        r2 = p.create_response(u1, q1, response_text="lololol")
+
+        # Check response_id was added to Question.response_ids
+        self.assertEqual(q1.get_response_ids(), [r1.get_id(), r2.get_id()])
+
+        p.delete_response(r2)
+        self.assertIsNone(p.db_interface.get_obj(r2, Response))
+
+        # Check response_id was removed from Question.response_ids
+        self.assertEqual(q1.get_response_ids(), [r1.get_id()])
+
+        c1 = p.create_choice(q1, "choice 1")
+        c2 = p.create_choice(q1, "choice 2")
+        r3 = p.create_response(u1, q1, response_text="k", choice_ids=[c1.get_id(), c2.get_id()])
+
+        # Check response_id was added to Question.response_ids
+        self.assertEqual(q1.get_response_ids(), [r1.get_id(), r3.get_id()])
+
+        p.delete_response(r1)
+        self.assertIsNone(p.db_interface.get_obj(r1, Response))
+
+        # Check response_id was removed from Question.response_ids
+        self.assertEqual(q1.get_response_ids(), [r3.get_id()])
+
+        p.delete_response(r3)
+        self.assertIsNone(p.db_interface.get_obj(r1, Response))
+
+        # Check response_id was removed from Question.response_ids
+        self.assertEqual(q1.get_response_ids(), [])
+
+        # Test deletion with non-existant responses
+        with self.assertRaises(ResponseNotFoundError):
+            p.delete_response(r3)
+
+        with self.assertRaises(ResponseNotFoundError):
+            p.delete_response(Response(1, 3))
+
 # Generate empty test database
 conn = sqlite3.connect(porg_config.DB_NAME)
 c = conn.cursor()

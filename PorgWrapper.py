@@ -27,6 +27,8 @@ class PorgWrapper:
             raise SurveyNotFoundError("Survey could not be found")
         elif obj_type is Choice:
             raise ChoiceNotFoundError("Choice could not be found")
+        elif obj_type is Response:
+            raise ResponseNotFoundError("Response could not be found")
 
     def get_user_by_username(self, username):
         return self.db_interface.s.query(User).filter(User.username == username).first()
@@ -295,3 +297,18 @@ class PorgWrapper:
         # Delete question
         self.db_interface.delete(q)
 
+    def delete_response(self, response_obj):
+        r = self.check_obj_exists(response_obj, Response)
+        q = self.check_obj_exists(r.get_question_id(), Question)
+
+        # Remove response id from Question.response_ids
+        q.remove_response_id(r)
+        self.db_interface.update(q)
+
+        # Delete response
+        self.db_interface.delete(r)
+
+
+    def get_obj_owner(self, obj):
+        # TODO: takes Event, Question, Survey and returns a User
+        pass

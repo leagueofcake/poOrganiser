@@ -42,3 +42,8 @@ class InvalidQuestionTypeError(Error):
 class ChoiceNotFoundError(Error):
     """Raised when a Choice object is expected but cannot be found in the database."""
     pass
+
+
+class ResponseNotFoundError(Error):
+    """Raised when a Response object is expected but cannot be found in the database."""
+    pass

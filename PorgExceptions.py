@@ -26,3 +26,14 @@ class AttendanceNotFoundError(Error):
 class QuestionNotFoundError(Error):
     """Raised when an Question object is expected but cannot be found in the database."""
     pass
+
+
+class SurveyNotFoundError(Error):
+    """Raised when a Survey object is expected but cannot be found in the database."""
+    pass
+
+
+class InvalidQuestionTypeError(Error):
+    """Raised when a Question is given a question type that is not allowed by
+    config.ALLOWED_QUESTION_TYPES"""
+    pass

@@ -1033,21 +1033,24 @@ class TestPorgWrapper(unittest.TestCase):
         q1 = p.create_question(u1, "question 1", "free")
         s1 = p.create_survey("survey 1", u1, question_ids=[q1.get_id()])
         self.assertEqual(p.get_questions(s1), [q1])
+        self.assertEqual(p.get_questions(u1), [q1])
 
         q2 = p.create_question(u1, "lol?", "free", survey_obj=s1)
         self.assertEqual(p.get_questions(s1), [q1, q2])
+        self.assertEqual(p.get_questions(u1), [q1, q2])
 
         q3 = p.create_question(u1, "k then?", "free")
         s1.add_question_id(q3)
         p.db_interface.update(s1)
         self.assertEqual(p.get_questions(s1), [q1, q2, q3])
+        self.assertEqual(p.get_questions(u1), [q1, q2, q3])
 
-        # Test getting from a survey that doesn't exist
-        with self.assertRaises(SurveyNotFoundError):
+        # Test getting from invalid obj type
+        with self.assertRaises(TypeError):
             p.get_questions(9123)
 
-        with self.assertRaises(SurveyNotFoundError):
-            p.get_questions(Survey("s1", 123))
+        with self.assertRaises(TypeError):
+            p.get_questions("asdf")
 
     def test_get_owner(self):
         u1 = p.register_user("User 1")

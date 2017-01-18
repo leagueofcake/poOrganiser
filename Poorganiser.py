@@ -234,7 +234,8 @@ class Attendance(Base):
 
     def add_role(self, role):
         assert isinstance(role, str)
-        self.roles.append(role)
+        if role not in self.roles:
+            self.roles.append(role)
 
     def remove_role(self, role):
         if role in self.roles:
@@ -307,4 +308,6 @@ class Response(Base):
 
     def add_choice(self, choice):
         assert isinstance(choice, Choice)
-        self.choices.append(choice)
+        if choice not in self.choices:
+            self.choices.append(choice)
+

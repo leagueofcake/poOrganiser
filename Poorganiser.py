@@ -371,9 +371,13 @@ class Question(Base):
     def get_response_ids(self):
         return self.response_ids
 
-    def set_survey_id(self, survey_id):
-        assert isinstance(survey_id, int)
-        self.survey_id = survey_id
+    def set_survey_id(self, survey_obj):
+        if isinstance(survey_obj, Survey):
+            survey_obj = survey_obj.get_id()
+        elif not isinstance(survey_obj, int):
+            raise TypeError("Invalid object type for set_survey_id: expected int or Survey")
+
+        self.survey_id = survey_obj
 
     def set_question(self, question):
         assert isinstance(question, str)
@@ -383,22 +387,40 @@ class Question(Base):
         assert isinstance(question_type, str)
         self.question_type = question_type
 
-    def add_allowed_choice_id(self, choice_id):
-        assert isinstance(choice_id, int)
-        if choice_id not in self.allowed_choice_ids:
-            self.allowed_choice_ids.append(choice_id)
+    def add_allowed_choice_id(self, choice_obj):
+        if isinstance(choice_obj, Choice):
+            choice_obj = choice_obj.get_id()
+        elif not isinstance(choice_obj, int):
+            raise TypeError("Invalid object type for add_allowed_choice_id: expected int or Choice")
 
-    def remove_allowed_choice_id(self, choice_id):
-        assert isinstance(choice_id, int)
-        if choice_id in self.allowed_choice_ids:
-            self.allowed_choice_ids.remove(choice_id)
+        if choice_obj not in self.allowed_choice_ids:
+            self.allowed_choice_ids.append(choice_obj)
 
-    def add_response_id(self, response_id):
-        assert isinstance(response_id, int)
-        if response_id not in self.response_ids:
-            self.response_ids.append(response_id)
+    def remove_allowed_choice_id(self, choice_obj):
+        if isinstance(choice_obj, Choice):
+            choice_obj = choice_obj.get_id()
+        elif not isinstance(choice_obj, int):
+            raise TypeError("Invalid object type for remove_allowed_choice_id: expected int or Choice")
 
-    def remove_response_id(self, response_id):
-        assert isinstance(response_id, int)
-        if response_id  in self.response_ids:
-            self.response_ids.remove(response_id)
+        if choice_obj in self.allowed_choice_ids:
+            self.allowed_choice_ids.remove(choice_obj)
+
+    def add_response_id(self, response_obj):
+        if isinstance(response_obj, Response):
+            response_obj = response_obj.get_id()
+        elif not isinstance(response_obj, int):
+            raise TypeError("Invalid object type for add_response_id: expected int or Response")
+
+        if response_obj not in self.response_ids:
+            self.response_ids.append(response_obj)
+
+    def remove_response_id(self, response_obj):
+        if isinstance(response_obj, Response):
+            response_obj = response_obj.get_id()
+        elif not isinstance(response_obj, int):
+            raise TypeError("Invalid object type for remove_response_id: expected int or Response")
+
+        if response_obj in self.response_ids:
+            self.response_ids.remove(response_obj)
+
+

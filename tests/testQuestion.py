@@ -1,5 +1,5 @@
 import unittest
-from Poorganiser import Question
+from Poorganiser import Question, Survey, Choice, Response
 
 
 class TestQuestion(unittest.TestCase):
@@ -97,7 +97,11 @@ class TestQuestion(unittest.TestCase):
 
         q.set_survey_id(50)
         self.assertEqual(q.get_survey_id(), 50)
-        q.set_survey_id(1234)
+
+        # Test adding with mock Survey object
+        s_mock = Survey("blah", 1)
+        s_mock.id = 1234
+        q.set_survey_id(s_mock)
         self.assertEqual(q.get_survey_id(), 1234)
 
         q = Question("Do you like cake", "choose_many", survey_id=24, allowed_choice_ids=[34, 45])
@@ -109,13 +113,13 @@ class TestQuestion(unittest.TestCase):
         self.assertEqual(q.get_survey_id(), 350)
 
         # Test setting survey id with invalid type
-        with self.assertRaises(AssertionError):
+        with self.assertRaises(TypeError):
             q.set_survey_id("blah")
 
-        with self.assertRaises(AssertionError):
+        with self.assertRaises(TypeError):
             q.set_survey_id(q)
 
-        with self.assertRaises(AssertionError):
+        with self.assertRaises(TypeError):
             q.set_survey_id([24])
 
     def test_set_question(self):
@@ -176,20 +180,26 @@ class TestQuestion(unittest.TestCase):
         q = Question("Do you like cake", "choose_many", survey_id=24, allowed_choice_ids=[34, 45])
         self.assertEqual(q.get_allowed_choice_ids(), [34, 45])
         q.add_allowed_choice_id(56)
+
+        # Test adding allowed choice ids with mock Choice objects
+        c_mock = Choice(3, "lol")
+        c_mock.id = 56
+        q.add_allowed_choice_id(c_mock)
         self.assertEqual(q.get_allowed_choice_ids(), [34, 45, 56])
         q.add_allowed_choice_id(56)
         self.assertEqual(q.get_allowed_choice_ids(), [34, 45, 56])
-        q.add_allowed_choice_id(67)
+        c_mock.id = 67
+        q.add_allowed_choice_id(c_mock)
         self.assertEqual(q.get_allowed_choice_ids(), [34, 45, 56, 67])
 
         # Test adding chohice_ids with invalid types
-        with self.assertRaises(AssertionError):
+        with self.assertRaises(TypeError):
             q.add_allowed_choice_id("invalid choice")
 
-        with self.assertRaises(AssertionError):
+        with self.assertRaises(TypeError):
             q.add_allowed_choice_id(32.1)
 
-        with self.assertRaises(AssertionError):
+        with self.assertRaises(TypeError):
             q.add_allowed_choice_id(q)
 
     def test_remove_allowed_choice_id(self):
@@ -209,31 +219,39 @@ class TestQuestion(unittest.TestCase):
         self.assertEqual(q.get_allowed_choice_ids(), [56])
         q.add_allowed_choice_id(50)
         self.assertEqual(q.get_allowed_choice_ids(), [56, 50])
-        q.remove_allowed_choice_id(56)
+
+        # Test removing allowed choice ids with mock Choice objects
+        c_mock = Choice(3, "lol")
+        c_mock.id = 56
+        q.remove_allowed_choice_id(c_mock)
         self.assertEqual(q.get_allowed_choice_ids(), [50])
         q.remove_allowed_choice_id(50)
         self.assertEqual(q.get_allowed_choice_ids(), [])
 
         # Try remove choice ids with invalid types
-        with self.assertRaises(AssertionError):
+        with self.assertRaises(TypeError):
             q.remove_allowed_choice_id(40.6)
 
-        with self.assertRaises(AssertionError):
+        with self.assertRaises(TypeError):
             q.remove_allowed_choice_id("something lel")
 
-        with self.assertRaises(AssertionError):
+        with self.assertRaises(TypeError):
             q.remove_allowed_choice_id(q)
 
     def test_add_response_id(self):
         q = Question("question text", "question type")
         self.assertEqual(q.get_response_ids(), [])
-        q.add_response_id(34)
+        # Test adding response id with mock Response object
+        r_mock = Response(3, 4)
+        r_mock.id = 34
+        q.add_response_id(r_mock)
         self.assertEqual(q.get_response_ids(), [34])
         q.add_response_id(34)  # Try add duplicate response_id
         self.assertEqual(q.get_response_ids(), [34])
         q.add_response_id(40)
         self.assertEqual(q.get_response_ids(), [34, 40])
-        q.add_response_id(751)
+        r_mock.id = 751
+        q.add_response_id(r_mock)
         self.assertEqual(q.get_response_ids(), [34, 40, 751])
 
         q = Question("question text 2", "question type 2", allowed_choice_ids=[1, 2, 3])
@@ -244,13 +262,13 @@ class TestQuestion(unittest.TestCase):
         self.assertEqual(q.get_response_ids(), [99, 29])
 
         # Try add choice ids with invalid types
-        with self.assertRaises(AssertionError):
+        with self.assertRaises(TypeError):
             q.add_response_id(40.6)
 
-        with self.assertRaises(AssertionError):
+        with self.assertRaises(TypeError):
             q.add_response_id("something lel")
 
-        with self.assertRaises(AssertionError):
+        with self.assertRaises(TypeError):
             q.add_response_id(q)
 
     def test_remove_response_id(self):
@@ -262,9 +280,15 @@ class TestQuestion(unittest.TestCase):
         self.assertEqual(q.get_response_ids(), [34])
         q.add_response_id(40)
         self.assertEqual(q.get_response_ids(), [34, 40])
-        q.remove_response_id(40)
+
+        # Test removing response id with mock Response object
+        r_mock = Response(92, 5, choice_ids=[1, 4])
+        r_mock.id = 40
+        q.remove_response_id(r_mock)
         self.assertEqual(q.get_response_ids(), [34])
         q.remove_response_id(999)  # Try remove response_id that isn't in list
+        r_mock.id = 12345
+        q.remove_response_id(r_mock)
         self.assertEqual(q.get_response_ids(), [34])
         q.add_response_id(751)
         self.assertEqual(q.get_response_ids(), [34, 751])
@@ -281,13 +305,13 @@ class TestQuestion(unittest.TestCase):
         self.assertEqual(q.get_response_ids(), [99, 29])
 
         # Try add choice ids with invalid types
-        with self.assertRaises(AssertionError):
+        with self.assertRaises(TypeError):
             q.remove_response_id(10.5)
 
-        with self.assertRaises(AssertionError):
+        with self.assertRaises(TypeError):
             q.remove_response_id("something else lol")
 
-        with self.assertRaises(AssertionError):
+        with self.assertRaises(TypeError):
             q.remove_response_id(q)
 
 if __name__ == '__main__':

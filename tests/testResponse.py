@@ -78,12 +78,12 @@ class TestResponse(unittest.TestCase):
         self.assertEqual(r.get_choice_ids(), [10])
 
         # Test adding with mock Choice objects
-        c = Choice(1, "lol")
-        c.id = 201
-        r.add_choice_id(c)
+        c_mock = Choice(1, "lol")
+        c_mock.id = 201
+        r.add_choice_id(c_mock)
         self.assertEqual(r.get_choice_ids(), [10, 201])
-        c.id = 245
-        r.add_choice_id(c)
+        c_mock.id = 245
+        r.add_choice_id(c_mock)
         self.assertEqual(r.get_choice_ids(), [10, 201, 245])
 
         # Test adding duplicates
@@ -129,14 +129,14 @@ class TestResponse(unittest.TestCase):
         self.assertEqual(r.get_choice_ids(), [10, 201, 245])
 
         # Test removing with mock Choice objects
-        c = Choice(45, "something")
-        c.id = 10
-        r.remove_choice_id(c)
+        c_mock = Choice(45, "something")
+        c_mock.id = 10
+        r.remove_choice_id(c_mock)
         self.assertEqual(r.get_choice_ids(), [201, 245])
-        c.id = 245
-        r.remove_choice_id(c)
+        c_mock.id = 245
+        r.remove_choice_id(c_mock)
         self.assertEqual(r.get_choice_ids(), [201])
-        c.id = 999  # Doesn't exist
+        c_mock.id = 999  # Doesn't exist
         self.assertEqual(r.get_choice_ids(), [201])
         r.remove_choice_id(201)
         self.assertEqual(r.get_choice_ids(), [])

@@ -292,6 +292,20 @@ class TestUser(unittest.TestCase):
         with self.assertRaises(TypeError):
             u.remove_event_attending(u)
 
+    def test_get_survey_ids(self):
+        u = User("user 1")
+        self.assertEqual(u.get_survey_ids(), [])
+
+        u2 = User("user 2")
+        self.assertEqual(u2.get_survey_ids(), [])
+
+    def test_get_question_ids(self):
+        u = User("user 1")
+        self.assertEqual(u.get_question_ids(), [])
+
+        u2 = User("user 2")
+        self.assertEqual(u2.get_question_ids(), [])
+
     def test_add_survey_id(self):
         u = User("user 1")
         self.assertEqual(u.get_survey_ids(), [])

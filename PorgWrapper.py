@@ -269,46 +269,46 @@ class PorgWrapper:
 
         return s
 
-    def delete_choice(self, choice_obj):
+    def delete_choice(self, choice_obj, remove_from_question=True):
         c = self.check_obj_exists(choice_obj, Choice)
         q = self.check_obj_exists(c.get_question_id(), Question)
 
-        # Delete choice from parent Question
-        q.remove_allowed_choice_id(c)
-        self.db_interface.update(q)
+        if remove_from_question: # Delete choice from parent Question
+            q.remove_allowed_choice_id(c)
+            self.db_interface.update(q)
 
         # Delete choice
         self.db_interface.delete(c)
 
-    def delete_question(self, question_obj):
+    def delete_question(self, question_obj, remove_from_survey=True):
         q = self.check_obj_exists(question_obj, Question)
 
-        # Remove question id from Survey.question_ids
-        if q.get_survey_id():
-            s = self.check_obj_exists(q.get_survey_id(), Survey)
-            s.remove_question_id(q)
-            self.db_interface.update(s)
+        if remove_from_survey:  # Remove question id from Survey.question_ids
+            if q.get_survey_id():
+                s = self.check_obj_exists(q.get_survey_id(), Survey)
+                s.remove_question_id(q)
+                self.db_interface.update(s)
 
         # Delete Choice objects from database
         for choice_id in q.get_allowed_choice_ids():
-            c = self.check_obj_exists(choice_id, Choice)
-            self.db_interface.delete(c)
+            self.delete_choice(choice_id, remove_from_question=False)
+            # c = self.check_obj_exists(choice_id, Choice)
+            # self.db_interface.delete(c)
 
         # Delete Response bojects from database
         for response_id in q.get_response_ids():
-            r = self.check_obj_exists(response_id, Response)
-            self.db_interface.delete(r)
+            self.delete_response(response_id, remove_from_question=False)
 
         # Delete question
         self.db_interface.delete(q)
 
-    def delete_response(self, response_obj):
+    def delete_response(self, response_obj, remove_from_question=True):
         r = self.check_obj_exists(response_obj, Response)
         q = self.check_obj_exists(r.get_question_id(), Question)
 
-        # Remove response id from Question.response_ids
-        q.remove_response_id(r)
-        self.db_interface.update(q)
+        if remove_from_question:  # Remove response id from Question.response_ids
+            q.remove_response_id(r)
+            self.db_interface.update(q)
 
         # Delete response
         self.db_interface.delete(r)

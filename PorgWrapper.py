@@ -323,6 +323,20 @@ class PorgWrapper:
         # Delete survey
         self.db_interface.delete(s)
 
+    def get_responder(self, response_obj):
+        r = self.check_obj_exists(response_obj, Response)
+        return self.check_obj_exists(r.get_responder_id(), User)
+
+    def get_response_choices(self, response_obj):
+        r = self.check_obj_exists(response_obj, Response)
+
+        res = []
+        for choice_id in r.get_choice_ids():
+            ch = self.check_obj_exists(choice_id, Choice)
+            res.append(ch)
+
+        return res
+
     def get_owner(self, obj):
         is_event = isinstance(obj, Event)
         is_survey = isinstance(obj, Survey)

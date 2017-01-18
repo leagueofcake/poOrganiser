@@ -940,7 +940,49 @@ class TestPorgWrapper(unittest.TestCase):
         with self.assertRaises(SurveyNotFoundError):
             p.delete_survey(9923)
 
-    def test_get_obj_owner(self):
+    def test_get_responder(self):
+        u1 = p.register_user("user 1")
+        u2 = p.register_user("user 2")
+
+        q1 = p.create_question(u1, "question 1", "free")
+        c1 = p.create_choice(q1, "choice 1")
+
+        r1 = p.create_response(u1, q1, "ceebs")
+        r2 = p.create_response(u2, q1, "nup", choice_ids=[c1.get_id()])
+
+        self.assertEqual(p.get_responder(r1), u1)
+        self.assertEqual(p.get_responder(r2), u2)
+
+        # Test getting responder of response that doesn't exist
+        with self.assertRaises(ResponseNotFoundError):
+            p.get_responder(1234)
+
+        with self.assertRaises(ResponseNotFoundError):
+            p.get_responder(Response(1, 2))
+
+    def test_get_response_choices(self):
+        u1 = p.register_user("user 1")
+        u2 = p.register_user("user 2")
+
+        q1 = p.create_question(u1, "question 1", "free")
+        c1 = p.create_choice(q1, "choice 1")
+        c2 = p.create_choice(q1, "choice 2")
+
+        r1 = p.create_response(u1, q1, "ceebs")
+        r2 = p.create_response(u2, q1, "nup", choice_ids=[c1.get_id()])
+        r2.add_choice_id(c2)
+        p.db_interface.update(r2)
+
+        self.assertEqual(p.get_response_choices(r1), [])
+        self.assertEqual(p.get_response_choices(r2), [c1, c2])
+
+        # Test getting from a response that doesn't exist
+        with self.assertRaises(ResponseNotFoundError):
+            p.get_responder(1234)
+
+        with self.assertRaises(ResponseNotFoundError):
+            p.get_responder(Response(1, 2))
+
         u1 = p.register_user("User 1")
         u2 = p.register_user("u2")
         u3 = p.register_user("3rd")

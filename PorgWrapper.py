@@ -353,11 +353,16 @@ class PorgWrapper:
 
         return res
 
-    def get_responses(self, question_obj):
-        q = self.check_obj_exists(question_obj, Question)
+    def get_responses(self, obj):
+        is_user = isinstance(obj, User)
+        is_question = isinstance(obj, Question)
+        if not is_user and not is_question:
+            raise TypeError("Invalid object type for get_responses: expected User or Question")
+
+        response_ids = obj.get_response_ids()
 
         res = []
-        for response_id in q.get_response_ids():
+        for response_id in response_ids:
             r = self.check_obj_exists(response_id, Response)
             res.append(r)
 

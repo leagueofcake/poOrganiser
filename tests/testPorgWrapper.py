@@ -1011,12 +1011,15 @@ class TestPorgWrapper(unittest.TestCase):
 
         q1 = p.create_question(u1, "question 1", "free")
         self.assertEqual(p.get_responses(q1), [])
+        self.assertEqual(p.get_responses(u1), [])
+        self.assertEqual(p.get_responses(u2), [])
 
         c1 = p.create_choice(q1, "choice 1")
         r1 = p.create_response(u1, q1, "ceebs")
         r2 = p.create_response(u2, q1, "nup", choice_ids=[c1.get_id()])
-
         self.assertEqual(p.get_responses(q1), [r1, r2])
+        self.assertEqual(p.get_responses(u1), [r1])
+        self.assertEqual(p.get_responses(u2), [r2])
 
         # Test getting from a question that doesn't exist
         with self.assertRaises(QuestionNotFoundError):

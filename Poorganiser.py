@@ -17,6 +17,7 @@ class User(Base):
     events_attending_ids = Column(MutableList.as_mutable(PickleType))
     survey_ids = Column(MutableList.as_mutable(PickleType))
     question_ids = Column(MutableList.as_mutable(PickleType))
+    response_ids = Column(MutableList.as_mutable(PickleType))
 
     def __init__(self, username):
         assert isinstance(username, str)
@@ -27,6 +28,7 @@ class User(Base):
         self.events_attending_ids = []
         self.survey_ids = []
         self.question_ids = []
+        self.response_ids = []
 
     def __str__(self):
         return '{\n' + \
@@ -36,6 +38,7 @@ class User(Base):
                '    events_attending_ids: {},\n'.format(self.events_attending_ids) + \
                '    survey_ids: {},\n'.format(self.survey_ids) + \
                '    question_ids: {},\n'.format(self.question_ids) + \
+               '    response_ids: {},\n'.format(self.response_ids) + \
                '}'
 
     def get_id(self):
@@ -55,6 +58,9 @@ class User(Base):
 
     def get_question_ids(self):
         return self.question_ids
+
+    def get_response_ids(self):
+        return self.response_ids
 
     def set_username(self, username):
         assert isinstance(username, str)
@@ -141,6 +147,24 @@ class User(Base):
 
         if question_obj in self.question_ids:
             self.question_ids.remove(question_obj)
+
+    def add_response_id(self, response_obj):
+        if isinstance(response_obj, Response):
+            response_obj = response_obj.get_id()
+        elif not isinstance(response_obj, int):
+            raise TypeError("Invalid object type for add_response_id: expected int or Response")
+
+        if response_obj not in self.response_ids:
+            self.response_ids.append(response_obj)
+
+    def remove_response_id(self, response_obj):
+        if isinstance(response_obj, Response):
+            response_obj = response_obj.get_id()
+        elif not isinstance(response_obj, int):
+            raise TypeError("Invalid object type for remove_response_id: expected int or Response")
+
+        if response_obj in self.response_ids:
+            self.response_ids.remove(response_obj)
 
 
 class Event(Base):

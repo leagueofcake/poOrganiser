@@ -33,7 +33,8 @@ def create_tables(c):
         events_organised_ids BLOB,
         events_attending_ids BLOB,
         survey_ids BLOB,
-        question_ids BLOB);
+        question_ids BLOB,
+        response_ids BLOB);
     ''')
 
     c.execute('''CREATE TABLE attendance(

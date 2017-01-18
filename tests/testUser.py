@@ -1,5 +1,5 @@
 import unittest
-from Poorganiser import User, Event, Survey, Question
+from Poorganiser import User, Event, Survey, Question, Response
 from datetime import datetime
 
 
@@ -306,6 +306,13 @@ class TestUser(unittest.TestCase):
         u2 = User("user 2")
         self.assertEqual(u2.get_question_ids(), [])
 
+    def test_get_response_ids(self):
+        u = User("user 1")
+        self.assertEqual(u.get_response_ids(), [])
+
+        u2 = User("user 2")
+        self.assertEqual(u2.get_response_ids(), [])
+
     def test_add_survey_id(self):
         u = User("user 1")
         self.assertEqual(u.get_survey_ids(), [])
@@ -424,7 +431,68 @@ class TestUser(unittest.TestCase):
         with self.assertRaises(TypeError):
             u.remove_question_id("blah blah blah")
 
+    def test_add_response_id(self):
+        u = User("user 1")
+        self.assertEqual(u.get_response_ids(), [])
+        u.add_response_id(123)
+        self.assertEqual(u.get_response_ids(), [123])
+        u.add_response_id(123)  # Test add duplicate
+        self.assertEqual(u.get_response_ids(), [123])
+        u.add_response_id(234)
+        self.assertEqual(u.get_response_ids(), [123, 234])
 
+        # Test add using mock Response object
+        r_mock = Response(1, 2)
+        r_mock.id = 900
+        u.add_response_id(r_mock)
+        self.assertEqual(u.get_response_ids(), [123, 234, 900])
+
+        r_mock.id = 12
+        u.add_response_id(r_mock)
+        self.assertEqual(u.get_response_ids(), [123, 234, 900, 12])
+
+        # Test adding using invalid response type
+        with self.assertRaises(TypeError):
+            u.add_response_id(12.34)
+
+        with self.assertRaises(TypeError):
+            u.add_response_id("lol")
+
+        with self.assertRaises(TypeError):
+            u.add_response_id(u)
+
+    def test_remove_response_id(self):
+        u = User("user 1")
+        self.assertEqual(u.get_response_ids(), [])
+        u.add_response_id(123)
+        self.assertEqual(u.get_response_ids(), [123])
+        u.add_response_id(123)
+        self.assertEqual(u.get_response_ids(), [123])
+        u.remove_response_id(234)  # Test removing non-existing element
+        self.assertEqual(u.get_response_ids(), [123])
+
+        # Test add using mock Response object
+        r_mock = Response(1, 2)
+        r_mock.id = 123
+        u.remove_response_id(r_mock)
+        self.assertEqual(u.get_response_ids(), [])
+
+        r_mock.id = 12
+        u.add_response_id(r_mock)
+        self.assertEqual(u.get_response_ids(), [12])
+
+        u.remove_response_id(12)
+        self.assertEqual(u.get_response_ids(), [])
+
+        # Test removing using invalid response type
+        with self.assertRaises(TypeError):
+            u.remove_response_id(12.34)
+
+        with self.assertRaises(TypeError):
+            u.remove_response_id("lol")
+
+        with self.assertRaises(TypeError):
+            u.remove_response_id(u)
 
 if __name__ == '__main__':
     unittest.main()

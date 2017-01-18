@@ -288,6 +288,7 @@ class Response(Base):
         assert isinstance(choices, list)
         for choice in choices:
             assert isinstance(choice, Choice)
+            assert choice.get_question_id() == question_id
 
         self.id = None
         self.responder_id = responder_id
@@ -308,6 +309,11 @@ class Response(Base):
 
     def add_choice(self, choice):
         assert isinstance(choice, Choice)
+        assert choice.get_question_id() == self.question_id
         if choice not in self.choices:
             self.choices.append(choice)
 
+    def remove_choice(self, choice):
+        assert isinstance(choice, Choice)
+        if choice in self.choices:
+            self.choices.remove(choice)

@@ -59,7 +59,7 @@ def create_tables(c):
             id INTEGER PRIMARY KEY,
             responder_id INTEGER NOT NULL,
             question_id INTEGER NOT NULL,
-            choices BLOB);
+            choice_ids BLOB);
         ''')
 
 

@@ -280,20 +280,19 @@ class Response(Base):
     __tablename__ = 'responses'
     id = Column(Integer, primary_key=True)
     question_id = Column(Integer)
-    choices = Column(MutableList.as_mutable(PickleType))
+    choice_ids = Column(MutableList.as_mutable(PickleType))
 
-    def __init__(self, responder_id, question_id, choices=[]):
+    def __init__(self, responder_id, question_id, choice_ids=[]):
         assert isinstance(responder_id, int)
         assert isinstance(question_id, int)
-        assert isinstance(choices, list)
-        for choice in choices:
-            assert isinstance(choice, Choice)
-            assert choice.get_question_id() == question_id
+        assert isinstance(choice_ids, list)
+        for choice_id in choice_ids:
+            assert isinstance(choice_id, int)
 
         self.id = None
         self.responder_id = responder_id
         self.question_id = question_id
-        self.choices = choices
+        self.choice_ids = choice_ids
 
     def get_id(self):
         return self.id
@@ -304,16 +303,16 @@ class Response(Base):
     def get_question_id(self):
         return self.question_id
 
-    def get_choices(self):
-        return self.choices
+    def get_choice_ids(self):
+        return self.choice_ids
 
-    def add_choice(self, choice):
-        assert isinstance(choice, Choice)
-        assert choice.get_question_id() == self.question_id
-        if choice not in self.choices:
-            self.choices.append(choice)
+    def add_choice_id(self, choice_id):
+        assert isinstance(choice_id, int)
+        if choice_id not in self.choice_ids:
+            self.choice_ids.append(choice_id)
 
-    def remove_choice(self, choice):
-        assert isinstance(choice, Choice)
-        if choice in self.choices:
-            self.choices.remove(choice)
+    def remove_choice_id(self, choice_id):
+        assert isinstance(choice_id, int)
+        if choice_id in self.choice_ids:
+            self.choice_ids.remove(choice_id)
+

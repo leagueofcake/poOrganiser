@@ -9,4 +9,4 @@ else:
 DB_URL = 'sqlite:///' + DB_NAME
 
 # Survey config
-ALLOWED_QUESTION_TYPES = ['free']
+ALLOWED_QUESTION_TYPES = ['free', 'choose_one', 'choose_many']

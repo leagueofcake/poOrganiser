@@ -1185,6 +1185,71 @@ class TestPorgWrapper(unittest.TestCase):
         with self.assertRaises(TypeError):
             p.get_owner(3012)
 
+    def test_get_surveys(self):
+        # Create some users
+        u1 = p.register_user("User 1")
+        u2 = p.register_user("u2")
+        u3 = p.register_user("3rd")
+
+        # Create some events
+        e1 = p.create_event("event 1", 1)
+        e2 = p.create_event("event 2", 2, location="location 2")
+        e3 = p.create_event("event 3", 2, time=datetime.today() + timedelta(days=10))
+
+        self.assertEqual(p.get_surveys(u1), [])
+        self.assertEqual(p.get_surveys(u2), [])
+        self.assertEqual(p.get_surveys(u3), [])
+
+        self.assertEqual(p.get_surveys(e1), [])
+        self.assertEqual(p.get_surveys(e2), [])
+        self.assertEqual(p.get_surveys(e3), [])
+
+        # Create some surveys
+        s1 = p.create_survey("survey 1", u1)
+        self.assertEqual(p.get_surveys(u1), [s1])
+        self.assertEqual(p.get_surveys(u2), [])
+        self.assertEqual(p.get_surveys(u3), [])
+
+        self.assertEqual(p.get_surveys(e1), [])
+        self.assertEqual(p.get_surveys(e2), [])
+        self.assertEqual(p.get_surveys(e3), [])
+
+        s2 = p.create_survey("survey 2", u1, event_obj=e1)
+        self.assertEqual(p.get_surveys(u1), [s1, s2])
+        self.assertEqual(p.get_surveys(u2), [])
+        self.assertEqual(p.get_surveys(u3), [])
+
+        self.assertEqual(p.get_surveys(e1), [s2])
+        self.assertEqual(p.get_surveys(e2), [])
+        self.assertEqual(p.get_surveys(e3), [])
+
+        s3 = p.create_survey("survey 3", u2, event_obj=e1)
+        self.assertEqual(p.get_surveys(u1), [s1, s2])
+        self.assertEqual(p.get_surveys(u2), [s3])
+        self.assertEqual(p.get_surveys(u3), [])
+
+        self.assertEqual(p.get_surveys(e1), [s2, s3])
+        self.assertEqual(p.get_surveys(e2), [])
+        self.assertEqual(p.get_surveys(e3), [])
+
+        s4 = p.create_survey("survey 4", u2, event_obj=e2)
+        self.assertEqual(p.get_surveys(u1), [s1, s2])
+        self.assertEqual(p.get_surveys(u2), [s3, s4])
+        self.assertEqual(p.get_surveys(u3), [])
+
+        self.assertEqual(p.get_surveys(e1), [s2, s3])
+        self.assertEqual(p.get_surveys(e2), [s4])
+        self.assertEqual(p.get_surveys(e3), [])
+
+        s5 = p.create_survey("survey 4", u3, event_obj=e3)
+        self.assertEqual(p.get_surveys(u1), [s1, s2])
+        self.assertEqual(p.get_surveys(u2), [s3, s4])
+        self.assertEqual(p.get_surveys(u3), [s5])
+
+        self.assertEqual(p.get_surveys(e1), [s2, s3])
+        self.assertEqual(p.get_surveys(e2), [s4])
+        self.assertEqual(p.get_surveys(e3), [s5])
+
 # Generate empty test database
 conn = sqlite3.connect(porg_config.DB_NAME)
 c = conn.cursor()

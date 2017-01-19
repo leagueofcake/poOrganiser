@@ -430,3 +430,17 @@ class PorgWrapper:
             raise TypeError("Invalid object type for get_owner: expected Event, Survey "
                             "or Question")
         return self.db_interface.get_obj(obj.get_owner_id(), User)
+
+    def get_surveys(self, obj):
+        is_user = isinstance(obj, User)
+        is_event = isinstance(obj, Event)
+
+        if not is_user and not is_event:
+            raise TypeError("Invalid object type for get_surveys: expected User or Event")
+
+        res = []
+        for survey_id in obj.get_survey_ids():
+            s = self.check_obj_exists(survey_id, Survey)
+            res.append(s)
+
+        return res

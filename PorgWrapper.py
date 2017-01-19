@@ -66,6 +66,14 @@ class PorgWrapper:
             for e in self.get_events_by_user(u):
                 self.delete_event(e)
 
+        # Remove surveys from database
+        for survey_id in u.get_survey_ids():
+            self.delete_survey(survey_id)
+
+        # Remove questions from database
+        for question_id in u.get_question_ids():
+            self.delete_question(question_id)
+
         self.db_interface.delete(u)
 
     def get_help(self):
@@ -116,6 +124,11 @@ class PorgWrapper:
         for attendance_id in e.get_attendance_ids():
             a = self.db_interface.get_obj(attendance_id, Attendance)
             self.delete_attendance(a.get_id())
+
+        # Remove surveys from database
+        for survey_id in e.get_survey_ids():
+            s = self.check_obj_exists(survey_id, Survey)
+            self.delete_survey(s)
 
         # Delete event
         event_owner_id = e.get_owner_id()

@@ -70,17 +70,37 @@ class TestPorgWrapper(unittest.TestCase):
         self.assertEqual(u1.get_events_organised_ids(), [e1.get_id()])
         self.assertEqual(u2.get_events_organised_ids(), [e2.get_id(), e3.get_id()])
 
+        # Create some surveys
+        s1 = p.create_survey("survey 1", u1, event_obj=e1)
+        s2 = p.create_survey("survey 2", u2, event_obj=e2)
+        s3 = p.create_survey("survey 3", u2, event_obj=e1)
+
+        # Create some questions
+        q1 = p.create_question(u1, "lol", "free")
+        q2 = p.create_question(u1, "something", "free", survey_obj=s1)
+
         # Unregister created users
         p.unregister_user(u1)  # Only delete attendances - event should still exist
         self.assertIsNone(e1.get_owner_id())  # Check owner_id is removed from Event
         self.assertIsNotNone(p.db_interface.get_obj(e1.get_id(), Event))
         self.assertIsNone(p.get_attendance(u1.get_id(), e1.get_id()))  # Check attendance deleted
+        self.assertIsNone(p.db_interface.get_obj(s1.get_id(), Survey))  # Check survey deleted
+
+        # Check non-associated question deleted
+        self.assertIsNone(p.db_interface.get_obj(q1.get_id(), Question))
+
+        # Check survey-associated question deleted
+        self.assertIsNone(p.db_interface.get_obj(q2.get_id(), Question))
 
         p.unregister_user("jane", delete_events=True)  # Delete attendances and events
         self.assertIsNone(p.db_interface.get_obj(e2.get_id(), Event))
         self.assertIsNone(p.db_interface.get_obj(e2.get_id(), Event))
         self.assertIsNone(p.get_attendance(u2.get_id(), e2.get_id()))  # Check attendance deleted
         self.assertIsNone(p.get_attendance(u2.get_id(), e3.get_id()))  # Check attendance deleted
+
+        # Check surveys deleted
+        self.assertIsNone(p.db_interface.get_obj(s2.get_id(), Survey))
+        self.assertIsNone(p.db_interface.get_obj(s3.get_id(), Survey))
 
         p.unregister_user(u3)
 
@@ -316,6 +336,11 @@ class TestPorgWrapper(unittest.TestCase):
         e2 = p.create_event("two to 2 too", u2.get_id())
         e3 = p.create_event("free threes", u1.get_id())
 
+        # Create some surveys
+        s1 = p.create_survey("survey 1", u1, event_obj=e1)
+        s2 = p.create_survey("survey 2", u1, event_obj=e1)
+        s3 = p.create_survey("survey 2", u1)
+
         a1 = p.get_attendance(u1.get_id(), e1.get_id())
         a2 = p.get_attendance(u2.get_id(), e2.get_id())
         a3 = p.get_attendance(u1.get_id(), e3.get_id())
@@ -331,6 +356,11 @@ class TestPorgWrapper(unittest.TestCase):
         self.assertEqual(p.get_attendances(e2), [a2])
         self.assertEqual(p.get_attendances(e3), [a3])
 
+        # Check surveys created
+        self.assertIsNotNone(p.db_interface.get_obj(s1.get_id(), Survey))
+        self.assertIsNotNone(p.db_interface.get_obj(s2.get_id(), Survey))
+        self.assertIsNotNone(p.db_interface.get_obj(s3.get_id(), Survey))
+
         # Delete e1
         p.delete_event(e1)
 
@@ -340,6 +370,11 @@ class TestPorgWrapper(unittest.TestCase):
 
         # Check attendances were removed
         self.assertIsNone(p.get_attendance(u1.get_id(), e1.get_id()))
+
+        # Check surveys were deleted
+        self.assertIsNone(p.db_interface.get_obj(s1.get_id(), Survey))
+        self.assertIsNone(p.db_interface.get_obj(s2.get_id(), Survey))
+        self.assertIsNotNone(p.db_interface.get_obj(s3.get_id(), Survey))  # Should remain - not associated with d3
 
         # Delete e2 by id
         p.delete_event(e2.get_id())

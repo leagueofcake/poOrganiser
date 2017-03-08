@@ -10,6 +10,8 @@ def drop_tables(c):
         c.execute('DROP TABLE attendance')
         c.execute('DROP TABLE questions')
         c.execute('DROP TABLE choices')
+        c.execute('DROP TABLE responses')
+        c.execute('DROP TABLE surveys')
     except sqlite3.OperationalError:
         pass
 
@@ -17,18 +19,22 @@ def drop_tables(c):
 def create_tables(c):
     c.execute('''CREATE TABLE events(
         id INTEGER PRIMARY KEY,
-        owner_id INTEGER,
         name TEXT NOT NULL,
+        owner_id INTEGER,
         location TEXT,
         time DATETIME,
-        attendance_ids BLOB);
+        attendance_ids BLOB,
+        survey_ids BLOB);
     ''')
 
     c.execute('''CREATE TABLE users(
         id INTEGER PRIMARY KEY,
         username TEXT NOT NULL,
         events_organised_ids BLOB,
-        events_attending_ids BLOB);
+        events_attending_ids BLOB,
+        survey_ids BLOB,
+        question_ids BLOB,
+        response_ids BLOB);
     ''')
 
     c.execute('''CREATE TABLE attendance(
@@ -39,20 +45,36 @@ def create_tables(c):
         roles BLOB);
     ''')
 
+    c.execute('''CREATE TABLE surveys(
+        id INTEGER PRIMARY KEY,
+        name TEXT NOT NULL,
+        owner_id INTEGER,
+        event_id INTEGER,
+        question_ids BLOB);
+    ''')
+
     c.execute('''CREATE TABLE questions(
-        question_id INTEGER PRIMARY KEY,
-        event_id INTEGER NOT NULL,
-        text TEXT NOT NULL,
-        num_choices INTEGER NOT NULL,
-        preferential BOOLEAN NOT NULL,
-        yet_to_vote TEXT);
+        id INTEGER PRIMARY KEY,
+        owner_id INTEGER NOT NULL,
+        question TEXT NOT NULL,
+        question_type TEXT NOT NULL,
+        survey_id INTEGER,
+        allowed_choice_ids BLOB,
+        response_ids BLOB);
     ''')
 
     c.execute('''CREATE TABLE choices(
-        choice_id INTEGER PRIMARY KEY,
+        id INTEGER PRIMARY KEY,
         question_id INTEGER NOT NULL,
-        choice_text text NOT NULL,
-        votes TEXT);
+        choice text NOT NULL);
+    ''')
+
+    c.execute('''CREATE TABLE responses(
+        id INTEGER PRIMARY KEY,
+        response_text TEXT,
+        responder_id INTEGER NOT NULL,
+        question_id INTEGER NOT NULL,
+        choice_ids BLOB);
     ''')
 
 

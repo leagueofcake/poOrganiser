@@ -1,5 +1,5 @@
 import unittest
-from Poorganiser import User, Event
+from Poorganiser import User, Event, Survey, Question, Response
 from datetime import datetime
 
 
@@ -92,12 +92,12 @@ class TestUser(unittest.TestCase):
         self.assertEqual(u.get_events_organised_ids(), [1, 4, 2])
 
         # Adding events with Event objects
-        e = Event(1, "event", "location", datetime(2017, 1, 1))
+        e = Event("event", 1,  "location", datetime(2017, 1, 1))
         e.id = 34
         u.add_event_organised(e)
         self.assertEqual(u.get_events_organised_ids(), [1, 4, 2, 34])
 
-        e = Event(93, "event2", "location2", datetime(2017, 1, 2))
+        e = Event("event2", 93,  "location2", datetime(2017, 1, 2))
         e.id = 1234
         u.add_event_organised(e)
         self.assertEqual(u.get_events_organised_ids(), [1, 4, 2, 34, 1234])
@@ -133,12 +133,12 @@ class TestUser(unittest.TestCase):
         self.assertEqual(u.get_events_attending_ids(), [1, 4, 2])
 
         # Adding events with Event objects
-        e = Event(1, "event", "location", datetime(2017, 1, 1))  # Add event using Event object
+        e = Event("event", 1,  "location", datetime(2017, 1, 1))  # Add event using Event object
         e.id = 34
         u.add_event_attending(e)
         self.assertEqual(u.get_events_attending_ids(), [1, 4, 2, 34])
 
-        e = Event(93, "event2", "location2", datetime(2017, 1, 2))
+        e = Event("event2", 93,  "location2", datetime(2017, 1, 2))
         e.id = 1234
         u.add_event_attending(e)
         self.assertEqual(u.get_events_attending_ids(), [1, 4, 2, 34, 1234])
@@ -174,24 +174,24 @@ class TestUser(unittest.TestCase):
         self.assertEqual(u.get_events_organised_ids(), [2, 1234])
 
         # Removing events with Event objects
-        e = Event(35, "e", "l", datetime(2017, 1, 1))
+        e = Event("e", 35,  "l", datetime(2017, 1, 1))
         e.id = 1234
         u.remove_event_organised(e)
         self.assertEqual(u.get_events_organised_ids(), [2])
         u.remove_event_organised(2)
         self.assertEqual(u.get_events_organised_ids(), [])
 
-        e = Event(1, "event", "location", datetime(2017, 1, 1))
+        e = Event("event", 1,  "location", datetime(2017, 1, 1))
         e.id = 34
         u.add_event_organised(e)
         self.assertEqual(u.get_events_organised_ids(), [34])
 
-        e2 = Event(1234, "event2", "location2", datetime(2017, 1, 2))
+        e2 = Event("event2", 1234,  "location2", datetime(2017, 1, 2))
         e2.id = 834
         u.add_event_organised(e2)
         self.assertEqual(u.get_events_organised_ids(), [34, 834])
 
-        e3 = Event(999, "event3", "location3", datetime(2017, 1, 3))
+        e3 = Event("event3", 999,  "location3", datetime(2017, 1, 3))
         e3.id = 99
         u.add_event_organised(e3)
         self.assertEqual(u.get_events_organised_ids(), [34, 834, 99])
@@ -242,24 +242,24 @@ class TestUser(unittest.TestCase):
         self.assertEqual(u.get_events_attending_ids(), [2, 1234])
 
         # Removing events with Event objects
-        e = Event(35, "e", "l", datetime(2017, 1, 1))
+        e = Event("e", 35,  "l", datetime(2017, 1, 1))
         e.id = 1234
         u.remove_event_attending(e)
         self.assertEqual(u.get_events_attending_ids(), [2])
         u.remove_event_attending(2)
         self.assertEqual(u.get_events_attending_ids(), [])
 
-        e = Event(1, "event", "location", datetime(2017, 1, 1))
+        e = Event("event", 1,  "location", datetime(2017, 1, 1))
         e.id = 34
         u.add_event_attending(e)
         self.assertEqual(u.get_events_attending_ids(), [34])
 
-        e2 = Event(1234, "event2", "location2", datetime(2017, 1, 2))
+        e2 = Event("event2", 1234,  "location2", datetime(2017, 1, 2))
         e2.id = 834
         u.add_event_attending(e2)
         self.assertEqual(u.get_events_attending_ids(), [34, 834])
 
-        e3 = Event(999, "event3", "location3", datetime(2017, 1, 3))
+        e3 = Event("event3", 999,  "location3", datetime(2017, 1, 3))
         e3.id = 99
         u.add_event_attending(e3)
         self.assertEqual(u.get_events_attending_ids(), [34, 834, 99])
@@ -292,6 +292,207 @@ class TestUser(unittest.TestCase):
         with self.assertRaises(TypeError):
             u.remove_event_attending(u)
 
+    def test_get_survey_ids(self):
+        u = User("user 1")
+        self.assertEqual(u.get_survey_ids(), [])
+
+        u2 = User("user 2")
+        self.assertEqual(u2.get_survey_ids(), [])
+
+    def test_get_question_ids(self):
+        u = User("user 1")
+        self.assertEqual(u.get_question_ids(), [])
+
+        u2 = User("user 2")
+        self.assertEqual(u2.get_question_ids(), [])
+
+    def test_get_response_ids(self):
+        u = User("user 1")
+        self.assertEqual(u.get_response_ids(), [])
+
+        u2 = User("user 2")
+        self.assertEqual(u2.get_response_ids(), [])
+
+    def test_add_survey_id(self):
+        u = User("user 1")
+        self.assertEqual(u.get_survey_ids(), [])
+        u.add_survey_id(3)
+        self.assertEqual(u.get_survey_ids(), [3])
+        u.add_survey_id(3)  # Test adding duplicate
+        self.assertEqual(u.get_survey_ids(), [3])
+
+        # Test adding with mock Survey object
+        s_mock = Survey("blob", 1)
+        s_mock.id = 129
+        u.add_survey_id(s_mock)
+        self.assertEqual(u.get_survey_ids(), [3, 129])
+
+        s_mock.id = 123
+        u.add_survey_id(s_mock)
+        self.assertEqual(u.get_survey_ids(), [3, 129, 123])
+
+        # Test adding with invalid survey_obj type
+        with self.assertRaises(TypeError):
+            u.add_survey_id(3.14)
+
+        with self.assertRaises(TypeError):
+            u.add_survey_id("blah blah blah")
+
+    def test_add_question_id(self):
+        u = User("user 1")
+        self.assertEqual(u.get_question_ids(), [])
+        u.add_question_id(13)
+        self.assertEqual(u.get_question_ids(), [13])
+        u.add_question_id(26)
+        self.assertEqual(u.get_question_ids(), [13, 26])
+        u.add_question_id(26)  # Test adding duplicate
+        self.assertEqual(u.get_question_ids(), [13, 26])
+
+        # Test adding with mock Question object
+        q_mock = Question(1, "lol", "free")
+        q_mock.id = 39
+        u.add_question_id(q_mock)
+        self.assertEqual(u.get_question_ids(), [13, 26, 39])
+
+        q_mock.id = 999
+        u.add_question_id(q_mock)
+        self.assertEqual(u.get_question_ids(), [13, 26, 39, 999])
+
+        # Test adding with invalid question_obj type
+        with self.assertRaises(TypeError):
+            u.add_question_id(3.14)
+
+        with self.assertRaises(TypeError):
+            u.add_question_id("blah blah blah")
+
+    def test_remove_survey_id(self):
+        u = User("user 1")
+        self.assertEqual(u.get_survey_ids(), [])
+        u.add_survey_id(3)
+        self.assertEqual(u.get_survey_ids(), [3])
+        u.remove_survey_id(3)
+        self.assertEqual(u.get_survey_ids(), [])
+        u.remove_survey_id(29)  # Test removing non-existant element
+        self.assertEqual(u.get_survey_ids(), [])
+        u.add_survey_id(912)
+        self.assertEqual(u.get_survey_ids(), [912])
+
+        # Test removing with mock Survey object
+        s_mock = Survey("blob", 1)
+        s_mock.id = 3
+        u.add_survey_id(s_mock)
+        self.assertEqual(u.get_survey_ids(), [912, 3])
+
+        s_mock.id = 912
+        u.remove_survey_id(s_mock)
+        self.assertEqual(u.get_survey_ids(), [3])
+
+        u.remove_survey_id(3)
+        self.assertEqual(u.get_survey_ids(), [])
+
+        # Test removing with invalid survey_obj type
+        with self.assertRaises(TypeError):
+            u.remove_survey_id(3.14)
+
+        with self.assertRaises(TypeError):
+            u.remove_survey_id("blah blah blah")
+
+    def test_remove_question_id(self):
+        u = User("user 1")
+        self.assertEqual(u.get_question_ids(), [])
+        u.add_question_id(13)
+        self.assertEqual(u.get_question_ids(), [13])
+        u.add_question_id(26)
+        self.assertEqual(u.get_question_ids(), [13, 26])
+        u.remove_question_id(29)  # Test removing non-existant element
+        self.assertEqual(u.get_question_ids(), [13, 26])
+
+        # Test removing with mock Question object
+        q_mock = Question(1, "lol", "free")
+        q_mock.id = 13
+        u.remove_question_id(q_mock)
+        self.assertEqual(u.get_question_ids(), [26])
+
+        q_mock.id = 999
+        u.add_question_id(q_mock)
+        self.assertEqual(u.get_question_ids(), [26, 999])
+
+        u.remove_question_id(999)
+        self.assertEqual(u.get_question_ids(), [26])
+
+        q_mock.id = 26
+        u.remove_question_id(q_mock)
+        self.assertEqual(u.get_question_ids(), [])
+
+        # Test removing with invalid question_obj type
+        with self.assertRaises(TypeError):
+            u.remove_question_id(3.14)
+
+        with self.assertRaises(TypeError):
+            u.remove_question_id("blah blah blah")
+
+    def test_add_response_id(self):
+        u = User("user 1")
+        self.assertEqual(u.get_response_ids(), [])
+        u.add_response_id(123)
+        self.assertEqual(u.get_response_ids(), [123])
+        u.add_response_id(123)  # Test add duplicate
+        self.assertEqual(u.get_response_ids(), [123])
+        u.add_response_id(234)
+        self.assertEqual(u.get_response_ids(), [123, 234])
+
+        # Test add using mock Response object
+        r_mock = Response(1, 2)
+        r_mock.id = 900
+        u.add_response_id(r_mock)
+        self.assertEqual(u.get_response_ids(), [123, 234, 900])
+
+        r_mock.id = 12
+        u.add_response_id(r_mock)
+        self.assertEqual(u.get_response_ids(), [123, 234, 900, 12])
+
+        # Test adding using invalid response type
+        with self.assertRaises(TypeError):
+            u.add_response_id(12.34)
+
+        with self.assertRaises(TypeError):
+            u.add_response_id("lol")
+
+        with self.assertRaises(TypeError):
+            u.add_response_id(u)
+
+    def test_remove_response_id(self):
+        u = User("user 1")
+        self.assertEqual(u.get_response_ids(), [])
+        u.add_response_id(123)
+        self.assertEqual(u.get_response_ids(), [123])
+        u.add_response_id(123)
+        self.assertEqual(u.get_response_ids(), [123])
+        u.remove_response_id(234)  # Test removing non-existing element
+        self.assertEqual(u.get_response_ids(), [123])
+
+        # Test add using mock Response object
+        r_mock = Response(1, 2)
+        r_mock.id = 123
+        u.remove_response_id(r_mock)
+        self.assertEqual(u.get_response_ids(), [])
+
+        r_mock.id = 12
+        u.add_response_id(r_mock)
+        self.assertEqual(u.get_response_ids(), [12])
+
+        u.remove_response_id(12)
+        self.assertEqual(u.get_response_ids(), [])
+
+        # Test removing using invalid response type
+        with self.assertRaises(TypeError):
+            u.remove_response_id(12.34)
+
+        with self.assertRaises(TypeError):
+            u.remove_response_id("lol")
+
+        with self.assertRaises(TypeError):
+            u.remove_response_id(u)
 
 if __name__ == '__main__':
     unittest.main()

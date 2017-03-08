@@ -45,6 +45,12 @@ class TestAttendance(unittest.TestCase):
         with self.assertRaises(AssertionError):
             Attendance(4, 2, roles=("food buyer",))
 
+        with self.assertRaises(AssertionError):
+            Attendance(4, 2, roles=[1, 3, 4])
+
+        with self.assertRaises(AssertionError):
+            Attendance(4, 2, roles=["role 2", ["invalid role"]])
+
     def test_get_user_id(self):
         at = Attendance(4, 2)
         self.assertEqual(at.get_user_id(), 4)
@@ -117,6 +123,12 @@ class TestAttendance(unittest.TestCase):
         at = Attendance(1032, 39281, "not_going", ['Book venue'])
         at.add_role('do something')
         at.add_role('blah')
+        self.assertEqual(at.get_roles(), ['Book venue', 'do something', 'blah'])
+
+        # Test adding duplicate roles
+        at.add_role('blah')
+        at.add_role('blah')
+        at.add_role('Book venue')
         self.assertEqual(at.get_roles(), ['Book venue', 'do something', 'blah'])
 
         # Test setting role with invalid types

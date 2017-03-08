@@ -1,6 +1,6 @@
 #!/usr/bin/env python3.5
 import unittest
-from Poorganiser import Event, Attendance
+from Poorganiser import Event, Attendance, Survey
 from datetime import datetime
 
 
@@ -8,74 +8,80 @@ class TestEvent(unittest.TestCase):
     def test_constructor_assertions(self):
         # Incorrect owner_id type
         with self.assertRaises(AssertionError):
-            Event("bob", "BBQ", "Parra Park", datetime(2016, 10, 1))
+            Event("BBQ", "bob",  "Parra Park", datetime(2016, 10, 1))
 
         with self.assertRaises(AssertionError):
-            Event(3.14, "BBQ", "Parra Park", datetime(2016, 10, 2))
+            Event("BBQ", 3.14,  "Parra Park", datetime(2016, 10, 2))
 
         with self.assertRaises(AssertionError):
-            Event(tuple(), "BBQ", "Parra Park", datetime(2016, 10, 3))
+            Event("BBQ", tuple(),  "Parra Park", datetime(2016, 10, 3))
 
         # Incorrect name type
         with self.assertRaises(AssertionError):
-            Event(0, 123, "Parra Park", datetime(2016, 10, 1))
+            Event(123, 0,  "Parra Park", datetime(2016, 10, 1))
 
         with self.assertRaises(AssertionError):
-            Event(52, ['name 1', 'name 2'], "Parra Park", datetime(2016, 10, 2))
+            Event(['name 1', 52,  'name 2'], "Parra Park", datetime(2016, 10, 2))
 
         with self.assertRaises(AssertionError):
-            Event(245, 3.14, "Parra Park", datetime(2016, 10, 3))
+            Event(3.14, 245,  "Parra Park", datetime(2016, 10, 3))
 
         # Incorrect location type
         with self.assertRaises(AssertionError):
-            Event(0, "BBQ", 1234, datetime(2016, 10, 1))
+            Event("BBQ", 0,  1234, datetime(2016, 10, 1))
 
         with self.assertRaises(AssertionError):
-            Event(52, "BBQ2", ['loc 1', 'loc 2'], datetime(2016, 10, 2))
+            Event("BBQ2", 52,  ['loc 1', 'loc 2'], datetime(2016, 10, 2))
 
         with self.assertRaises(AssertionError):
-            Event(245, "BBQ3", datetime(2017, 1, 1), datetime(2016, 10, 3))
+            Event("BBQ3", 245,  datetime(2017, 1, 1), datetime(2016, 10, 3))
 
         # Incorrect time type
         with self.assertRaises(AssertionError):
-            Event(0, "BBQ", "Parra Park", "01/01/2017")
+            Event("BBQ", 0,  "Parra Park", "01/01/2017")
 
         with self.assertRaises(AssertionError):
-            Event(52, "BBQ2", "Parra Park", 3.14)
+            Event("BBQ2", 52,  "Parra Park", 3.14)
 
         with self.assertRaises(AssertionError):
-            Event(245, "BBQ3", "Parra Park 2", [datetime(2017, 1, 1)])
+            Event("BBQ3", 245,  "Parra Park 2", [datetime(2017, 1, 1)])
 
+        # Incorrect survey_ids type
+        with self.assertRaises(AssertionError):
+            Event("BBQ3", 245,  "Parra Park 2", [datetime(2017, 1, 1)], survey_ids=[1, 3, 5, 7.2])
+
+        with self.assertRaises(AssertionError):
+            Event("BBQ3", 245, "Parra Park 2", [datetime(2017, 1, 1)], survey_ids="lolol")
 
     def test_get_owner_id(self):
-        e1 = Event(0, "BBQ", "Parra Park", datetime(2016, 10, 1))
+        e1 = Event("BBQ", 0,  "Parra Park", datetime(2016, 10, 1))
         self.assertEqual(e1.get_owner_id(), 0)
-        e1 = Event(52, "", "house", datetime(2016, 10, 1))
+        e1 = Event("", 52,  "house", datetime(2016, 10, 1))
         self.assertEqual(e1.get_owner_id(), 52)
 
     def test_get_name(self):
-        e1 = Event(0, "BBQ", "Parra Park", datetime(2016, 10, 1))
+        e1 = Event("BBQ", 0,  "Parra Park", datetime(2016, 10, 1))
         self.assertEqual(e1.get_name(), "BBQ")
-        e1 = Event(0, "", "house", datetime(2016, 10, 1))
+        e1 = Event("", 0,  "house", datetime(2016, 10, 1))
         self.assertEqual(e1.get_name(), "")
 
     def test_get_location(self):
-        e1 = Event(0, "BBQ", "Parra Park", datetime(2016, 10, 1))
+        e1 = Event("BBQ", 0,  "Parra Park", datetime(2016, 10, 1))
         self.assertEqual(e1.get_location(), "Parra Park")
-        e1 = Event(0, "BBQ", "", datetime(2016, 10, 1))
+        e1 = Event("BBQ", 0,  "", datetime(2016, 10, 1))
         self.assertEqual(e1.get_location(), "")
 
     def test_get_time(self):
-        e1 = Event(0, "BBQ", "Parra Park", datetime(2016, 10, 1))
+        e1 = Event("BBQ", 0,  "Parra Park", datetime(2016, 10, 1))
         self.assertEqual(e1.get_time(), datetime(2016, 10, 1))
-        e1 = Event(0, "BBQ", "Parra Park", datetime(2017, 1, 1))
+        e1 = Event("BBQ", 0,  "Parra Park", datetime(2017, 1, 1))
         self.assertEqual(e1.get_time(), datetime(2017, 1, 1))
 
     def test_set_owner_id(self):
-        e1 = Event(0, "BBQ", "Parra Park", datetime(2016, 10, 1))
+        e1 = Event("BBQ", 0,  "Parra Park", datetime(2016, 10, 1))
         e1.set_owner_id(42)
         self.assertEqual(e1.get_owner_id(), 42)
-        e1 = Event(52, "", "house", datetime(2016, 10, 1))
+        e1 = Event("", 52,  "house", datetime(2016, 10, 1))
         e1.set_owner_id(10)
         e1.set_owner_id(33)
         self.assertEqual(e1.get_owner_id(), 33)
@@ -93,7 +99,7 @@ class TestEvent(unittest.TestCase):
             e1.set_owner_id(3.14)
 
     def test_set_name(self):
-        e1 = Event(0, "BBQ", "Parra Park", datetime(2016, 10, 1))
+        e1 = Event("BBQ", 0,  "Parra Park", datetime(2016, 10, 1))
         e1.set_name("name is wrong")
         self.assertEqual(e1.get_name(), "name is wrong")
         e1.set_name("")
@@ -110,7 +116,7 @@ class TestEvent(unittest.TestCase):
             e1.set_name(e1)
 
     def test_set_location(self):
-        e1 = Event(0, "BBQ", "Parra Park", datetime(2016, 10, 1))
+        e1 = Event("BBQ", 0,  "Parra Park", datetime(2016, 10, 1))
         e1.set_location("Parramatta Park")
         self.assertEqual(e1.get_location(), "Parramatta Park")
         e1.set_location("")
@@ -127,7 +133,7 @@ class TestEvent(unittest.TestCase):
             e1.set_location(e1)
 
     def test_set_time(self):
-        e1 = Event(0, "BBQ", "Parra Park", datetime(2016, 10, 1))
+        e1 = Event("BBQ", 0,  "Parra Park", datetime(2016, 10, 1))
         e1.set_time(datetime(2016, 10, 2))
         self.assertEqual(e1.get_time(), datetime(2016, 10, 2))
         e1.set_time(datetime(2017, 1, 1))
@@ -147,7 +153,7 @@ class TestEvent(unittest.TestCase):
             e1.set_time("01/01/2001")
 
     def test_add_attendance_id(self):
-        e1 = Event(0, "BBQ", "Parra Park", datetime(2016, 10, 1))
+        e1 = Event("BBQ", 0,  "Parra Park", datetime(2016, 10, 1))
 
         # Test adding attendance ids with integers
         e1.add_attendance_id(1)
@@ -177,7 +183,7 @@ class TestEvent(unittest.TestCase):
             e1.add_attendance_id([1, 2])
 
     def test_remove_attendance_id(self):
-        e1 = Event(0, "BBQ", "Parra Park", datetime(2016, 10, 1))
+        e1 = Event("BBQ", 0,  "Parra Park", datetime(2016, 10, 1))
         e1.add_attendance_id(1)
         self.assertEqual(e1.get_attendance_ids(), [1])
         e1.add_attendance_id(24)
@@ -225,6 +231,76 @@ class TestEvent(unittest.TestCase):
         with self.assertRaises(TypeError):
             e1.remove_attendance_id(3.14)
 
+    def test_get_attendance_ids(self):
+        e1 = Event("BBQ", 0, "Parra Park", datetime(2016, 10, 1))
+        self.assertEqual(e1.get_attendance_ids(), [])
+
+        e2 = Event("BBQ", 0, "Parra Park", datetime(2017, 1, 1))
+        self.assertEqual(e2.get_attendance_ids(), [])
+
+    def test_get_survey_ids(self):
+        e1 = Event("BBQ", 0, "Parra Park", datetime(2016, 10, 1))
+        self.assertEqual(e1.get_survey_ids(), [])
+
+        e2 = Event("BBQ", 0, "Parra Park", datetime(2017, 1, 1))
+        self.assertEqual(e2.get_survey_ids(), [])
+
+    def test_add_survey_id(self):
+        e1 = Event("BBQ", 0, "Parra Park", datetime(2016, 10, 1))
+        self.assertEqual(e1.get_survey_ids(), [])
+        e1.add_survey_id(123)
+        self.assertEqual(e1.get_survey_ids(), [123])
+        e1.add_survey_id(123)  # Test adding duplicate
+        self.assertEqual(e1.get_survey_ids(), [123])
+        e1.add_survey_id(930)
+        self.assertEqual(e1.get_survey_ids(), [123, 930])
+
+        # Test adding with mock Survey object
+        s_mock = Survey("s1", 3)
+        s_mock.id = 29
+        e1.add_survey_id(s_mock)
+        self.assertEqual(e1.get_survey_ids(), [123, 930, 29])
+
+        # Test adding with invalid survey type
+        with self.assertRaises(TypeError):
+            e1.add_survey_id(3.14)
+
+        with self.assertRaises(TypeError):
+            e1.add_survey_id(e1)
+
+        with self.assertRaises(TypeError):
+            e1.add_survey_id("fake event")
+
+    def test_remove_survey_id(self):
+        e1 = Event("BBQ", 0, "Parra Park", datetime(2016, 10, 1))
+        self.assertEqual(e1.get_survey_ids(), [])
+        e1.add_survey_id(123)
+        self.assertEqual(e1.get_survey_ids(), [123])
+        e1.remove_survey_id(1920)  # Test removing non-existant element
+        self.assertEqual(e1.get_survey_ids(), [123])
+        e1.add_survey_id(930)
+        self.assertEqual(e1.get_survey_ids(), [123, 930])
+
+        # Test removing with mock Survey object
+        s_mock = Survey("s1", 3)
+        s_mock.id = 29
+        e1.remove_survey_id(s_mock)  # Test removing non-existant element
+        self.assertEqual(e1.get_survey_ids(), [123, 930])
+        s_mock.id = 930
+        e1.remove_survey_id(s_mock)
+        self.assertEqual(e1.get_survey_ids(), [123])
+        e1.remove_survey_id(123)
+        self.assertEqual(e1.get_survey_ids(), [])
+
+        # Test removing with invalid survey type
+        with self.assertRaises(TypeError):
+            e1.remove_survey_id(3.14)
+
+        with self.assertRaises(TypeError):
+            e1.remove_survey_id(e1)
+
+        with self.assertRaises(TypeError):
+            e1.remove_survey_id("fake event")
 
 if __name__ == '__main__':
     unittest.main()
